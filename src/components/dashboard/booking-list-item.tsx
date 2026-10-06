@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { Calendar, Clock, MapPin, AlertCircle, CheckCircle2, RotateCcw, XCircle, ArrowRight } from 'lucide-react';
+import { Calendar, Clock, MapPin } from 'lucide-react';
 import { DemoBooking } from '@/types/booking';
 import { formatCurrency } from '@/lib/formatters';
 import { Button } from '@/components/ui/button';

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Search, MapPin, ShieldCheck, Star, ArrowRight, CheckCircle2, Sparkles, Clock } from 'lucide-react';
+import { Search, MapPin, ShieldCheck, Star, CheckCircle2, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/layout/container';
 import { serviceCategories } from '@/data/services';

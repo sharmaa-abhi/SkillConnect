@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, Suspense } from 'react';
+import React, { useState, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Search, SlidersHorizontal, ArrowUpDown, X, RotateCcw } from 'lucide-react';
+import { Search, SlidersHorizontal, ArrowUpDown, X } from 'lucide-react';
 import { Container } from '@/components/layout/container';
 import { FilterState } from '@/types';
 import { professionals } from '@/data/professionals';
@@ -18,44 +18,32 @@ function ProfessionalsDirectoryContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // Read initial params
-  const initialCategory = searchParams.get('category') || 'all';
-  const initialQuery = searchParams.get('query') || '';
-  const initialLocation = searchParams.get('location') || '';
+  const [localFilters, setLocalFilters] = useState<Partial<FilterState>>({});
 
-  const [filters, setFilters] = useState<FilterState>({
-    query: initialQuery || initialLocation,
-    category: initialCategory,
-    minRating: null,
-    availableToday: false,
-    priceTier: 'all',
-    sortBy: 'recommended',
-  });
+  // Computed filter state merging URL searchParams with local overrides
+  const filters: FilterState = useMemo(() => {
+    const urlQuery = searchParams.get('query') || searchParams.get('location') || '';
+    const urlCategory = searchParams.get('category') || 'all';
+
+    return {
+      query: localFilters.query !== undefined ? localFilters.query : urlQuery,
+      category: localFilters.category !== undefined ? localFilters.category : urlCategory,
+      minRating: localFilters.minRating !== undefined ? localFilters.minRating : null,
+      availableToday: localFilters.availableToday !== undefined ? localFilters.availableToday : false,
+      priceTier: localFilters.priceTier !== undefined ? localFilters.priceTier : 'all',
+      sortBy: localFilters.sortBy !== undefined ? localFilters.sortBy : 'recommended',
+    };
+  }, [searchParams, localFilters]);
 
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
-  // Update query when searchParams change
-  useEffect(() => {
-    const cat = searchParams.get('category');
-    const q = searchParams.get('query');
-    const loc = searchParams.get('location');
-
-    if (cat || q || loc) {
-      setFilters((prev) => ({
-        ...prev,
-        category: cat || prev.category,
-        query: q || loc || prev.query,
-      }));
-    }
-  }, [searchParams]);
-
   // Handle filter changes
   const handleFilterChange = (updated: Partial<FilterState>) => {
-    setFilters((prev) => ({ ...prev, ...updated }));
+    setLocalFilters((prev) => ({ ...prev, ...updated }));
   };
 
   const handleResetFilters = () => {
-    setFilters({
+    setLocalFilters({
       query: '',
       category: 'all',
       minRating: null,

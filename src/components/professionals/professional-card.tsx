@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { MapPin, ShieldCheck, Clock, ArrowRight } from 'lucide-react';
+import { MapPin, ArrowRight } from 'lucide-react';
 import { ProfessionalProfile } from '@/types/professional';
 import { RatingDisplay } from '@/components/ui/rating-display';
 import { PriceLabel } from '@/components/ui/price-label';

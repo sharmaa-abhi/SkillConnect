@@ -2,8 +2,8 @@
 
 import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { User, Briefcase, Wrench, ShieldCheck, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { User, Briefcase, Wrench, CheckCircle2 } from 'lucide-react';
 import { Container } from '@/components/layout/container';
 import { TextField } from '@/components/forms/text-field';
 import { SelectField } from '@/components/forms/select-field';
@@ -12,7 +12,6 @@ import { serviceCategories } from '@/data/services';
 import { useToast } from '@/context/toast-context';
 
 function RegisterFormContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const initialRole = searchParams.get('role') === 'worker' ? 'worker' : 'customer';
 

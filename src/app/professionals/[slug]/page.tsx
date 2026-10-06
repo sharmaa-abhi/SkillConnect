@@ -5,21 +5,16 @@ import Link from 'next/link';
 import {
   MapPin,
   ShieldCheck,
-  Star,
   Clock,
   Award,
-  Calendar,
   CheckCircle2,
   AlertCircle,
-  Sparkles,
   ChevronRight,
-  ArrowLeft,
   Share2,
 } from 'lucide-react';
 import { Container } from '@/components/layout/container';
 import { professionals } from '@/data/professionals';
 import { RatingDisplay } from '@/components/ui/rating-display';
-import { PriceLabel } from '@/components/ui/price-label';
 import { VerifiedProBadge } from '@/components/ui/badge';
 import { FavoriteButton } from '@/components/professionals/favorite-button';
 import { Button } from '@/components/ui/button';

@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, SlidersHorizontal, RotateCcw } from 'lucide-react';
+import { X, SlidersHorizontal } from 'lucide-react';
 import { FilterState } from '@/types';
 import { FilterSidebar } from '@/components/professionals/filter-sidebar';
 import { Button } from '@/components/ui/button';

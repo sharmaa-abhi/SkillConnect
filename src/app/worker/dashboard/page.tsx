@@ -3,16 +3,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import {
-  Wrench,
   ShieldCheck,
   Calendar,
   Clock,
   DollarSign,
   Star,
   CheckCircle2,
-  AlertCircle,
-  Briefcase,
-  Sliders,
   ExternalLink,
 } from 'lucide-react';
 import { Container } from '@/components/layout/container';

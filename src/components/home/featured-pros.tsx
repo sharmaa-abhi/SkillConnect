@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Star, ShieldCheck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Container } from '@/components/layout/container';
 import { professionals } from '@/data/professionals';
 import { ProfessionalCard } from '@/components/professionals/professional-card';

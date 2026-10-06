@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Wrench, ShieldCheck, Sparkles, ArrowRight } from 'lucide-react';
+import { Wrench, Sparkles } from 'lucide-react';
 import { Container } from '@/components/layout/container';
 import { TextField } from '@/components/forms/text-field';
 import { Button } from '@/components/ui/button';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Sparkles, CheckCircle2, Clock } from 'lucide-react';
+import { ShieldCheck, Sparkles } from 'lucide-react';
 
 export type BadgeVariant = 'verified' | 'demo' | 'available' | 'neutral' | 'success' | 'warning';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Container } from '@/components/layout/container';
-import { Wrench, ShieldCheck, Clock, Award, Heart } from 'lucide-react';
+import { ShieldCheck, Clock, Award, Heart } from 'lucide-react';
 import { serviceCategories } from '@/data/services';
 
 export function SiteFooter() {

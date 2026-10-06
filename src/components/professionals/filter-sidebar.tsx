@@ -3,8 +3,7 @@
 import React from 'react';
 import { FilterState } from '@/types';
 import { serviceCategories } from '@/data/services';
-import { RotateCcw, Star, DollarSign, Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { RotateCcw, Star, Check } from 'lucide-react';
 
 export interface FilterSidebarProps {
   filters: FilterState;

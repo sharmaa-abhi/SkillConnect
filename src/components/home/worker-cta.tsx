@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Shield, Calendar, DollarSign } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Container } from '@/components/layout/container';
 import { Button } from '@/components/ui/button';
 

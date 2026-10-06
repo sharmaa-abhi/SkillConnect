@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import {
   X,
   CheckCircle2,
@@ -13,7 +13,6 @@ import {
   ArrowLeft,
   Paperclip,
   AlertCircle,
-  FileCheck2,
   Sparkles,
   MapPin,
 } from 'lucide-react';
@@ -68,16 +67,15 @@ export function BookingFlowDialog({
   const afternoonSlots = ['1:00 PM', '2:30 PM', '4:00 PM'];
   const eveningSlots = ['5:30 PM'];
 
-  // Reset or initialize on open
-  useEffect(() => {
-    if (isOpen) {
-      setStep(1);
-      setIssueDescription('');
-      setIssueError('');
-      setAttachedPhoto(false);
-      setConfirmedBooking(null);
-    }
-  }, [isOpen]);
+  // Reset state helper
+  const handleClose = () => {
+    setStep(1);
+    setIssueDescription('');
+    setIssueError('');
+    setAttachedPhoto(false);
+    setConfirmedBooking(null);
+    onClose();
+  };
 
   // Handle Escape key
   useEffect(() => {
@@ -166,7 +164,7 @@ export function BookingFlowDialog({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        onClick={onClose}
+        onClick={handleClose}
         className="fixed inset-0 bg-black/60 backdrop-blur-xs"
       />
 
@@ -196,7 +194,7 @@ export function BookingFlowDialog({
 
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Close booking dialog"
             className="p-1.5 rounded-xl text-[#66716d] hover:text-[#172522] hover:bg-[#e7f4ed]"
           >

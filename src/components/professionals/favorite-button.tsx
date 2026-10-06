@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Heart } from 'lucide-react';
-import { getSavedFavorites, saveFavorites } from '@/lib/demo-storage';
+import { useFavorites, saveFavorites } from '@/lib/demo-storage';
 import { useToast } from '@/context/toast-context';
 
 export interface FavoriteButtonProps {
@@ -18,26 +18,18 @@ export function FavoriteButton({
   className = '',
   onToggle,
 }: FavoriteButtonProps) {
-  const [isFavorited, setIsFavorited] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const favorites = useFavorites();
+  const isFavorited = favorites.includes(professionalId);
   const { showToast } = useToast();
-
-  useEffect(() => {
-    setMounted(true);
-    const favs = getSavedFavorites();
-    setIsFavorited(favs.includes(professionalId));
-  }, [professionalId]);
 
   const handleToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const currentFavs = getSavedFavorites();
     let updated: string[];
 
-    if (currentFavs.includes(professionalId)) {
-      updated = currentFavs.filter((id) => id !== professionalId);
-      setIsFavorited(false);
+    if (isFavorited) {
+      updated = favorites.filter((id) => id !== professionalId);
       showToast({
         type: 'info',
         title: 'Removed from Favorites',
@@ -45,8 +37,7 @@ export function FavoriteButton({
       });
       onToggle?.(professionalId, false);
     } else {
-      updated = [...currentFavs, professionalId];
-      setIsFavorited(true);
+      updated = [...favorites, professionalId];
       showToast({
         type: 'success',
         title: 'Saved to Favorites',
@@ -76,7 +67,7 @@ export function FavoriteButton({
     >
       <Heart
         className={`w-4 h-4 transition-transform active:scale-125 ${
-          mounted && isFavorited ? 'fill-rose-500 text-rose-500' : 'text-current'
+          isFavorited ? 'fill-rose-500 text-rose-500' : 'text-current'
         }`}
       />
     </button>

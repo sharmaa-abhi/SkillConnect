@@ -1,51 +1,35 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Calendar,
-  Clock,
   Heart,
   CheckCircle2,
-  AlertCircle,
-  Search,
-  ArrowRight,
   ShieldCheck,
   Plus,
 } from 'lucide-react';
 import { Container } from '@/components/layout/container';
-import { DemoBooking } from '@/types/booking';
-import { ProfessionalProfile } from '@/types/professional';
-import { getDemoBookings, updateDemoBookingStatus, getSavedFavorites } from '@/lib/demo-storage';
+import { updateDemoBookingStatus, useBookings, useFavorites } from '@/lib/demo-storage';
 import { professionals } from '@/data/professionals';
 import { BookingListItem } from '@/components/dashboard/booking-list-item';
 import { ProfessionalGrid } from '@/components/professionals/professional-grid';
-import { StatCard } from '@/components/dashboard/stat-card';
 import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { useToast } from '@/context/toast-context';
 
 export default function CustomerDashboardPage() {
+  const router = useRouter();
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past' | 'favorites'>('upcoming');
 
-  const [bookings, setBookings] = useState<DemoBooking[]>([]);
-  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
-  const [mounted, setMounted] = useState(false);
-
-  // Load from local demo storage on mount
-  useEffect(() => {
-    setMounted(true);
-    setBookings(getDemoBookings());
-    setFavoriteIds(getSavedFavorites());
-  }, []);
+  const bookings = useBookings();
+  const favoriteIds = useFavorites();
 
   // Handle Cancellation
   const handleCancelBooking = (bookingId: string) => {
     updateDemoBookingStatus(bookingId, 'cancelled');
-    setBookings((prev) =>
-      prev.map((b) => (b.id === bookingId ? { ...b, status: 'cancelled' } : b))
-    );
 
     showToast({
       type: 'info',
@@ -100,19 +84,19 @@ export default function CustomerDashboardPage() {
             <div>
               <span className="text-xs text-[#66716d]">Active Bookings</span>
               <p className="text-2xl font-bold text-[#143d35] mt-0.5">
-                {mounted ? upcomingBookings.length : 1}
+                {upcomingBookings.length}
               </p>
             </div>
             <div>
               <span className="text-xs text-[#66716d]">Saved Pros</span>
               <p className="text-2xl font-bold text-[#172522] mt-0.5">
-                {mounted ? favoritedPros.length : 2}
+                {favoritedPros.length}
               </p>
             </div>
             <div>
               <span className="text-xs text-[#66716d]">Past Jobs</span>
               <p className="text-2xl font-bold text-[#172522] mt-0.5">
-                {mounted ? pastBookings.length : 1}
+                {pastBookings.length}
               </p>
             </div>
             <div>
@@ -136,7 +120,7 @@ export default function CustomerDashboardPage() {
                 : 'border-transparent text-[#66716d] hover:text-[#172522]'
             }`}
           >
-            Upcoming Appointments ({mounted ? upcomingBookings.length : 1})
+            Upcoming Appointments ({upcomingBookings.length})
           </button>
 
           <button
@@ -148,7 +132,7 @@ export default function CustomerDashboardPage() {
                 : 'border-transparent text-[#66716d] hover:text-[#172522]'
             }`}
           >
-            Past & History ({mounted ? pastBookings.length : 1})
+            Past & History ({pastBookings.length})
           </button>
 
           <button
@@ -160,7 +144,7 @@ export default function CustomerDashboardPage() {
                 : 'border-transparent text-[#66716d] hover:text-[#172522]'
             }`}
           >
-            Saved Pros ({mounted ? favoritedPros.length : 2})
+            Saved Pros ({favoritedPros.length})
           </button>
         </div>
 
@@ -180,7 +164,9 @@ export default function CustomerDashboardPage() {
                 title="No active appointments scheduled"
                 description="You have no upcoming service appointments. Need help with plumbing, electrical, or repairs?"
                 icon={<Calendar className="w-7 h-7" />}
-                onReset={() => (window.location.href = '/professionals')}
+                onReset={() => {
+                  window.location.href = '/professionals';
+                }}
                 actionText="Find & Book a Local Pro"
               />
             )}
@@ -212,7 +198,9 @@ export default function CustomerDashboardPage() {
                 title="No saved professionals yet"
                 description="Click the heart icon on any professional card to save them to your personal favorites list."
                 icon={<Heart className="w-7 h-7" />}
-                onReset={() => (window.location.href = '/professionals')}
+                onReset={() => {
+                  window.location.href = '/professionals';
+                }}
                 actionText="Explore Verified Professionals"
               />
             )}

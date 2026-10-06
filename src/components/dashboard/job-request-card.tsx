@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Calendar, Clock, MapPin, DollarSign, CheckCircle2, XCircle } from 'lucide-react';
+import { Calendar, Clock, MapPin, CheckCircle2, XCircle } from 'lucide-react';
 import { JobRequest } from '@/types/booking';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/context/toast-context';

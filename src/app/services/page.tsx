@@ -13,9 +13,6 @@ import {
   Search,
   ArrowRight,
   ShieldCheck,
-  CheckCircle2,
-  Clock,
-  RotateCcw,
 } from 'lucide-react';
 import { Container } from '@/components/layout/container';
 import { serviceCategories, subServices } from '@/data/services';

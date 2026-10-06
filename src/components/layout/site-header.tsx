@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Menu, Sparkles, Shield, Wrench, ArrowRight } from 'lucide-react';
+import { Menu, Wrench, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/layout/container';
 import { MobileNav } from '@/components/layout/mobile-nav';
