@@ -61,7 +61,7 @@ All product, design, architecture, security, legal, and operational specificatio
 | **Security & Privacy** | [`docs/security/`](file:///docs/security/) | [Security Baselines](file:///docs/security/SECURITY-REQUIREMENTS.md) • [Privacy & PII](file:///docs/security/PRIVACY-AND-DATA-HANDLING.md) • [RBAC Matrix](file:///docs/security/ROLE-PERMISSION-MATRIX.md) • [Threat Model](file:///docs/security/THREAT-MODEL-AND-RISK-ASSESSMENT.md) |
 | **Policies & Legal** | [`docs/policies/`](file:///docs/policies/) | [Policy Inventory](file:///docs/policies/POLICY-INVENTORY.md) • [Terms of Service](file:///docs/policies/TERMS-OF-SERVICE-REQUIREMENTS.md) • [Cancellations & Refunds](file:///docs/policies/CANCELLATION-REFUND-AND-DISPUTE-POLICY.md) |
 | **Operations & Testing** | [`docs/operations/`](file:///docs/operations/) | [Testing Strategy](file:///docs/operations/TESTING-STRATEGY.md) • [CI/CD Deployment](file:///docs/operations/CI-CD-AND-DEPLOYMENT-PLAN.md) • [SRE & Backups](file:///docs/operations/MONITORING-LOGGING-AND-BACKUPS.md) • [Admin Playbook](file:///docs/operations/ADMIN-AND-SUPPORT-PLAYBOOK.md) |
-| **Project Governance** | [`docs/project/`](file:///docs/project/) | [Implementation Plan](file:///docs/project/IMPLEMENTATION-PLAN.md) • [ADR Index](file:///docs/project/ARCHITECTURE-DECISION-RECORDS.md) • [Glossary](file:///docs/project/GLOSSARY.md) • [Audit Report](file:///docs/project/DOCUMENTATION-AUDIT.md) |
+| **Project Governance** | [`docs/project/`](file:///docs/project/) | [Implementation Plan](file:///docs/project/IMPLEMENTATION-PLAN.md) • [ADR Index](file:///docs/project/ARCHITECTURE-DECISION-RECORDS.md) • [Glossary](file:///docs/project/GLOSSARY.md) • [Documentation Changelog](file:///docs/project/DOCUMENTATION-CHANGELOG.md) |
 
 ---
 
