@@ -149,13 +149,10 @@ This document serves as the master navigation gateway and index for the **SkillC
 | [`ARCHITECTURE-DECISION-RECORDS.md`](file:///docs/project/ARCHITECTURE-DECISION-RECORDS.md) | ADR index (`ADR-001` through `ADR-006`) with architectural rationale | Architects | Approved |
 | [`GLOSSARY.md`](file:///docs/project/GLOSSARY.md) | Standard platform vocabulary and domain terminology | All Stakeholders | Approved |
 | [`REQUIREMENTS-TRACEABILITY.md`](file:///docs/project/REQUIREMENTS-TRACEABILITY.md) | Bidirectional RTM mapping requirements to stories, pages, tests | QA, Architects | Approved |
-| [`DOCUMENTATION-CHANGELOG.md`](file:///docs/project/DOCUMENTATION-CHANGELOG.md) | Version history, documentation additions, and updates | All Stakeholders | Active |
-| [`DOCUMENTATION-AUDIT.md`](file:///docs/project/DOCUMENTATION-AUDIT.md) | Completion audit report, coverage metrics, and sign-offs | Executive Review | Approved |
+| [`DOCUMENTATION-CHANGELOG.md`](file:///docs/project/DOCUMENTATION-CHANGELOG.md) | Version history, documentation additions, and merged audit compliance summary | All Stakeholders | Active |
 
 ---
 
 ## 4. Related Documentation
 * [README](file:///README.md)
-* [Documentation Audit](file:///docs/project/DOCUMENTATION-AUDIT.md)
 * [Requirements Traceability Matrix](file:///docs/project/REQUIREMENTS-TRACEABILITY.md)
-
