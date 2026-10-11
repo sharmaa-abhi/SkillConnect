@@ -13,11 +13,13 @@ import {
   Search,
   ArrowRight,
   ShieldCheck,
+  Calculator,
 } from 'lucide-react';
 import { Container } from '@/components/layout/container';
 import { serviceCategories, subServices } from '@/data/services';
 import { formatCurrency } from '@/lib/formatters';
 import { EmptyState } from '@/components/ui/empty-state';
+import { AICostEstimator } from '@/components/pricing/ai-cost-estimator';
 
 const iconMap: Record<string, React.ElementType> = {
   Wrench,
@@ -31,6 +33,7 @@ const iconMap: Record<string, React.ElementType> = {
 
 export default function ServicesPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showEstimator, setShowEstimator] = useState(false);
 
   const filteredCategories = useMemo(() => {
     if (!searchQuery.trim()) return serviceCategories;
@@ -44,41 +47,59 @@ export default function ServicesPage() {
   }, [searchQuery]);
 
   return (
-    <div className="py-10 sm:py-16 bg-[#f8f8f4]">
+    <div className="py-10 sm:py-16 bg-[#F7F8FA]">
       <Container>
         {/* Header Banner */}
         <div className="text-center max-w-2xl mx-auto mb-10">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#237a63]">
-            Trade Directory
+          <span className="text-xs font-bold uppercase tracking-wider text-[#0F9D91]">
+            Local Trade Directory
           </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#172522] mt-1.5 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-[#173B67] mt-1.5 tracking-tight">
             Browse Local Services
           </h1>
-          <p className="text-sm sm:text-base text-[#66716d] mt-2 leading-relaxed">
-            Explore certified trade specialties, typical task timelines, and transparent diagnostic starting fees.
+          <p className="text-sm sm:text-base text-[#667085] mt-2 leading-relaxed">
+            Explore certified trade specialties, benchmark task timelines, and transparent diagnostic starting fees.
           </p>
 
-          {/* Quick Search */}
-          <div className="mt-6 relative max-w-md mx-auto">
-            <Search className="w-5 h-5 text-[#66716d] absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search services (e.g. pipe, panel, cleaning)"
-              className="w-full pl-10 pr-4 py-2.5 bg-white text-sm rounded-xl border border-[#c8d3cc] focus:outline-none focus:ring-2 focus:ring-[#237a63] transition-all shadow-2xs"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="text-xs text-[#66716d] hover:text-[#172522] absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-gray-100"
-              >
-                Clear
-              </button>
-            )}
+          {/* Quick Search & AI Estimator Toggle */}
+          <div className="mt-6 flex flex-col sm:flex-row items-center gap-3 justify-center max-w-lg mx-auto">
+            <div className="relative flex-1 w-full">
+              <Search className="w-4 h-4 text-[#667085] absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search services (e.g. pipe, panel, cleaning)"
+                className="w-full pl-10 pr-4 py-2.5 bg-white text-xs sm:text-sm rounded-xl border border-[#D0D5DD] focus:outline-none focus:ring-2 focus:ring-[#173B67] transition-all shadow-2xs"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="text-xs text-[#667085] hover:text-[#263445] absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-gray-100"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowEstimator(!showEstimator)}
+              className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#E6F7F5] hover:bg-[#D3EFEA] text-[#0F9D91] text-xs font-bold transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap"
+            >
+              <Calculator className="w-4 h-4" />
+              <span>{showEstimator ? 'Hide Estimator' : 'AI Cost Estimator'}</span>
+            </button>
           </div>
         </div>
+
+        {/* Collapsible Estimator Section */}
+        {showEstimator && (
+          <div className="mb-12">
+            <AICostEstimator />
+          </div>
+        )}
 
         {/* Results Grid */}
         {filteredCategories.length > 0 ? (
@@ -89,37 +110,37 @@ export default function ServicesPage() {
               return (
                 <div
                   key={cat.id}
-                  className="flex flex-col justify-between p-6 sm:p-7 rounded-2xl bg-white border border-[#e3e8e3] hover:border-[#c8d3cc] shadow-xs hover:shadow-md transition-all"
+                  className="flex flex-col justify-between p-6 sm:p-7 rounded-3xl bg-white border border-[#E4E7EC] hover:border-[#D0D5DD] shadow-2xs hover:shadow-md transition-all"
                 >
                   <div>
                     {/* Header */}
                     <div className="flex items-center justify-between gap-3 mb-4">
-                      <div className="w-12 h-12 rounded-xl bg-[#e7f4ed] text-[#237a63] flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-2xl bg-[#E6F7F5] text-[#0F9D91] flex items-center justify-center shadow-2xs">
                         <Icon className="w-6 h-6" />
                       </div>
-                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#f8f8f4] text-[#66716d] border border-[#e3e8e3]">
+                      <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#EBF1F8] text-[#173B67]">
                         {cat.professionalCount} Active Pros
                       </span>
                     </div>
 
-                    <h2 className="text-xl font-bold text-[#172522]">
+                    <h2 className="text-xl font-bold text-[#173B67]">
                       {cat.name}
                     </h2>
 
-                    <p className="text-xs sm:text-sm text-[#66716d] mt-2 leading-relaxed">
+                    <p className="text-xs sm:text-sm text-[#667085] mt-2 leading-relaxed">
                       {cat.longDescription}
                     </p>
 
                     {/* Popular Tasks */}
                     <div className="mt-5">
-                      <span className="text-[11px] font-bold text-[#172522] uppercase tracking-wider block mb-2">
+                      <span className="text-[11px] font-bold text-[#263445] uppercase tracking-wider block mb-2">
                         Common Tasks Handled:
                       </span>
                       <div className="flex flex-wrap gap-1.5">
                         {cat.popularTasks.map((task) => (
                           <span
                             key={task}
-                            className="text-xs px-2.5 py-1 rounded-lg bg-[#f8f8f4] text-[#172522] border border-[#e3e8e3]"
+                            className="text-xs px-2.5 py-1 rounded-lg bg-[#F7F8FA] text-[#263445] border border-[#E4E7EC]"
                           >
                             {task}
                           </span>
@@ -129,12 +150,12 @@ export default function ServicesPage() {
                   </div>
 
                   {/* Card Footer: Pricing & Link */}
-                  <div className="mt-8 pt-4 border-t border-[#e3e8e3] flex items-center justify-between">
+                  <div className="mt-8 pt-4 border-t border-[#E4E7EC] flex items-center justify-between">
                     <div>
-                      <span className="text-[11px] text-[#66716d] block">Starting from</span>
-                      <span className="font-bold text-base text-[#143d35]">
+                      <span className="text-[11px] text-[#667085] block font-semibold">Starting from</span>
+                      <span className="font-extrabold text-base text-[#173B67]">
                         {formatCurrency(cat.startingPrice)}
-                        <span className="text-xs font-normal text-[#66716d]">
+                        <span className="text-xs font-normal text-[#667085]">
                           /{cat.priceUnit === 'diagnostic' ? 'diagnostic' : 'hr'}
                         </span>
                       </span>
@@ -142,7 +163,7 @@ export default function ServicesPage() {
 
                     <Link
                       href={`/professionals?category=${cat.slug}`}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#237a63] hover:bg-[#1b6250] text-white text-xs font-semibold shadow-xs transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#173B67] hover:bg-[#0F2A4A] text-white text-xs font-bold shadow-2xs transition-colors"
                     >
                       <span>Find {cat.name} Pros</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -163,34 +184,34 @@ export default function ServicesPage() {
         )}
 
         {/* Sub-Services Diagnostic Pricing Guide */}
-        <div className="mt-16 p-8 rounded-3xl bg-white border border-[#e3e8e3]">
+        <div className="mt-16 p-8 rounded-3xl bg-white border border-[#E4E7EC] shadow-2xs">
           <div className="flex items-center gap-3 mb-2">
-            <ShieldCheck className="w-6 h-6 text-[#237a63]" />
-            <h2 className="text-xl font-bold text-[#172522]">
+            <ShieldCheck className="w-6 h-6 text-[#0F9D91]" />
+            <h2 className="text-xl font-bold text-[#173B67]">
               Standard Diagnostic Pricing & Scope Benchmark
             </h2>
           </div>
-          <p className="text-xs sm:text-sm text-[#66716d] mb-6 max-w-2xl">
+          <p className="text-xs sm:text-sm text-[#667085] mb-6 max-w-2xl">
             We require standard benchmark diagnostic estimates so you have full clarity on costs before work begins on your home.
           </p>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm">
               <thead>
-                <tr className="border-b border-[#e3e8e3] text-[#66716d] font-semibold uppercase tracking-wider text-[11px]">
+                <tr className="border-b border-[#E4E7EC] text-[#667085] font-bold uppercase tracking-wider text-[11px]">
                   <th className="pb-3 pr-4">Typical Task</th>
                   <th className="pb-3 px-4">Standard Scope Description</th>
                   <th className="pb-3 px-4">Estimated Labor</th>
                   <th className="pb-3 pl-4">Typical Cost Range</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#e3e8e3] text-[#172522]">
+              <tbody className="divide-y divide-[#E4E7EC] text-[#263445]">
                 {subServices.map((sub) => (
-                  <tr key={sub.id} className="hover:bg-[#f8f8f4]/60">
-                    <td className="py-3.5 pr-4 font-semibold">{sub.name}</td>
-                    <td className="py-3.5 px-4 text-[#66716d] text-xs">{sub.description}</td>
-                    <td className="py-3.5 px-4 text-[#66716d]">{sub.estimatedLaborHours}</td>
-                    <td className="py-3.5 pl-4 font-bold text-[#143d35]">{sub.typicalCostRange}</td>
+                  <tr key={sub.id} className="hover:bg-[#F7F8FA]/60">
+                    <td className="py-3.5 pr-4 font-bold text-[#173B67]">{sub.name}</td>
+                    <td className="py-3.5 px-4 text-[#667085] text-xs">{sub.description}</td>
+                    <td className="py-3.5 px-4 text-[#667085]">{sub.estimatedLaborHours}</td>
+                    <td className="py-3.5 pl-4 font-bold text-[#263445]">{sub.typicalCostRange}</td>
                   </tr>
                 ))}
               </tbody>

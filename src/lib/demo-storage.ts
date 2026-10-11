@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react';
 import { DemoBooking, JobRequest } from '@/types/booking';
 import { UserProfile } from '@/types/auth';
-import { VerificationRecord, Review } from '@/types/professional';
+import { VerificationRecord, Review, Professional } from '@/types/professional';
 import { initialDemoBookings, initialWorkerRequests } from '@/data/bookings';
 import { professionals as staticProfessionals } from '@/data/professionals';
 
@@ -270,7 +270,7 @@ export function addBookingReview(
 
     // Also inject review into the professional's profile in custom storage
     const allPros = getCustomProfessionals();
-    const pro = allPros.find((p) => p.id === booking.professionalId);
+    const pro = allPros.find((p: Professional) => p.id === booking.professionalId);
     if (pro) {
       const newReview: Review = {
         id: `rev-${Date.now()}`,
@@ -408,11 +408,11 @@ export function getCustomProfessionals() {
   }
 }
 
-export function saveCustomProfessional(pro: (typeof staticProfessionals)[0]): void {
+export function saveCustomProfessional(pro: Professional): void {
   if (typeof window === 'undefined') return;
   try {
     const current = getCustomProfessionals();
-    const updated = current.map((p) => (p.id === pro.id ? pro : p));
+    const updated = current.map((p: Professional) => (p.id === pro.id ? pro : p));
     localStorage.setItem(PROS_STORAGE_KEY, JSON.stringify(updated));
     notifyStorageChange();
   } catch (err) {
@@ -423,9 +423,9 @@ export function saveCustomProfessional(pro: (typeof staticProfessionals)[0]): vo
 export function replyToProReview(proId: string, reviewId: string, response: string): void {
   if (typeof window === 'undefined') return;
   const current = getCustomProfessionals();
-  const pro = current.find((p) => p.id === proId);
+  const pro = current.find((p: Professional) => p.id === proId);
   if (!pro) return;
-  const updatedReviews = pro.reviews.map((r) =>
+  const updatedReviews = pro.reviews.map((r: Review) =>
     r.id === reviewId ? { ...r, proResponse: response } : r
   );
   saveCustomProfessional({ ...pro, reviews: updatedReviews });
@@ -483,4 +483,19 @@ export function useActiveUser(): UserProfile {
 
 export function useProfessionalsList() {
   return useSyncExternalStore(subscribeStorage, getCustomProfessionals, () => staticProfessionals);
+}
+
+export function resetAllDemoData(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem(FAVORITES_STORAGE_KEY);
+    localStorage.removeItem(BOOKINGS_STORAGE_KEY);
+    localStorage.removeItem(REQUESTS_STORAGE_KEY);
+    localStorage.removeItem(VERIFICATIONS_STORAGE_KEY);
+    localStorage.removeItem(PROS_STORAGE_KEY);
+    localStorage.removeItem(USER_STORAGE_KEY);
+    notifyStorageChange();
+  } catch (err) {
+    console.warn('Reset demo data failed:', err);
+  }
 }

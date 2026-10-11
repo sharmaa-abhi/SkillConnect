@@ -74,3 +74,5 @@ export interface ProfessionalProfile {
   reviews: Review[];
   featured?: boolean;
 }
+
+export type Professional = ProfessionalProfile;

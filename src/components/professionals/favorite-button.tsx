@@ -62,7 +62,7 @@ export function FavoriteButton({
       className={`p-2 rounded-full transition-all duration-150 backdrop-blur-sm ${
         isFavorited
           ? 'bg-rose-50 text-rose-500 hover:bg-rose-100'
-          : 'bg-white/80 text-[#66716d] hover:text-rose-500 hover:bg-white'
+          : 'bg-white/80 text-[#667085] hover:text-rose-500 hover:bg-white'
       } ${className}`}
     >
       <Heart

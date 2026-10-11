@@ -4,6 +4,7 @@ import { SiteHeader } from '@/components/layout/site-header';
 import { SiteFooter } from '@/components/layout/site-footer';
 import { ToastProvider } from '@/context/toast-context';
 import { AuthProvider } from '@/context/auth-context';
+import { DemoExperienceWidget } from '@/components/demo/demo-experience-widget';
 
 export const metadata: Metadata = {
   title: 'SkillConnect — Trusted Local Service Professionals',
@@ -33,6 +34,7 @@ export default function RootLayout({
             <SiteHeader />
             <main className="flex-1">{children}</main>
             <SiteFooter />
+            <DemoExperienceWidget />
           </ToastProvider>
         </AuthProvider>
       </body>

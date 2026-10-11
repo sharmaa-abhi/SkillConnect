@@ -67,28 +67,28 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 transition={{ duration: 0.2 }}
                 className={`pointer-events-auto flex items-start gap-3 p-4 rounded-xl border shadow-lg backdrop-blur-sm ${
                   isSuccess
-                    ? 'bg-white border-[#16794b]/30 text-[#172522]'
+                    ? 'bg-white border-[#15803D]/30 text-[#263445]'
                     : isError
-                    ? 'bg-white border-[#b42318]/30 text-[#172522]'
-                    : 'bg-white border-[#237a63]/30 text-[#172522]'
+                    ? 'bg-white border-[#B42318]/30 text-[#263445]'
+                    : 'bg-white border-[#0F9D91]/30 text-[#263445]'
                 }`}
               >
                 <div className="flex-shrink-0 mt-0.5">
-                  {isSuccess && <CheckCircle2 className="w-5 h-5 text-[#16794b]" />}
-                  {isError && <AlertCircle className="w-5 h-5 text-[#b42318]" />}
-                  {!isSuccess && !isError && <Info className="w-5 h-5 text-[#237a63]" />}
+                  {isSuccess && <CheckCircle2 className="w-5 h-5 text-[#15803D]" />}
+                  {isError && <AlertCircle className="w-5 h-5 text-[#B42318]" />}
+                  {!isSuccess && !isError && <Info className="w-5 h-5 text-[#0F9D91]" />}
                 </div>
 
                 <div className="flex-1 text-sm">
-                  <p className="font-semibold text-[#172522]">{toast.title}</p>
-                  {toast.message && <p className="text-[#66716d] text-xs mt-0.5">{toast.message}</p>}
+                  <p className="font-semibold text-[#263445]">{toast.title}</p>
+                  {toast.message && <p className="text-[#667085] text-xs mt-0.5">{toast.message}</p>}
                 </div>
 
                 <button
                   type="button"
                   onClick={() => removeToast(toast.id)}
                   aria-label="Dismiss notification"
-                  className="text-[#66716d] hover:text-[#172522] transition-colors p-1 -mr-1 -mt-1 rounded-lg hover:bg-[#f8f8f4]"
+                  className="text-[#667085] hover:text-[#263445] transition-colors p-1 -mr-1 -mt-1 rounded-lg hover:bg-[#F7F8FA]"
                 >
                   <X className="w-4 h-4" />
                 </button>

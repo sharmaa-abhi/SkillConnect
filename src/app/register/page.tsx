@@ -10,12 +10,14 @@ import { SelectField } from '@/components/forms/select-field';
 import { Button } from '@/components/ui/button';
 import { serviceCategories } from '@/data/services';
 import { useToast } from '@/context/toast-context';
+import { useAuth } from '@/context/auth-context';
 
 function RegisterFormContent() {
   const searchParams = useSearchParams();
   const initialRole = searchParams.get('role') === 'worker' ? 'worker' : 'customer';
 
   const { showToast } = useToast();
+  const { login } = useAuth();
   const [role, setRole] = useState<'customer' | 'worker'>(initialRole);
 
   const [name, setName] = useState('');
@@ -56,35 +58,35 @@ function RegisterFormContent() {
     setErrors({});
     setIsLoading(true);
 
-    // Simulate demo registration
     setTimeout(() => {
       setIsLoading(false);
       setIsSuccess(true);
-      // Wipe password from memory immediately
+      login(email, role);
+
       setPassword('');
       setConfirmPassword('');
 
       showToast({
         type: 'success',
-        title: 'Demo Account Created',
-        message: `Welcome to SkillConnect, ${name}! Your demo account is ready.`,
+        title: 'Account Created',
+        message: `Welcome to SkillConnect, ${name}! Your profile is ready.`,
       });
-    }, 700);
+    }, 600);
   };
 
   return (
-    <div className="py-12 sm:py-20 bg-[#f8f8f4]">
+    <div className="py-12 sm:py-20 bg-[#F7F8FA]">
       <Container size="narrow">
-        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#e3e8e3] shadow-md">
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E4E7EC] shadow-md">
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="w-12 h-12 rounded-2xl bg-[#143d35] text-white flex items-center justify-center mx-auto mb-3">
-              <Wrench className="w-6 h-6 text-[#e7f4ed]" />
+            <div className="w-12 h-12 rounded-2xl bg-[#173B67] text-white flex items-center justify-center mx-auto mb-3 shadow-xs">
+              <Wrench className="w-6 h-6 text-[#0F9D91]" />
             </div>
-            <h1 className="text-2xl font-extrabold text-[#172522]">
+            <h1 className="text-2xl font-black text-[#173B67]">
               Join SkillConnect
             </h1>
-            <p className="text-xs text-[#66716d] mt-1">
+            <p className="text-xs text-[#667085] mt-1">
               Select your role to get started with verified local services
             </p>
           </div>
@@ -92,19 +94,19 @@ function RegisterFormContent() {
           {/* Success State */}
           {isSuccess ? (
             <div className="text-center py-6">
-              <div className="w-16 h-16 rounded-full bg-[#e7f4ed] text-[#237a63] flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full bg-[#E6F7F5] text-[#0F9D91] flex items-center justify-center mx-auto mb-4">
                 <CheckCircle2 className="w-10 h-10" />
               </div>
-              <h2 className="text-xl font-bold text-[#172522] mb-2">
-                Registration Complete (Demo)
+              <h2 className="text-xl font-bold text-[#173B67] mb-2">
+                Registration Complete
               </h2>
-              <p className="text-xs text-[#66716d] mb-6 leading-relaxed">
-                Your demo profile has been generated. Explore your personalized dashboard to manage bookings or pro dispatch.
+              <p className="text-xs text-[#667085] mb-6 leading-relaxed">
+                Your profile has been created and you are signed in. Explore your personalized dashboard to manage appointments or service dispatch.
               </p>
               <div className="flex flex-col gap-3">
                 <Link href={role === 'worker' ? '/worker/dashboard' : '/customer/dashboard'}>
                   <Button variant="primary" size="lg" className="w-full justify-center">
-                    Enter {role === 'worker' ? 'Worker Dashboard' : 'Customer Dashboard'}
+                    Enter {role === 'worker' ? 'Pro Worker Portal' : 'Customer Dashboard'}
                   </Button>
                 </Link>
                 <Link href="/">
@@ -117,14 +119,14 @@ function RegisterFormContent() {
           ) : (
             <>
               {/* Role Switcher Tabs */}
-              <div className="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-[#f8f8f4] border border-[#e3e8e3] mb-6">
+              <div className="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-[#F7F8FA] border border-[#E4E7EC] mb-6">
                 <button
                   type="button"
                   onClick={() => setRole('customer')}
                   className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
                     role === 'customer'
-                      ? 'bg-white text-[#143d35] shadow-xs'
-                      : 'text-[#66716d] hover:text-[#172522]'
+                      ? 'bg-white text-[#173B67] shadow-xs'
+                      : 'text-[#667085] hover:text-[#263445]'
                   }`}
                 >
                   <User className="w-3.5 h-3.5" />
@@ -136,8 +138,8 @@ function RegisterFormContent() {
                   onClick={() => setRole('worker')}
                   className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
                     role === 'worker'
-                      ? 'bg-[#143d35] text-white shadow-xs'
-                      : 'text-[#66716d] hover:text-[#172522]'
+                      ? 'bg-[#173B67] text-white shadow-xs'
+                      : 'text-[#667085] hover:text-[#263445]'
                   }`}
                 >
                   <Briefcase className="w-3.5 h-3.5" />
@@ -224,21 +226,31 @@ function RegisterFormContent() {
                   isLoading={isLoading}
                   className="w-full justify-center mt-3 font-bold"
                 >
-                  Create {role === 'worker' ? 'Professional' : 'Customer'} Account (Demo)
+                  Create {role === 'worker' ? 'Professional' : 'Customer'} Account
                 </Button>
               </form>
 
-              {/* Notice */}
-              <div className="mt-6 p-3 rounded-xl bg-[#f8f8f4] border border-[#e3e8e3] text-center text-[11px] text-[#66716d]">
-                Notice: SkillConnect is in prototype demonstration mode. Passwords are never stored.
-              </div>
+              {/* Sign In Link & Demo Prompt */}
+              <div className="mt-6 text-center text-xs text-[#667085] space-y-3">
+                <div>
+                  Already have an account?{' '}
+                  <Link href="/login" className="font-bold text-[#0F9D91] hover:underline">
+                    Sign in
+                  </Link>
+                </div>
 
-              {/* Sign In Link */}
-              <div className="mt-6 text-center text-xs text-[#66716d]">
-                Already have an account?{' '}
-                <Link href="/login" className="font-semibold text-[#237a63] hover:underline">
-                  Sign in
-                </Link>
+                <div className="p-3 rounded-xl bg-[#EBF1F8] border border-[#173B67]/15 text-[#173B67] flex items-center justify-between text-left">
+                  <div>
+                    <span className="font-bold block">Evaluating the platform?</span>
+                    <span className="text-[11px] text-[#667085]">Skip signup and use pre-configured demo personas.</span>
+                  </div>
+                  <Link
+                    href="/login"
+                    className="px-2.5 py-1.5 rounded-lg bg-[#173B67] text-white font-bold text-[11px] hover:bg-[#0F2A4A] whitespace-nowrap"
+                  >
+                    Demo Logins →
+                  </Link>
+                </div>
               </div>
             </>
           )}
@@ -252,7 +264,7 @@ export default function RegisterPage() {
   return (
     <Suspense
       fallback={
-        <div className="py-20 text-center text-sm text-[#66716d]">
+        <div className="py-20 text-center text-sm text-[#667085]">
           Loading registration...
         </div>
       }

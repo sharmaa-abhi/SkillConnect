@@ -37,7 +37,7 @@ import { VerificationStatusBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/context/toast-context';
 import { formatCurrency } from '@/lib/formatters';
-import { ServicePriceItem, WorkingHour } from '@/types/professional';
+import { ServicePriceItem, WorkingHour, Professional, Review } from '@/types/professional';
 
 export default function WorkerDashboardPage() {
   const { showToast } = useToast();
@@ -47,7 +47,7 @@ export default function WorkerDashboardPage() {
   const verificationRecords = useVerificationRecords();
 
   // Find worker profile (defaulting to Marcus Vance)
-  const workerPro = allPros.find((p) => p.id === 'pro-marcus-vance') || allPros[0];
+  const workerPro = allPros.find((p: Professional) => p.id === 'pro-marcus-vance') || allPros[0];
 
   const [activeTab, setActiveTab] = useState<'requests' | 'services' | 'hours' | 'verification' | 'reviews' | 'payouts'>('requests');
   const [isAvailableToday, setIsAvailableToday] = useState(workerPro.availableToday);
@@ -741,7 +741,7 @@ export default function WorkerDashboardPage() {
             </div>
 
             <div className="space-y-5">
-              {workerPro.reviews.map((rev) => (
+              {workerPro.reviews.map((rev: Review) => (
                 <div
                   key={rev.id}
                   className="p-5 rounded-2xl bg-[#F7F8FA] border border-[#E4E7EC] space-y-3 text-xs sm:text-sm"

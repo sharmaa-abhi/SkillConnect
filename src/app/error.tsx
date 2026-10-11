@@ -18,17 +18,17 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="py-20 bg-[#f8f8f4]">
+    <div className="min-h-[60vh] py-20 bg-[#F7F8FA] flex items-center justify-center">
       <Container size="narrow" className="text-center">
-        <div className="w-16 h-16 rounded-full bg-red-50 text-[#b42318] flex items-center justify-center mx-auto mb-4 border border-red-200">
+        <div className="w-16 h-16 rounded-full bg-red-50 text-[#B42318] flex items-center justify-center mx-auto mb-4 border border-[#B42318]/20">
           <AlertCircle className="w-8 h-8" />
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#172522]">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#263445]">
           Something unexpected happened
         </h1>
 
-        <p className="text-xs sm:text-sm text-[#66716d] mt-2 mb-6 leading-relaxed">
+        <p className="text-sm text-[#667085] mt-2 mb-6 max-w-md mx-auto leading-relaxed">
           An error occurred while loading this view. You can reload the page or return to the main directory.
         </p>
 

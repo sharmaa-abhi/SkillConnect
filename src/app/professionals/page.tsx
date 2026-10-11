@@ -2,12 +2,12 @@
 
 import React, { useState, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Search, SlidersHorizontal, ArrowUpDown, X } from 'lucide-react';
+import { Search, SlidersHorizontal, ArrowUpDown, X, ShieldCheck } from 'lucide-react';
 import { Container } from '@/components/layout/container';
 import { FilterState } from '@/types';
-import { professionals } from '@/data/professionals';
 import { serviceCategories } from '@/data/services';
 import { filterAndSortProfessionals } from '@/lib/search';
+import { useProfessionalsList } from '@/lib/demo-storage';
 import { ProfessionalGrid } from '@/components/professionals/professional-grid';
 import { FilterSidebar } from '@/components/professionals/filter-sidebar';
 import { FilterDrawerMobile } from '@/components/professionals/filter-drawer-mobile';
@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 function ProfessionalsDirectoryContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const allPros = useProfessionalsList();
 
   const [localFilters, setLocalFilters] = useState<Partial<FilterState>>({});
 
@@ -31,6 +32,7 @@ function ProfessionalsDirectoryContent() {
       minRating: localFilters.minRating !== undefined ? localFilters.minRating : null,
       availableToday: localFilters.availableToday !== undefined ? localFilters.availableToday : false,
       priceTier: localFilters.priceTier !== undefined ? localFilters.priceTier : 'all',
+      verifiedOnly: localFilters.verifiedOnly !== undefined ? localFilters.verifiedOnly : false,
       sortBy: localFilters.sortBy !== undefined ? localFilters.sortBy : 'recommended',
     };
   }, [searchParams, localFilters]);
@@ -49,6 +51,7 @@ function ProfessionalsDirectoryContent() {
       minRating: null,
       availableToday: false,
       priceTier: 'all',
+      verifiedOnly: false,
       sortBy: 'recommended',
     });
     router.replace('/professionals');
@@ -56,14 +59,15 @@ function ProfessionalsDirectoryContent() {
 
   // Filter & sort
   const filteredPros = useMemo(() => {
-    return filterAndSortProfessionals(professionals, filters);
-  }, [filters]);
+    return filterAndSortProfessionals(allPros, filters);
+  }, [allPros, filters]);
 
   // Active filters count
   const activeFiltersCount =
     (filters.category !== 'all' ? 1 : 0) +
     (filters.minRating !== null ? 1 : 0) +
     (filters.availableToday ? 1 : 0) +
+    (filters.verifiedOnly ? 1 : 0) +
     (filters.priceTier !== 'all' ? 1 : 0) +
     (filters.query ? 1 : 0);
 
@@ -73,38 +77,39 @@ function ProfessionalsDirectoryContent() {
       : null;
 
   return (
-    <div className="py-8 sm:py-12 bg-[#f8f8f4]">
+    <div className="py-8 sm:py-12 bg-[#F7F8FA]">
       <Container>
         {/* Top Header Row */}
         <div className="mb-8">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#237a63]">
-            Verified Marketplace
-          </span>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#172522] mt-1 tracking-tight">
+          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#0F9D91]">
+            <ShieldCheck className="w-4 h-4" />
+            <span>Verified Marketplace Directory</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#173B67] mt-1 tracking-tight">
             Find Local Service Professionals
           </h1>
-          <p className="text-xs sm:text-sm text-[#66716d] mt-1">
-            Compare licensed technicians, check diagnostic inspection rates, and book with escrow protection.
+          <p className="text-xs sm:text-sm text-[#667085] mt-1 max-w-2xl">
+            Compare licensed technicians, evaluate upfront diagnostic inspection fees, and book with escrow milestone protection.
           </p>
         </div>
 
         {/* Search & Sort Controls Bar */}
-        <div className="bg-white p-4 rounded-2xl border border-[#e3e8e3] shadow-xs mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="bg-white p-4 rounded-3xl border border-[#E4E7EC] shadow-2xs mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Search Input */}
           <div className="relative w-full sm:max-w-md">
-            <Search className="w-4 h-4 text-[#66716d] absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#667085] absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={filters.query}
               onChange={(e) => handleFilterChange({ query: e.target.value })}
               placeholder="Search by name, skill, neighborhood (e.g. 94107, Mission)..."
-              className="w-full pl-10 pr-4 py-2 bg-[#f8f8f4] text-xs sm:text-sm rounded-xl border border-[#e3e8e3] focus:outline-none focus:ring-2 focus:ring-[#237a63] transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#F7F8FA] text-xs sm:text-sm rounded-xl border border-[#E4E7EC] focus:outline-none focus:ring-2 focus:ring-[#173B67] text-[#263445] transition-all"
             />
             {filters.query && (
               <button
                 type="button"
                 onClick={() => handleFilterChange({ query: '' })}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#66716d] hover:text-[#172522]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#667085] hover:text-[#263445]"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -123,7 +128,7 @@ function ProfessionalsDirectoryContent() {
             >
               <span>Filters</span>
               {activeFiltersCount > 0 && (
-                <span className="w-5 h-5 rounded-full bg-[#237a63] text-white font-bold text-[10px] flex items-center justify-center -mr-1">
+                <span className="w-5 h-5 rounded-full bg-[#173B67] text-white font-bold text-[10px] flex items-center justify-center -mr-1">
                   {activeFiltersCount}
                 </span>
               )}
@@ -131,7 +136,7 @@ function ProfessionalsDirectoryContent() {
 
             {/* Sort Dropdown */}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-[#66716d] whitespace-nowrap hidden sm:inline">
+              <span className="text-xs text-[#667085] whitespace-nowrap hidden sm:inline font-semibold">
                 Sort by:
               </span>
               <div className="relative">
@@ -142,13 +147,13 @@ function ProfessionalsDirectoryContent() {
                       sortBy: e.target.value as FilterState['sortBy'],
                     })
                   }
-                  className="bg-[#f8f8f4] border border-[#e3e8e3] text-xs font-semibold text-[#172522] rounded-xl px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-[#237a63] cursor-pointer"
+                  className="bg-[#F7F8FA] border border-[#E4E7EC] text-xs font-bold text-[#173B67] rounded-xl px-3 py-2.5 pr-8 focus:outline-none focus:ring-2 focus:ring-[#173B67] cursor-pointer"
                 >
                   <option value="recommended">Recommended (Top Ranked)</option>
                   <option value="rating">Highest Rated</option>
                   <option value="price-asc">Price: Low to High</option>
                 </select>
-                <ArrowUpDown className="w-3.5 h-3.5 text-[#66716d] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <ArrowUpDown className="w-3.5 h-3.5 text-[#667085] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
             </div>
           </div>
@@ -157,15 +162,15 @@ function ProfessionalsDirectoryContent() {
         {/* Active Filter Chips Row */}
         {activeFiltersCount > 0 && (
           <div className="flex flex-wrap items-center gap-2 mb-6 text-xs">
-            <span className="text-[#66716d] font-medium">Active Filters:</span>
+            <span className="text-[#667085] font-semibold">Active Filters:</span>
 
             {filters.query && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#e3e8e3] text-[#172522]">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E4E7EC] text-[#263445]">
                 <span>Query: &ldquo;{filters.query}&rdquo;</span>
                 <button
                   type="button"
                   onClick={() => handleFilterChange({ query: '' })}
-                  className="text-[#66716d] hover:text-[#172522]"
+                  className="text-[#667085] hover:text-[#263445]"
                   aria-label="Remove query filter"
                 >
                   <X className="w-3 h-3" />
@@ -174,12 +179,12 @@ function ProfessionalsDirectoryContent() {
             )}
 
             {filters.category !== 'all' && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e7f4ed] text-[#143d35] font-semibold border border-[#237a63]/20">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EBF1F8] text-[#173B67] font-bold border border-[#173B67]/20">
                 <span>{selectedCategoryName || filters.category}</span>
                 <button
                   type="button"
                   onClick={() => handleFilterChange({ category: 'all' })}
-                  className="text-[#143d35] hover:text-[#172522]"
+                  className="text-[#173B67] hover:text-black"
                   aria-label="Remove category filter"
                 >
                   <X className="w-3 h-3" />
@@ -187,13 +192,27 @@ function ProfessionalsDirectoryContent() {
               </span>
             )}
 
+            {filters.verifiedOnly && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EBF1F8] text-[#173B67] font-bold border border-[#173B67]/20">
+                <span>Verified License Only</span>
+                <button
+                  type="button"
+                  onClick={() => handleFilterChange({ verifiedOnly: false })}
+                  className="text-[#173B67] hover:text-black"
+                  aria-label="Remove verified filter"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+
             {filters.minRating && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#e3e8e3] text-[#172522]">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E4E7EC] text-[#263445]">
                 <span>Rating: {filters.minRating}+ Stars</span>
                 <button
                   type="button"
                   onClick={() => handleFilterChange({ minRating: null })}
-                  className="text-[#66716d] hover:text-[#172522]"
+                  className="text-[#667085] hover:text-[#263445]"
                   aria-label="Remove rating filter"
                 >
                   <X className="w-3 h-3" />
@@ -202,12 +221,12 @@ function ProfessionalsDirectoryContent() {
             )}
 
             {filters.availableToday && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-[#15803D] border border-emerald-200 font-bold">
                 <span>Available Today</span>
                 <button
                   type="button"
                   onClick={() => handleFilterChange({ availableToday: false })}
-                  className="text-emerald-800 hover:text-black"
+                  className="text-[#15803D] hover:text-black"
                   aria-label="Remove available today filter"
                 >
                   <X className="w-3 h-3" />
@@ -216,12 +235,12 @@ function ProfessionalsDirectoryContent() {
             )}
 
             {filters.priceTier !== 'all' && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#e3e8e3] text-[#172522]">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E4E7EC] text-[#263445]">
                 <span>Price: {filters.priceTier}</span>
                 <button
                   type="button"
                   onClick={() => handleFilterChange({ priceTier: 'all' })}
-                  className="text-[#66716d] hover:text-[#172522]"
+                  className="text-[#667085] hover:text-[#263445]"
                   aria-label="Remove price filter"
                 >
                   <X className="w-3 h-3" />
@@ -232,7 +251,7 @@ function ProfessionalsDirectoryContent() {
             <button
               type="button"
               onClick={handleResetFilters}
-              className="text-[#237a63] hover:text-[#143d35] font-semibold underline text-xs ml-1"
+              className="text-[#0F9D91] hover:text-[#0B7F75] font-bold underline text-xs ml-1"
             >
               Clear All
             </button>
@@ -241,7 +260,7 @@ function ProfessionalsDirectoryContent() {
 
         {/* Main 2-Column Content Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Desktop Left Sidebar (w-72 / 4 cols) */}
+          {/* Desktop Left Sidebar (w-72 / 3 cols) */}
           <div className="hidden lg:block lg:col-span-3 sticky top-28">
             <FilterSidebar
               filters={filters}
@@ -253,13 +272,13 @@ function ProfessionalsDirectoryContent() {
           {/* Right Results Grid (9 cols) */}
           <div className="lg:col-span-9 flex flex-col gap-6">
             {/* Results count strip */}
-            <div className="flex items-center justify-between text-xs text-[#66716d]">
+            <div className="flex items-center justify-between text-xs text-[#667085]">
               <p>
-                Showing <strong className="text-[#172522]">{filteredPros.length}</strong>{' '}
+                Showing <strong className="text-[#173B67]">{filteredPros.length}</strong>{' '}
                 {filteredPros.length === 1 ? 'verified professional' : 'verified professionals'}
               </p>
-              <span className="text-[11px] text-[#66716d]">
-                Standard Diagnostic Vetting
+              <span className="text-[11px] text-[#667085]">
+                Standard Diagnostic Vetting Active
               </span>
             </div>
 
@@ -294,7 +313,7 @@ export default function ProfessionalsDirectoryPage() {
   return (
     <Suspense
       fallback={
-        <div className="py-20 text-center text-sm text-[#66716d]">
+        <div className="py-20 text-center text-sm text-[#667085]">
           Loading directory...
         </div>
       }
