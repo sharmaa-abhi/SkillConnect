@@ -140,8 +140,8 @@ export function DemoExperienceWidget() {
 
   return (
     <>
-      {/* Floating Bottom-Left Trigger Pill */}
-      <div className="fixed bottom-5 left-5 z-40">
+      {/* Floating Bottom-Right Trigger Pill */}
+      <div className="fixed bottom-5 right-5 z-40">
         <button
           type="button"
           onClick={() => setIsOpen(true)}

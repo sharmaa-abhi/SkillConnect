@@ -13,7 +13,6 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Container } from '@/components/layout/container';
 import { MobileNav } from '@/components/layout/mobile-nav';
 import { useAuth } from '@/context/auth-context';
 
@@ -25,128 +24,72 @@ export function SiteHeader() {
 
   return (
     <>
-      {/* Top Demo & Role Switcher Bar */}
-      <div className="bg-[#173B67] text-white text-xs py-2 px-4 border-b border-white/10">
-        <Container className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 font-bold px-2 py-0.5 rounded-full bg-[#0F9D91] text-white text-[10px] tracking-wide uppercase">
-              <ShieldCheck className="w-3 h-3" />
-              Verified Marketplace
-            </span>
-            <span className="hidden sm:inline text-white/90">
-              Upfront diagnostic pricing • Multi-tier contractor verification • Escrow milestone protection
-            </span>
-            <span className="sm:hidden text-white/90">Upfront pricing & escrow</span>
-          </div>
-
-          {/* Quick Role Switcher Pill */}
-          <div className="flex items-center gap-2 text-[11px]">
-            <span className="hidden md:inline text-white/70">Role Switcher:</span>
-            <div className="flex items-center bg-white/10 rounded-lg p-0.5 border border-white/15">
-              <button
-                type="button"
-                onClick={() => switchRole('customer')}
-                className={`px-2 py-0.5 rounded text-[11px] font-semibold transition-all ${
-                  role === 'customer'
-                    ? 'bg-[#0F9D91] text-white shadow-2xs'
-                    : 'text-white/80 hover:text-white'
-                }`}
-              >
-                Customer
-              </button>
-              <button
-                type="button"
-                onClick={() => switchRole('worker')}
-                className={`px-2 py-0.5 rounded text-[11px] font-semibold transition-all ${
-                  role === 'worker'
-                    ? 'bg-[#0F9D91] text-white shadow-2xs'
-                    : 'text-white/80 hover:text-white'
-                }`}
-              >
-                Pro Worker
-              </button>
-              <button
-                type="button"
-                onClick={() => switchRole('admin')}
-                className={`px-2 py-0.5 rounded text-[11px] font-semibold transition-all ${
-                  role === 'admin'
-                    ? 'bg-[#0F9D91] text-white shadow-2xs'
-                    : 'text-white/80 hover:text-white'
-                }`}
-              >
-                Admin
-              </button>
-            </div>
-          </div>
-        </Container>
-      </div>
-
-      {/* Main Sticky Header */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E4E7EC] transition-all">
-        <Container className="flex items-center justify-between h-16 sm:h-20">
+      {/* Floating Navbar */}
+      <header className="sticky top-3 sm:top-4 z-40 w-full px-3 sm:px-6 transition-all duration-300">
+        <div className="max-w-7xl mx-auto bg-white/90 backdrop-blur-md border border-[#E4E7EC]/90 shadow-[0_8px_30px_rgb(0,0,0,0.07)] rounded-2xl sm:rounded-full px-4 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between transition-all">
           {/* Logo Branding */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-[#173B67] flex items-center justify-center text-white shadow-xs group-hover:bg-[#0F2A4A] transition-colors">
-              <Wrench className="w-5 h-5 text-[#0F9D91]" />
+          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-full bg-[#173B67] flex items-center justify-center text-white shadow-xs group-hover:bg-[#0F2A4A] transition-colors shrink-0">
+              <Wrench className="w-4 h-4 sm:w-5 sm:h-5 text-[#0F9D91]" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-black tracking-tight text-[#173B67]">
+              <span className="text-lg sm:text-xl font-black tracking-tight text-[#173B67] leading-tight">
                 Skill<span className="text-[#0F9D91]">Connect</span>
               </span>
-              <span className="text-[10px] text-[#667085] -mt-1 tracking-wider uppercase font-semibold">
+              <span className="text-[9px] sm:text-[10px] text-[#667085] tracking-wider uppercase font-semibold leading-none">
                 Verified Local Services
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-7">
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
             <Link
               href="/services"
-              className={`text-sm font-semibold transition-colors ${
+              className={`px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-semibold transition-all ${
                 pathname === '/services'
-                  ? 'text-[#173B67]'
-                  : 'text-[#263445] hover:text-[#173B67]'
+                  ? 'bg-[#173B67] text-white shadow-xs'
+                  : 'text-[#263445] hover:text-[#173B67] hover:bg-[#F7F8FA]'
               }`}
             >
               All Services
             </Link>
             <Link
               href="/professionals"
-              className={`text-sm font-semibold transition-colors ${
+              className={`px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-semibold transition-all ${
                 pathname.startsWith('/professionals')
-                  ? 'text-[#173B67]'
-                  : 'text-[#263445] hover:text-[#173B67]'
+                  ? 'bg-[#173B67] text-white shadow-xs'
+                  : 'text-[#263445] hover:text-[#173B67] hover:bg-[#F7F8FA]'
               }`}
             >
               Find Professionals
             </Link>
             <Link
               href="/customer/dashboard"
-              className={`text-sm font-semibold transition-colors ${
+              className={`px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-semibold transition-all ${
                 pathname === '/customer/dashboard'
-                  ? 'text-[#173B67]'
-                  : 'text-[#667085] hover:text-[#173B67]'
+                  ? 'bg-[#173B67] text-white shadow-xs'
+                  : 'text-[#667085] hover:text-[#173B67] hover:bg-[#F7F8FA]'
               }`}
             >
               Customer Portal
             </Link>
             <Link
               href="/worker/dashboard"
-              className={`text-sm font-semibold transition-colors ${
+              className={`px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-semibold transition-all ${
                 pathname === '/worker/dashboard'
-                  ? 'text-[#173B67]'
-                  : 'text-[#667085] hover:text-[#173B67]'
+                  ? 'bg-[#173B67] text-white shadow-xs'
+                  : 'text-[#667085] hover:text-[#173B67] hover:bg-[#F7F8FA]'
               }`}
             >
               Pro Portal
             </Link>
             <Link
               href="/admin"
-              className={`text-sm font-semibold transition-colors ${
+              className={`px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-semibold transition-all ${
                 pathname.startsWith('/admin')
-                  ? 'text-[#173B67]'
-                  : 'text-[#667085] hover:text-[#173B67]'
+                  ? 'bg-[#173B67] text-white shadow-xs'
+                  : 'text-[#667085] hover:text-[#173B67] hover:bg-[#F7F8FA]'
               }`}
             >
               Admin Trust
@@ -160,9 +103,9 @@ export function SiteHeader() {
               <button
                 type="button"
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full border border-[#E4E7EC] hover:bg-[#F7F8FA] transition-all text-left"
+                className="flex items-center gap-2.5 p-1 pr-3 rounded-full border border-[#E4E7EC] hover:bg-[#F7F8FA] transition-all text-left"
               >
-                <div className="w-8 h-8 rounded-full bg-[#173B67] text-white flex items-center justify-center font-bold text-xs overflow-hidden">
+                <div className="w-8 h-8 rounded-full bg-[#173B67] text-white flex items-center justify-center font-bold text-xs overflow-hidden shrink-0">
                   {user.avatarUrl ? (
                     <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
                   ) : (
@@ -237,7 +180,7 @@ export function SiteHeader() {
                 variant="secondary"
                 size="md"
                 rightIcon={<ArrowRight className="w-4 h-4" />}
-                className="font-bold shadow-2xs"
+                className="font-bold rounded-full shadow-2xs"
               >
                 Join as a Pro
               </Button>
@@ -249,7 +192,7 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={() => switchRole(role === 'customer' ? 'worker' : 'customer')}
-              className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#EBF1F8] text-[#173B67] border border-[#E4E7EC]"
+              className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#EBF1F8] text-[#173B67] border border-[#E4E7EC]"
             >
               Role: {role}
             </button>
@@ -257,12 +200,12 @@ export function SiteHeader() {
               type="button"
               onClick={() => setMobileNavOpen(true)}
               aria-label="Open navigation menu"
-              className="p-2 rounded-xl text-[#263445] hover:bg-[#F7F8FA] border border-[#E4E7EC] transition-colors"
+              className="p-2 rounded-full text-[#263445] hover:bg-[#F7F8FA] border border-[#E4E7EC] transition-colors"
             >
-              <Menu className="w-6 h-6" />
+              <Menu className="w-5 h-5" />
             </button>
           </div>
-        </Container>
+        </div>
       </header>
 
       {/* Slide-out Mobile Nav */}

@@ -38,6 +38,7 @@ function ProfessionalsDirectoryContent() {
   }, [searchParams, localFilters]);
 
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [showDesktopSidebar, setShowDesktopSidebar] = useState(true);
 
   // Handle filter changes
   const handleFilterChange = (updated: Partial<FilterState>) => {
@@ -94,50 +95,63 @@ function ProfessionalsDirectoryContent() {
         </div>
 
         {/* Search & Sort Controls Bar */}
-        <div className="bg-white p-4 rounded-3xl border border-[#E4E7EC] shadow-2xs mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* Search Input */}
-          <div className="relative w-full sm:max-w-md">
-            <Search className="w-4 h-4 text-[#667085] absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={filters.query}
-              onChange={(e) => handleFilterChange({ query: e.target.value })}
-              placeholder="Search by name, skill, neighborhood (e.g. 94107, Mission)..."
-              className="w-full pl-10 pr-4 py-2.5 bg-[#F7F8FA] text-xs sm:text-sm rounded-xl border border-[#E4E7EC] focus:outline-none focus:ring-2 focus:ring-[#173B67] text-[#263445] transition-all"
-            />
-            {filters.query && (
-              <button
-                type="button"
-                onClick={() => handleFilterChange({ query: '' })}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#667085] hover:text-[#263445]"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
-
-          {/* Right Controls: Sort & Mobile Filter Trigger */}
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-            {/* Mobile Filter Button */}
+        <div className="bg-white p-3 sm:p-4 rounded-3xl border border-[#E4E7EC] shadow-2xs mb-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3.5">
+          {/* Left Controls: Filter Button on the side left + Search Input */}
+          <div className="flex items-center gap-2.5 w-full md:max-w-xl">
+            {/* Side-Left Filter Button */}
             <Button
-              variant="outline"
-              size="sm"
+              variant={activeFiltersCount > 0 ? 'secondary' : 'outline'}
+              size="md"
               onClick={() => setMobileFilterOpen(true)}
               leftIcon={<SlidersHorizontal className="w-4 h-4" />}
-              className="lg:hidden text-xs relative"
+              className="rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm font-bold shrink-0 flex items-center gap-2 border-[#D0D5DD] hover:border-[#173B67] transition-all"
             >
               <span>Filters</span>
               {activeFiltersCount > 0 && (
-                <span className="w-5 h-5 rounded-full bg-[#173B67] text-white font-bold text-[10px] flex items-center justify-center -mr-1">
+                <span className="w-5 h-5 rounded-full bg-[#173B67] text-white font-black text-[10px] flex items-center justify-center -mr-0.5">
                   {activeFiltersCount}
                 </span>
               )}
             </Button>
 
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 text-[#667085] absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={filters.query}
+                onChange={(e) => handleFilterChange({ query: e.target.value })}
+                placeholder="Search by name, skill, neighborhood (e.g. 94107, Mission)..."
+                className="w-full pl-10 pr-8 py-2.5 bg-[#F7F8FA] text-xs sm:text-sm rounded-xl border border-[#E4E7EC] focus:outline-none focus:ring-2 focus:ring-[#173B67] text-[#263445] transition-all"
+              />
+              {filters.query && (
+                <button
+                  type="button"
+                  onClick={() => handleFilterChange({ query: '' })}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#667085] hover:text-[#263445]"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Right Controls: Desktop Sidebar Toggle & Sort */}
+          <div className="flex items-center gap-3 justify-between md:justify-end shrink-0">
+            {/* Desktop Quick Toggle for Left Sidebar */}
+            <button
+              type="button"
+              onClick={() => setShowDesktopSidebar(!showDesktopSidebar)}
+              className="hidden lg:inline-flex items-center gap-1.5 text-xs font-bold text-[#173B67] bg-[#EBF1F8] hover:bg-[#D9E6F5] px-3 py-2 rounded-xl border border-[#173B67]/15 transition-colors"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5 text-[#0F9D91]" />
+              <span>{showDesktopSidebar ? 'Hide Left Sidebar' : 'Show Left Sidebar'}</span>
+            </button>
+
             {/* Sort Dropdown */}
             <div className="flex items-center gap-2">
               <span className="text-xs text-[#667085] whitespace-nowrap hidden sm:inline font-semibold">
-                Sort by:
+                Sort:
               </span>
               <div className="relative">
                 <select
@@ -259,18 +273,20 @@ function ProfessionalsDirectoryContent() {
         )}
 
         {/* Main 2-Column Content Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className={`grid grid-cols-1 ${showDesktopSidebar ? 'lg:grid-cols-12 gap-8' : 'gap-6'} items-start`}>
           {/* Desktop Left Sidebar (w-72 / 3 cols) */}
-          <div className="hidden lg:block lg:col-span-3 sticky top-28">
-            <FilterSidebar
-              filters={filters}
-              onChange={handleFilterChange}
-              onReset={handleResetFilters}
-            />
-          </div>
+          {showDesktopSidebar && (
+            <div className="hidden lg:block lg:col-span-3 sticky top-24">
+              <FilterSidebar
+                filters={filters}
+                onChange={handleFilterChange}
+                onReset={handleResetFilters}
+              />
+            </div>
+          )}
 
-          {/* Right Results Grid (9 cols) */}
-          <div className="lg:col-span-9 flex flex-col gap-6">
+          {/* Right Results Grid */}
+          <div className={`${showDesktopSidebar ? 'lg:col-span-9' : 'lg:col-span-12'} flex flex-col gap-6`}>
             {/* Results count strip */}
             <div className="flex items-center justify-between text-xs text-[#667085]">
               <p>
@@ -284,7 +300,10 @@ function ProfessionalsDirectoryContent() {
 
             {/* Results or Empty State */}
             {filteredPros.length > 0 ? (
-              <ProfessionalGrid professionals={filteredPros} columns="3" />
+              <ProfessionalGrid
+                professionals={filteredPros}
+                columns={showDesktopSidebar ? '3' : '4'}
+              />
             ) : (
               <EmptyState
                 query={filters.query}

@@ -48,7 +48,7 @@ export function FilterDrawerMobile({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Filters and Sorting">
+        <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="Filters and Sorting">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -58,25 +58,30 @@ export function FilterDrawerMobile({
             className="fixed inset-0 bg-black/50 backdrop-blur-xs"
           />
 
-          {/* Slide-up sheet */}
+          {/* Side Left Drawer */}
           <motion.div
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="fixed inset-x-0 bottom-0 max-h-[85vh] bg-white rounded-t-3xl shadow-2xl flex flex-col overflow-hidden"
+            className="fixed inset-y-0 left-0 w-full max-w-sm sm:max-w-md bg-white shadow-2xl flex flex-col overflow-hidden z-50 border-r border-[#E4E7EC]"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 px-6 border-b border-[#E4E7EC]">
-              <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-5 h-5 text-[#0F9D91]" />
-                <h3 className="font-bold text-lg text-[#173B67]">Filters & Ranking</h3>
+            <div className="flex items-center justify-between p-4 px-6 border-b border-[#E4E7EC] bg-white">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-[#EBF1F8] text-[#173B67] flex items-center justify-center">
+                  <SlidersHorizontal className="w-4 h-4 text-[#0F9D91]" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base sm:text-lg text-[#173B67] leading-tight">Filters & Sorting</h3>
+                  <p className="text-[11px] text-[#667085] leading-none mt-0.5">Refine verified service specialists</p>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={onClose}
                 aria-label="Close filters"
-                className="p-2 -mr-2 rounded-full text-[#667085] hover:bg-[#F7F8FA]"
+                className="p-2 -mr-2 rounded-xl text-[#667085] hover:text-[#173B67] hover:bg-[#F7F8FA] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -98,7 +103,7 @@ export function FilterDrawerMobile({
                 variant="outline"
                 size="md"
                 onClick={onReset}
-                className="flex-1 justify-center"
+                className="flex-1 justify-center rounded-xl font-bold"
               >
                 Reset All
               </Button>
@@ -106,7 +111,7 @@ export function FilterDrawerMobile({
                 variant="primary"
                 size="md"
                 onClick={onClose}
-                className="flex-1 justify-center"
+                className="flex-1 justify-center rounded-xl font-bold shadow-xs"
               >
                 Show {resultsCount} {resultsCount === 1 ? 'Pro' : 'Pros'}
               </Button>
