@@ -82,11 +82,11 @@ export function SiteHeader() {
     <>
       {/* Modern Floating Navbar Container */}
       <header className="sticky top-4 sm:top-5 z-40 w-full px-4 sm:px-6 lg:px-8 transition-all duration-300 pointer-events-none">
-        <div className="pointer-events-auto max-w-[1440px] mx-auto bg-white/95 backdrop-blur-md border border-[#E4EAF1] shadow-[0_10px_35px_-8px_rgba(23,59,103,0.08),0_2px_8px_-2px_rgba(23,59,103,0.04)] rounded-[28px] sm:rounded-full px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5 flex items-center justify-between min-h-[76px] transition-all">
+        <div className="pointer-events-auto max-w-[1440px] mx-auto bg-white/95 backdrop-blur-md border border-[#E4EAF1] shadow-[0_10px_35px_-8px_rgba(23,59,103,0.08),0_2px_8px_-2px_rgba(23,59,103,0.04)] rounded-[28px] sm:rounded-full px-3 sm:px-4 lg:px-5 py-3 sm:py-3.5 flex items-center justify-between min-h-[76px] transition-all">
           {/* Brand Section */}
           <Link
             href="/"
-            className="flex items-center gap-3 group shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698] rounded-2xl"
+            className="flex items-center gap-2.5 group shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698] rounded-2xl"
             aria-label="SkillConnect Home"
           >
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#173B67] flex items-center justify-center text-white shadow-xs group-hover:bg-[#0F2A4A] group-hover:scale-105 transition-all shrink-0">
@@ -105,14 +105,14 @@ export function SiteHeader() {
           {/* Desktop Navigation Links */}
           <nav
             aria-label="Primary navigation"
-            className="hidden lg:flex items-center gap-1 xl:gap-1.5"
+            className="hidden lg:flex flex-1 min-w-0 justify-center items-center gap-0 xl:gap-0.5"
           >
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 aria-current={item.isActive ? 'page' : undefined}
-                className={`px-3 xl:px-3.5 py-2 rounded-full text-[13px] xl:text-[14px] font-semibold transition-all duration-150 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698] focus-visible:ring-offset-1 ${
+                className={`px-2 xl:px-2.5 py-2 rounded-full text-[12px] xl:text-[13px] font-semibold transition-all duration-150 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698] focus-visible:ring-offset-1 ${
                   item.isActive
                     ? 'bg-[#E7F7F4] text-[#087F75] font-bold shadow-2xs'
                     : 'text-[#173B67] hover:text-[#0FA698] hover:bg-[#F7F9FC]'
@@ -124,7 +124,7 @@ export function SiteHeader() {
           </nav>
 
           {/* Right Action Section: User Profile & CTA */}
-          <div className="hidden lg:flex items-center gap-3 shrink-0">
+          <div className="hidden lg:flex items-center gap-2 shrink-0">
             {/* Authenticated User Menu Pill */}
             <div className="relative" ref={dropdownRef}>
               <button
@@ -133,7 +133,7 @@ export function SiteHeader() {
                 aria-expanded={userDropdownOpen}
                 aria-haspopup="menu"
                 aria-label={`User account menu for ${user.name}`}
-                className="flex items-center gap-2.5 p-1.5 pr-3.5 rounded-full border border-[#E4EAF1] bg-[#F7F9FC] hover:bg-white hover:border-[#D0D9E4] transition-all text-left shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698] focus-visible:ring-offset-2"
+                className="flex items-center gap-2 p-1.5 pr-2.5 rounded-full border border-[#E4EAF1] bg-[#F7F9FC] hover:bg-white hover:border-[#D0D9E4] transition-all text-left shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698] focus-visible:ring-offset-2"
               >
                 <div className="w-8 h-8 rounded-full bg-[#173B67] text-white flex items-center justify-center font-bold text-xs overflow-hidden shrink-0 border border-white/60 shadow-xs">
                   {user.avatarUrl ? (
@@ -147,7 +147,7 @@ export function SiteHeader() {
                   )}
                 </div>
                 <div className="flex flex-col text-left leading-tight">
-                  <span className="text-xs font-bold text-[#173B67] line-clamp-1 max-w-[90px] xl:max-w-[120px]">
+                  <span className="text-xs font-bold text-[#173B67] line-clamp-1 max-w-[72px] xl:max-w-[100px]">
                     {user.name.split(' ')[0]}
                   </span>
                   <span className="text-[10px] text-[#0FA698] font-semibold capitalize">
@@ -235,7 +235,7 @@ export function SiteHeader() {
                   ? '/admin'
                   : '/register?role=worker'
               }
-              className="inline-flex items-center justify-center gap-2 bg-[#0FA698] hover:bg-[#087F75] text-white font-bold text-sm px-5 py-2.5 rounded-full shadow-xs hover:shadow-md active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698] focus-visible:ring-offset-2 shrink-0 group"
+              className="inline-flex items-center justify-center gap-1.5 bg-[#0FA698] hover:bg-[#087F75] text-white font-bold text-[13px] px-3.5 py-2.5 rounded-full shadow-xs hover:shadow-md active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698] focus-visible:ring-offset-2 shrink-0 group"
             >
               <span>
                 {role === 'worker'
