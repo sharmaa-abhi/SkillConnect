@@ -13,53 +13,79 @@ import {
   ArrowLeft,
   Paperclip,
   AlertCircle,
-  Sparkles,
   MapPin,
+  FileText,
+  User,
+  Phone,
 } from 'lucide-react';
-import { ProfessionalProfile } from '@/types/professional';
+import { ProfessionalProfile, ServicePriceItem } from '@/types/professional';
 import { DemoBooking } from '@/types/booking';
 import { Button } from '@/components/ui/button';
 import { formatCurrency, generateBookingId } from '@/lib/formatters';
 import { addDemoBooking } from '@/lib/demo-storage';
 import { useToast } from '@/context/toast-context';
+import { useAuth } from '@/context/auth-context';
 
 export interface BookingFlowDialogProps {
   isOpen: boolean;
   onClose: () => void;
   professional: ProfessionalProfile;
+  initialScopeDescription?: string;
+  initialServiceItem?: ServicePriceItem;
 }
 
 export function BookingFlowDialog({
   isOpen,
   onClose,
   professional,
+  initialScopeDescription = '',
+  initialServiceItem,
 }: BookingFlowDialogProps) {
   const { showToast } = useToast();
+  const { user } = useAuth();
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
   // Form State
-  const [issueDescription, setIssueDescription] = useState('');
+  const [issueDescription, setIssueDescription] = useState(initialScopeDescription);
+  const [selectedServiceItem, setSelectedServiceItem] = useState<ServicePriceItem | null>(
+    initialServiceItem || professional.pricingItems[0] || null
+  );
   const [issueError, setIssueError] = useState('');
   const [attachedPhoto, setAttachedPhoto] = useState(false);
 
   // Date & Time State
-  const [selectedDate, setSelectedDate] = useState('Tomorrow, Oct 6');
+  const [selectedDate, setSelectedDate] = useState(
+    professional.availableToday ? 'Today, Oct 11' : 'Tomorrow, Oct 12'
+  );
   const [selectedSlot, setSelectedSlot] = useState('10:00 AM');
 
-  // Customer Contact State (Demo)
-  const [customerName, setCustomerName] = useState('Sarah Jenkins');
-  const [customerAddress, setCustomerAddress] = useState('428 Castro Street, Apt 3B, San Francisco, CA');
+  // Customer Contact State
+  const [customerName, setCustomerName] = useState(user.name || 'Sarah Jenkins');
+  const [customerPhone, setCustomerPhone] = useState(user.phone || '(555) 392-8172');
+  const [customerAddress, setCustomerAddress] = useState(
+    user.address ? `${user.address}, ${user.city || 'San Francisco'}` : '428 Castro Street, Apt 3B, San Francisco, CA'
+  );
 
   // Confirmation State
   const [confirmedBooking, setConfirmedBooking] = useState<DemoBooking | null>(null);
 
-  // Available dates for sample
+  // Sync initial scope if passed
+  useEffect(() => {
+    if (initialScopeDescription) {
+      setIssueDescription(initialScopeDescription);
+    }
+    if (user.name) setCustomerName(user.name);
+    if (user.phone) setCustomerPhone(user.phone);
+    if (user.address) setCustomerAddress(`${user.address}, ${user.city || 'San Francisco'}`);
+  }, [initialScopeDescription, user]);
+
+  // Available dates
   const availableDates = [
-    { label: 'Today', subtext: 'Oct 5', value: 'Today, Oct 5', available: professional.availableToday },
-    { label: 'Tomorrow', subtext: 'Oct 6', value: 'Tomorrow, Oct 6', available: true },
-    { label: 'Wednesday', subtext: 'Oct 7', value: 'Wednesday, Oct 7', available: true },
-    { label: 'Thursday', subtext: 'Oct 8', value: 'Thursday, Oct 8', available: true },
-    { label: 'Friday', subtext: 'Oct 9', value: 'Friday, Oct 9', available: true },
+    { label: 'Today', subtext: 'Oct 11', value: 'Today, Oct 11', available: professional.availableToday },
+    { label: 'Tomorrow', subtext: 'Oct 12', value: 'Tomorrow, Oct 12', available: true },
+    { label: 'Wednesday', subtext: 'Oct 13', value: 'Wednesday, Oct 13', available: true },
+    { label: 'Thursday', subtext: 'Oct 14', value: 'Thursday, Oct 14', available: true },
+    { label: 'Friday', subtext: 'Oct 15', value: 'Friday, Oct 15', available: true },
   ];
 
   // Time Slots
@@ -67,7 +93,7 @@ export function BookingFlowDialog({
   const afternoonSlots = ['1:00 PM', '2:30 PM', '4:00 PM'];
   const eveningSlots = ['5:30 PM'];
 
-  // Reset state helper
+  // Reset helper
   const handleClose = () => {
     setStep(1);
     setIssueDescription('');
@@ -77,7 +103,6 @@ export function BookingFlowDialog({
     onClose();
   };
 
-  // Handle Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -88,7 +113,6 @@ export function BookingFlowDialog({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Lock body scroll
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -102,8 +126,8 @@ export function BookingFlowDialog({
 
   // Step 1 Validation
   const handleProceedToStep2 = () => {
-    if (!issueDescription.trim() || issueDescription.trim().length < 10) {
-      setIssueError('Please provide a brief description (at least 10 characters) of the issue.');
+    if (!issueDescription.trim() || issueDescription.trim().length < 8) {
+      setIssueError('Please provide a brief description (at least 8 characters) of the required service.');
       return;
     }
     setIssueError('');
@@ -115,7 +139,16 @@ export function BookingFlowDialog({
     setStep(3);
   };
 
-  // Step 3 Confirm
+  // Financial calculations
+  const diagnosticFee = professional.diagnosticFee;
+  const estimatedLabor = selectedServiceItem && selectedServiceItem.unit === 'fixed'
+    ? selectedServiceItem.price
+    : professional.hourlyRate;
+  const estimatedTotalLow = diagnosticFee;
+  const estimatedTotalHigh = diagnosticFee + estimatedLabor;
+  const estimatedTax = Math.round(diagnosticFee * 0.0875 * 100) / 100;
+
+  // Step 3 Final Confirm
   const handleFinalConfirm = () => {
     const bookingId = generateBookingId();
     const newBooking: DemoBooking = {
@@ -127,15 +160,26 @@ export function BookingFlowDialog({
       professionalAvatar: professional.avatarUrl,
       categoryName: professional.categoryName,
       serviceDescription: issueDescription,
+      selectedServiceTitle: selectedServiceItem?.title,
       customerName,
+      customerPhone,
       customerAddress,
       appointmentDate: selectedDate,
       appointmentTime: selectedSlot,
-      diagnosticFee: professional.diagnosticFee,
+      diagnosticFee,
       estimatedLaborRate: professional.hourlyRate,
-      totalEstimateLow: professional.diagnosticFee,
-      totalEstimateHigh: professional.diagnosticFee + professional.hourlyRate,
+      totalEstimateLow: estimatedTotalLow,
+      totalEstimateHigh: estimatedTotalHigh,
+      taxAmount: estimatedTax,
+      paymentStatus: 'authorized_hold',
       status: 'confirmed',
+      timeline: [
+        {
+          status: 'confirmed',
+          timestamp: new Date().toISOString(),
+          note: `Booking created with ${professional.name}. Standard diagnostic hold of ${formatCurrency(diagnosticFee)} placed in escrow protection.`,
+        },
+      ],
       isDemoOnly: true,
     };
 
@@ -145,8 +189,8 @@ export function BookingFlowDialog({
 
     showToast({
       type: 'success',
-      title: 'Appointment Scheduled (Demo)',
-      message: `Booking #${bookingId} recorded for ${professional.name}.`,
+      title: 'Appointment Scheduled & Escrow Held',
+      message: `Booking #${bookingId} confirmed for ${professional.name}.`,
     });
   };
 
@@ -174,19 +218,19 @@ export function BookingFlowDialog({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: 10 }}
         transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-        className="relative w-full max-w-xl bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-[#e3e8e3] overflow-hidden flex flex-col max-h-[90vh]"
+        className="relative w-full max-w-xl bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-[#E4E7EC] overflow-hidden flex flex-col max-h-[90vh]"
       >
         {/* Header Bar */}
-        <div className="flex items-center justify-between p-5 border-b border-[#e3e8e3] bg-[#f8f8f4]">
+        <div className="flex items-center justify-between p-5 border-b border-[#E4E7EC] bg-[#F7F8FA]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#143d35] text-white flex items-center justify-center font-bold text-sm">
+            <div className="w-10 h-10 rounded-xl bg-[#173B67] text-white flex items-center justify-center font-bold text-sm shadow-2xs">
               {professional.name[0]}
             </div>
             <div>
-              <h2 id="booking-modal-title" className="text-base font-bold text-[#172522]">
-                Book Demo Appointment
+              <h2 id="booking-modal-title" className="text-base font-bold text-[#173B67]">
+                Schedule Service Appointment
               </h2>
-              <p className="text-xs text-[#66716d]">
+              <p className="text-xs text-[#667085]">
                 With {professional.name} • {professional.tradeTitle}
               </p>
             </div>
@@ -196,35 +240,35 @@ export function BookingFlowDialog({
             type="button"
             onClick={handleClose}
             aria-label="Close booking dialog"
-            className="p-1.5 rounded-xl text-[#66716d] hover:text-[#172522] hover:bg-[#e7f4ed]"
+            className="p-1.5 rounded-xl text-[#667085] hover:text-[#263445] hover:bg-[#EBF1F8] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Step Progress Indicators */}
-        <div className="flex items-center justify-between px-6 py-3 bg-white border-b border-[#e3e8e3] text-xs">
+        <div className="flex items-center justify-between px-6 py-3 bg-white border-b border-[#E4E7EC] text-xs">
           {[
-            { num: 1, label: 'Scope' },
+            { num: 1, label: 'Scope & Service' },
             { num: 2, label: 'Date & Time' },
-            { num: 3, label: 'Estimate' },
+            { num: 3, label: 'Pricing & Escrow' },
             { num: 4, label: 'Confirmed' },
           ].map((item) => (
             <div key={item.num} className="flex items-center gap-2">
               <span
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold ${
+                className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                   step === item.num
-                    ? 'bg-[#237a63] text-white'
+                    ? 'bg-[#173B67] text-white'
                     : step > item.num
-                    ? 'bg-[#e7f4ed] text-[#143d35]'
-                    : 'bg-[#f8f8f4] text-[#66716d] border border-[#e3e8e3]'
+                    ? 'bg-[#E6F7F5] text-[#0F9D91]'
+                    : 'bg-[#F7F8FA] text-[#667085] border border-[#E4E7EC]'
                 }`}
               >
                 {step > item.num ? '✓' : item.num}
               </span>
               <span
-                className={`hidden sm:inline font-medium ${
-                  step === item.num ? 'text-[#143d35] font-bold' : 'text-[#66716d]'
+                className={`hidden sm:inline font-semibold ${
+                  step === item.num ? 'text-[#173B67]' : 'text-[#667085]'
                 }`}
               >
                 {item.label}
@@ -235,54 +279,86 @@ export function BookingFlowDialog({
 
         {/* Dynamic Step Content */}
         <div className="p-6 overflow-y-auto flex-1">
-          {/* STEP 1: SERVICE SCOPE */}
+          {/* STEP 1: SERVICE SCOPE & ITEM */}
           {step === 1 && (
             <div className="flex flex-col gap-5">
+              {/* Select Service Item if Pro offers multiple */}
+              {professional.pricingItems.length > 0 && (
+                <div>
+                  <label className="block text-xs font-bold text-[#263445] uppercase tracking-wider mb-2">
+                    Select Target Service Task:
+                  </label>
+                  <div className="flex flex-col gap-2">
+                    {professional.pricingItems.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => setSelectedServiceItem(item)}
+                        className={`p-3 rounded-xl border text-left transition-all flex items-center justify-between gap-3 ${
+                          selectedServiceItem?.id === item.id
+                            ? 'bg-[#EBF1F8] border-[#173B67] shadow-2xs'
+                            : 'bg-white border-[#E4E7EC] hover:bg-[#F7F8FA]'
+                        }`}
+                      >
+                        <div>
+                          <p className="text-xs font-bold text-[#263445]">{item.title}</p>
+                          <p className="text-[11px] text-[#667085] line-clamp-1">{item.description}</p>
+                        </div>
+                        <span className="text-xs font-bold text-[#173B67] whitespace-nowrap">
+                          {formatCurrency(item.price)}
+                          <span className="text-[10px] text-[#667085] font-normal">/{item.unit}</span>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div>
                 <label
                   htmlFor="issue-description"
-                  className="block text-sm font-semibold text-[#172522] mb-1.5"
+                  className="block text-xs font-bold text-[#263445] uppercase tracking-wider mb-1.5"
                 >
-                  Describe the service needed or problem: <span className="text-[#b42318]">*</span>
+                  Describe the service required or issue: <span className="text-[#B42318]">*</span>
                 </label>
                 <textarea
                   id="issue-description"
-                  rows={4}
+                  rows={3}
                   value={issueDescription}
                   onChange={(e) => {
                     setIssueDescription(e.target.value);
                     if (issueError) setIssueError('');
                   }}
-                  placeholder="e.g. Kitchen sink drain is completely backed up. Standing water for 24 hours. Need emergency inspection and clearing."
+                  placeholder="e.g. Kitchen sink drain backed up, leaking shutoff valve underneath, water heater making loud knocking noises..."
                   className={`w-full p-3.5 text-sm rounded-xl border ${
                     issueError
-                      ? 'border-[#b42318] focus:ring-2 focus:ring-[#b42318]'
-                      : 'border-[#c8d3cc] focus:ring-2 focus:ring-[#237a63]'
-                  } focus:outline-none transition-all placeholder:text-[#66716d]/70`}
+                      ? 'border-[#B42318] focus:ring-2 focus:ring-[#B42318]'
+                      : 'border-[#D0D5DD] focus:ring-2 focus:ring-[#173B67]'
+                  } focus:outline-none transition-all placeholder:text-[#667085]/70`}
                 />
                 {issueError && (
-                  <p className="text-xs text-[#b42318] mt-1.5 flex items-center gap-1">
+                  <p className="text-xs text-[#B42318] mt-1.5 flex items-center gap-1">
                     <AlertCircle className="w-3.5 h-3.5" />
                     <span>{issueError}</span>
                   </p>
                 )}
-                <p className="text-xs text-[#66716d] mt-1">
-                  Provide clear details so {professional.name} arrives with the right tools and fittings.
+                <p className="text-xs text-[#667085] mt-1">
+                  Help {professional.name} arrive with the exact fixtures and diagnostic tools required.
                 </p>
               </div>
 
               {/* Photo Upload Simulation */}
-              <div className="p-4 rounded-xl border border-dashed border-[#c8d3cc] bg-[#f8f8f4]">
+              <div className="p-3.5 rounded-xl border border-dashed border-[#D0D5DD] bg-[#F7F8FA]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-white border border-[#e3e8e3] text-[#237a63]">
+                    <div className="p-2 rounded-lg bg-white border border-[#E4E7EC] text-[#0F9D91]">
                       <Paperclip className="w-4 h-4" />
                     </div>
                     <div>
-                      <p className="text-xs font-semibold text-[#172522]">
+                      <p className="text-xs font-bold text-[#263445]">
                         Attach photo or video (Optional)
                       </p>
-                      <p className="text-[11px] text-[#66716d]">
+                      <p className="text-[11px] text-[#667085]">
                         Helps the technician evaluate required parts in advance.
                       </p>
                     </div>
@@ -294,28 +370,65 @@ export function BookingFlowDialog({
                       showToast({
                         type: 'info',
                         title: attachedPhoto ? 'Attachment Removed' : 'Sample Photo Attached',
-                        message: attachedPhoto ? 'Mock photo removed' : 'sink_leak_overview.jpg (1.8 MB)',
+                        message: attachedPhoto ? 'Attachment removed' : 'fixture_leak_overview.jpg (1.8 MB)',
                       });
                     }}
-                    className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors border ${
+                    className={`text-xs px-3 py-1.5 rounded-lg font-semibold transition-colors border ${
                       attachedPhoto
-                        ? 'bg-[#e7f4ed] text-[#143d35] border-[#237a63]/30'
-                        : 'bg-white text-[#172522] border-[#e3e8e3] hover:bg-gray-50'
+                        ? 'bg-[#E6F7F5] text-[#0F9D91] border-[#0F9D91]/30'
+                        : 'bg-white text-[#263445] border-[#E4E7EC] hover:bg-gray-50'
                     }`}
                   >
-                    {attachedPhoto ? 'Attached: photo.jpg' : 'Simulate Upload'}
+                    {attachedPhoto ? 'Attached: photo.jpg' : 'Attach Photo'}
                   </button>
                 </div>
               </div>
 
-              {/* Service Location */}
-              <div className="pt-2">
-                <label className="block text-xs font-semibold text-[#66716d] uppercase tracking-wider mb-1">
-                  Service Address (Demo Sample)
-                </label>
-                <div className="flex items-center gap-2 p-3 rounded-xl bg-white border border-[#e3e8e3] text-sm text-[#172522]">
-                  <MapPin className="w-4 h-4 text-[#237a63] flex-shrink-0" />
-                  <span className="truncate">{customerAddress}</span>
+              {/* Service Address & Customer Details */}
+              <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-bold text-[#667085] uppercase tracking-wider mb-1">
+                    Your Name
+                  </label>
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white border border-[#E4E7EC] text-xs text-[#263445]">
+                    <User className="w-3.5 h-3.5 text-[#0F9D91] flex-shrink-0" />
+                    <input
+                      type="text"
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      className="w-full focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-[#667085] uppercase tracking-wider mb-1">
+                    Contact Phone
+                  </label>
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white border border-[#E4E7EC] text-xs text-[#263445]">
+                    <Phone className="w-3.5 h-3.5 text-[#0F9D91] flex-shrink-0" />
+                    <input
+                      type="text"
+                      value={customerPhone}
+                      onChange={(e) => setCustomerPhone(e.target.value)}
+                      className="w-full focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-[11px] font-bold text-[#667085] uppercase tracking-wider mb-1">
+                    Service Address
+                  </label>
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white border border-[#E4E7EC] text-xs text-[#263445]">
+                    <MapPin className="w-3.5 h-3.5 text-[#0F9D91] flex-shrink-0" />
+                    <input
+                      type="text"
+                      value={customerAddress}
+                      onChange={(e) => setCustomerAddress(e.target.value)}
+                      className="w-full focus:outline-none"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -326,7 +439,7 @@ export function BookingFlowDialog({
             <div className="flex flex-col gap-6">
               {/* Date Selection */}
               <div>
-                <label className="block text-sm font-semibold text-[#172522] mb-2.5">
+                <label className="block text-xs font-bold text-[#263445] uppercase tracking-wider mb-2.5">
                   Select Preferred Date:
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -338,10 +451,10 @@ export function BookingFlowDialog({
                       onClick={() => setSelectedDate(d.value)}
                       className={`flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all ${
                         selectedDate === d.value
-                          ? 'bg-[#143d35] text-white border-[#143d35] shadow-sm'
+                          ? 'bg-[#173B67] text-white border-[#173B67] shadow-xs'
                           : d.available
-                          ? 'bg-white border-[#e3e8e3] text-[#172522] hover:bg-[#e7f4ed]'
-                          : 'bg-[#f8f8f4] border-[#e3e8e3] text-[#66716d]/50 cursor-not-allowed opacity-60'
+                          ? 'bg-white border-[#E4E7EC] text-[#263445] hover:bg-[#EBF1F8]'
+                          : 'bg-[#F7F8FA] border-[#E4E7EC] text-[#667085]/50 cursor-not-allowed opacity-60'
                       }`}
                     >
                       <span className="text-xs font-bold">{d.label}</span>
@@ -353,14 +466,14 @@ export function BookingFlowDialog({
 
               {/* Time Slots Selection */}
               <div>
-                <label className="block text-sm font-semibold text-[#172522] mb-2.5">
+                <label className="block text-xs font-bold text-[#263445] uppercase tracking-wider mb-2.5">
                   Select Arrival Window:
                 </label>
 
                 <div className="flex flex-col gap-3">
                   <div>
-                    <span className="text-xs font-semibold text-[#66716d] uppercase tracking-wider block mb-1.5">
-                      Morning
+                    <span className="text-[11px] font-bold text-[#667085] uppercase tracking-wider block mb-1.5">
+                      Morning Arrival
                     </span>
                     <div className="grid grid-cols-3 gap-2">
                       {morningSlots.map((slot) => (
@@ -370,8 +483,8 @@ export function BookingFlowDialog({
                           onClick={() => setSelectedSlot(slot)}
                           className={`py-2 px-3 rounded-xl text-xs font-semibold border transition-all ${
                             selectedSlot === slot
-                              ? 'bg-[#237a63] text-white border-[#237a63]'
-                              : 'bg-white border-[#e3e8e3] text-[#172522] hover:bg-[#f8f8f4]'
+                              ? 'bg-[#0F9D91] text-white border-[#0F9D91]'
+                              : 'bg-white border-[#E4E7EC] text-[#263445] hover:bg-[#F7F8FA]'
                           }`}
                         >
                           {slot}
@@ -381,8 +494,8 @@ export function BookingFlowDialog({
                   </div>
 
                   <div>
-                    <span className="text-xs font-semibold text-[#66716d] uppercase tracking-wider block mb-1.5">
-                      Afternoon
+                    <span className="text-[11px] font-bold text-[#667085] uppercase tracking-wider block mb-1.5">
+                      Afternoon Arrival
                     </span>
                     <div className="grid grid-cols-3 gap-2">
                       {afternoonSlots.map((slot) => (
@@ -392,8 +505,8 @@ export function BookingFlowDialog({
                           onClick={() => setSelectedSlot(slot)}
                           className={`py-2 px-3 rounded-xl text-xs font-semibold border transition-all ${
                             selectedSlot === slot
-                              ? 'bg-[#237a63] text-white border-[#237a63]'
-                              : 'bg-white border-[#e3e8e3] text-[#172522] hover:bg-[#f8f8f4]'
+                              ? 'bg-[#0F9D91] text-white border-[#0F9D91]'
+                              : 'bg-white border-[#E4E7EC] text-[#263445] hover:bg-[#F7F8FA]'
                           }`}
                         >
                           {slot}
@@ -403,8 +516,8 @@ export function BookingFlowDialog({
                   </div>
 
                   <div>
-                    <span className="text-xs font-semibold text-[#66716d] uppercase tracking-wider block mb-1.5">
-                      Evening
+                    <span className="text-[11px] font-bold text-[#667085] uppercase tracking-wider block mb-1.5">
+                      Evening Arrival
                     </span>
                     <div className="grid grid-cols-3 gap-2">
                       {eveningSlots.map((slot) => (
@@ -414,8 +527,8 @@ export function BookingFlowDialog({
                           onClick={() => setSelectedSlot(slot)}
                           className={`py-2 px-3 rounded-xl text-xs font-semibold border transition-all ${
                             selectedSlot === slot
-                              ? 'bg-[#237a63] text-white border-[#237a63]'
-                              : 'bg-white border-[#e3e8e3] text-[#172522] hover:bg-[#f8f8f4]'
+                              ? 'bg-[#0F9D91] text-white border-[#0F9D91]'
+                              : 'bg-white border-[#E4E7EC] text-[#263445] hover:bg-[#F7F8FA]'
                           }`}
                         >
                           {slot}
@@ -431,70 +544,86 @@ export function BookingFlowDialog({
           {/* STEP 3: ESTIMATE & DISCLOSURES */}
           {step === 3 && (
             <div className="flex flex-col gap-5">
-              <div className="p-4 rounded-xl bg-[#e7f4ed] border border-[#237a63]/20">
-                <div className="flex items-center gap-2 text-[#143d35] font-semibold text-sm mb-1">
-                  <ShieldCheck className="w-5 h-5 text-[#237a63]" />
-                  <span>Transparent Upfront Pricing</span>
+              <div className="p-4 rounded-xl bg-[#E6F7F5] border border-[#0F9D91]/30">
+                <div className="flex items-center gap-2 text-[#173B67] font-bold text-sm mb-1">
+                  <ShieldCheck className="w-5 h-5 text-[#0F9D91]" />
+                  <span>Transparent Upfront Pricing & Escrow Hold</span>
                 </div>
-                <p className="text-xs text-[#143d35]/90 leading-relaxed">
-                  A standard diagnostic fee applies to evaluate the issue on-site. If you proceed with the recommended repair, this fee is credited 100% toward your labor total.
+                <p className="text-xs text-[#263445]/90 leading-relaxed">
+                  Only the standard diagnostic fee ({formatCurrency(diagnosticFee)}) is pre-authorized in escrow today. If you authorize the repair quote on-site, this fee is credited 100% toward your labor bill.
                 </p>
               </div>
 
               {/* Itemized Estimate Table */}
-              <div className="rounded-xl border border-[#e3e8e3] overflow-hidden">
-                <div className="bg-[#f8f8f4] px-4 py-2.5 border-b border-[#e3e8e3] text-xs font-bold text-[#172522] uppercase tracking-wider">
-                  Estimate Breakdown
+              <div className="rounded-xl border border-[#E4E7EC] overflow-hidden text-xs sm:text-sm">
+                <div className="bg-[#F7F8FA] px-4 py-2.5 border-b border-[#E4E7EC] text-[11px] font-bold text-[#173B67] uppercase tracking-wider">
+                  Pre-Authorization Breakdown
                 </div>
-                <div className="p-4 flex flex-col gap-3 text-sm">
-                  <div className="flex justify-between items-center text-[#172522]">
+                <div className="p-4 flex flex-col gap-2.5">
+                  <div className="flex justify-between items-center text-[#263445]">
                     <div>
-                      <span className="font-semibold">Standard Diagnostic Inspection</span>
-                      <p className="text-xs text-[#66716d]">Credited 100% toward accepted repair labor</p>
+                      <span className="font-semibold">Standard Diagnostic Inspection Fee</span>
+                      <p className="text-xs text-[#667085]">100% credited toward repair labor</p>
                     </div>
-                    <span className="font-bold text-[#143d35]">
-                      {formatCurrency(professional.diagnosticFee)}
+                    <span className="font-bold text-[#173B67]">
+                      {formatCurrency(diagnosticFee)}
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center text-[#172522] pt-2 border-t border-[#e3e8e3]">
+                  <div className="flex justify-between items-center text-[#263445] pt-2 border-t border-[#E4E7EC]">
                     <div>
-                      <span className="font-semibold">Indicative Labor Rate</span>
-                      <p className="text-xs text-[#66716d]">Standard rate for trade specialist</p>
+                      <span className="font-semibold">Selected Scope Target</span>
+                      <p className="text-xs text-[#667085]">
+                        {selectedServiceItem?.title || professional.tradeTitle}
+                      </p>
                     </div>
-                    <span className="font-bold text-[#172522]">
-                      {formatCurrency(professional.hourlyRate)}/hr
+                    <span className="font-semibold text-[#263445]">
+                      {formatCurrency(professional.hourlyRate)}/hr est.
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center pt-3 border-t border-[#e3e8e3] font-bold text-base text-[#143d35]">
-                    <span>Estimated Total Range</span>
-                    <span>
-                      {formatCurrency(professional.diagnosticFee)} –{' '}
-                      {formatCurrency(professional.diagnosticFee + professional.hourlyRate)}
+                  <div className="flex justify-between items-center text-[#263445] pt-2 border-t border-[#E4E7EC]">
+                    <div>
+                      <span className="font-semibold">Estimated Local Sales Tax</span>
+                      <p className="text-xs text-[#667085]">8.75% municipal diagnostic tax</p>
+                    </div>
+                    <span className="font-medium text-[#667085]">
+                      {formatCurrency(estimatedTax)}
                     </span>
+                  </div>
+
+                  <div className="flex justify-between items-center text-[#263445] pt-2 border-t border-[#E4E7EC]">
+                    <div>
+                      <span className="font-semibold">SkillConnect Trust & Escrow Fee</span>
+                      <p className="text-xs text-[#667085]">$2,500 workmanship craftsmanship guarantee</p>
+                    </div>
+                    <span className="font-bold text-[#15803D]">
+                      $0.00 (Free for Homeowners)
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-3 border-t border-[#E4E7EC] font-bold text-base text-[#173B67]">
+                    <span>Initial Escrow Pre-Authorization</span>
+                    <span>{formatCurrency(diagnosticFee + estimatedTax)}</span>
                   </div>
                 </div>
               </div>
 
               {/* Appointment summary recap */}
-              <div className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-[#e3e8e3] text-xs text-[#172522]">
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#F7F8FA] border border-[#E4E7EC] text-xs text-[#263445]">
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-[#237a63]" />
-                  <span>{selectedDate}</span>
+                  <Calendar className="w-4 h-4 text-[#0F9D91]" />
+                  <span className="font-semibold">{selectedDate}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-[#237a63]" />
-                  <span>{selectedSlot}</span>
+                  <Clock className="w-4 h-4 text-[#0F9D91]" />
+                  <span className="font-semibold">{selectedSlot}</span>
                 </div>
               </div>
 
-              {/* Disclaimer */}
-              <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 leading-relaxed flex items-start gap-2">
-                <Sparkles className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
-                <span>
-                  <strong>Prototype Notice:</strong> Demo only — no real technician has been dispatched, and no payment has been processed.
-                </span>
+              {/* Cancellation Policy Disclosure */}
+              <div className="p-3 rounded-xl bg-gray-50 border border-gray-200 text-xs text-[#667085] leading-relaxed">
+                <strong>Cancellation Policy:</strong> Free cancellation up to 2 hours before the scheduled arrival window with 100% immediate release of your escrow pre-authorization.
               </div>
             </div>
           )}
@@ -502,47 +631,42 @@ export function BookingFlowDialog({
           {/* STEP 4: CONFIRMATION */}
           {step === 4 && confirmedBooking && (
             <div className="flex flex-col items-center text-center py-4">
-              <div className="w-16 h-16 rounded-full bg-[#e7f4ed] text-[#237a63] flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-full bg-[#E6F7F5] text-[#0F9D91] flex items-center justify-center mb-4">
                 <CheckCircle2 className="w-10 h-10" />
               </div>
 
-              <span className="text-xs font-bold tracking-widest text-[#237a63] uppercase mb-1">
-                Demo Booking Confirmed
+              <span className="text-xs font-bold tracking-widest text-[#0F9D91] uppercase mb-1">
+                Booking Confirmed & Escrow Pre-Authorized
               </span>
-              <h3 className="text-2xl font-bold text-[#172522] mb-1">
+              <h3 className="text-2xl font-bold text-[#173B67] mb-1">
                 You’re All Set!
               </h3>
-              <p className="text-xs text-[#66716d] mb-6">
-                Appointment Reference Code: <strong className="text-[#143d35] font-mono text-sm">{confirmedBooking.id}</strong>
+              <p className="text-xs text-[#667085] mb-6">
+                Booking Reference: <strong className="text-[#173B67] font-mono text-sm">{confirmedBooking.id}</strong>
               </p>
 
               {/* Booking Summary Box */}
-              <div className="w-full text-left p-4 rounded-2xl bg-[#f8f8f4] border border-[#e3e8e3] text-sm flex flex-col gap-2.5 mb-6">
-                <div className="flex justify-between items-center pb-2 border-b border-[#e3e8e3]">
-                  <span className="text-xs text-[#66716d]">Professional</span>
-                  <span className="font-bold text-[#172522]">{confirmedBooking.professionalName}</span>
+              <div className="w-full text-left p-4 rounded-2xl bg-[#F7F8FA] border border-[#E4E7EC] text-sm flex flex-col gap-2.5 mb-6">
+                <div className="flex justify-between items-center pb-2 border-b border-[#E4E7EC]">
+                  <span className="text-xs text-[#667085]">Technician</span>
+                  <span className="font-bold text-[#263445]">{confirmedBooking.professionalName}</span>
                 </div>
-                <div className="flex justify-between items-center pb-2 border-b border-[#e3e8e3]">
-                  <span className="text-xs text-[#66716d]">Trade Specialty</span>
-                  <span className="font-semibold text-[#172522]">{confirmedBooking.professionalTrade}</span>
+                <div className="flex justify-between items-center pb-2 border-b border-[#E4E7EC]">
+                  <span className="text-xs text-[#667085]">Trade Specialty</span>
+                  <span className="font-semibold text-[#263445]">{confirmedBooking.professionalTrade}</span>
                 </div>
-                <div className="flex justify-between items-center pb-2 border-b border-[#e3e8e3]">
-                  <span className="text-xs text-[#66716d]">Scheduled Arrival</span>
-                  <span className="font-bold text-[#143d35]">{confirmedBooking.appointmentDate} at {confirmedBooking.appointmentTime}</span>
+                <div className="flex justify-between items-center pb-2 border-b border-[#E4E7EC]">
+                  <span className="text-xs text-[#667085]">Arrival Window</span>
+                  <span className="font-bold text-[#173B67]">{confirmedBooking.appointmentDate} at {confirmedBooking.appointmentTime}</span>
                 </div>
-                <div className="flex justify-between items-center pb-2 border-b border-[#e3e8e3]">
-                  <span className="text-xs text-[#66716d]">Address</span>
-                  <span className="font-medium text-[#172522] text-xs text-right max-w-xs">{confirmedBooking.customerAddress}</span>
+                <div className="flex justify-between items-center pb-2 border-b border-[#E4E7EC]">
+                  <span className="text-xs text-[#667085]">Service Address</span>
+                  <span className="font-medium text-[#263445] text-xs text-right max-w-xs">{confirmedBooking.customerAddress}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-[#66716d]">Diagnostic Fee</span>
-                  <span className="font-bold text-[#143d35]">{formatCurrency(confirmedBooking.diagnosticFee)}</span>
+                  <span className="text-xs text-[#667085]">Diagnostic Escrow Hold</span>
+                  <span className="font-bold text-[#173B67]">{formatCurrency(confirmedBooking.diagnosticFee)}</span>
                 </div>
-              </div>
-
-              {/* Explicit Disclaimer */}
-              <div className="w-full p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 leading-relaxed mb-6">
-                Demo only — no real professional has been contacted and no appointment has been booked. This booking has been saved to your local session.
               </div>
 
               {/* Action Buttons */}
@@ -553,7 +677,7 @@ export function BookingFlowDialog({
                   </Button>
                 </Link>
                 <Button variant="outline" onClick={onClose} className="flex-1 justify-center">
-                  Done / Browse More
+                  Done / Browse Marketplace
                 </Button>
               </div>
             </div>
@@ -562,7 +686,7 @@ export function BookingFlowDialog({
 
         {/* Modal Bottom Actions (Steps 1 to 3) */}
         {step < 4 && (
-          <div className="p-4 px-6 border-t border-[#e3e8e3] bg-[#f8f8f4] flex items-center justify-between">
+          <div className="p-4 px-6 border-t border-[#E4E7EC] bg-[#F7F8FA] flex items-center justify-between">
             {step > 1 ? (
               <Button
                 variant="outline"
@@ -596,7 +720,7 @@ export function BookingFlowDialog({
                 onClick={handleProceedToStep3}
                 rightIcon={<ArrowRight className="w-4 h-4" />}
               >
-                Review Estimate
+                Review Pricing & Escrow
               </Button>
             )}
 
@@ -607,7 +731,7 @@ export function BookingFlowDialog({
                 onClick={handleFinalConfirm}
                 leftIcon={<CheckCircle2 className="w-4 h-4" />}
               >
-                Confirm Demo Booking
+                Confirm Appointment & Hold Escrow
               </Button>
             )}
           </div>

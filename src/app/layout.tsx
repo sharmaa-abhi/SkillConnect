@@ -3,19 +3,20 @@ import './globals.css';
 import { SiteHeader } from '@/components/layout/site-header';
 import { SiteFooter } from '@/components/layout/site-footer';
 import { ToastProvider } from '@/context/toast-context';
+import { AuthProvider } from '@/context/auth-context';
 
 export const metadata: Metadata = {
-  title: 'SkillConnect — Connecting People with Trusted Local Service Professionals',
+  title: 'SkillConnect — Trusted Local Service Professionals',
   description:
-    'Find trusted help. Book confidently. Connect with verified plumbers, electricians, carpenters, painters, and appliance technicians with transparent diagnostic pricing.',
+    'Find trusted help. Book confidently. Connect with verified plumbers, electricians, carpenters, painters, and appliance technicians with transparent upfront diagnostic pricing and escrow protection.',
   keywords: [
-    'local services',
-    'plumber',
-    'electrician',
-    'carpenter',
-    'technician',
+    'local services marketplace',
+    'licensed plumbers',
+    'certified electricians',
+    'local trade contractors',
     'home repair',
-    'verified contractors',
+    'transparent diagnostic fee',
+    'escrow protection',
   ],
 };
 
@@ -26,12 +27,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="flex flex-col min-h-screen bg-[#f8f8f4] text-[#172522]">
-        <ToastProvider>
-          <SiteHeader />
-          <main className="flex-1">{children}</main>
-          <SiteFooter />
-        </ToastProvider>
+      <body className="flex flex-col min-h-screen bg-[#F7F8FA] text-[#263445]">
+        <AuthProvider>
+          <ToastProvider>
+            <SiteHeader />
+            <main className="flex-1">{children}</main>
+            <SiteFooter />
+          </ToastProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -23,8 +23,8 @@ export function AvailabilitySwitch({
       type: next ? 'success' : 'info',
       title: next ? 'Now Available Today' : 'Shift Set to Off Duty',
       message: next
-        ? 'Your profile is now featured as available for instant bookings today. (Demo UI state)'
-        : 'You will not appear in today’s urgent dispatch queue. (Demo UI state)',
+        ? 'Your profile is now featured as available for instant bookings today.'
+        : 'You will not appear in today’s urgent dispatch queue.',
     });
   };
 
@@ -36,8 +36,8 @@ export function AvailabilitySwitch({
         aria-checked={isAvailable}
         aria-label="Toggle availability for today"
         onClick={handleToggle}
-        className={`relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#237a63] focus-visible:ring-offset-2 ${
-          isAvailable ? 'bg-[#237a63]' : 'bg-gray-300'
+        className={`relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F9D91] focus-visible:ring-offset-2 ${
+          isAvailable ? 'bg-[#0F9D91]' : 'bg-[#D0D5DD]'
         }`}
       >
         <span
@@ -51,14 +51,14 @@ export function AvailabilitySwitch({
         <div className="flex items-center gap-1.5">
           <span
             className={`w-2 h-2 rounded-full ${
-              isAvailable ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'
+              isAvailable ? 'bg-[#15803D] animate-pulse' : 'bg-[#667085]'
             }`}
           />
-          <span className="text-sm font-bold text-[#172522]">
+          <span className="text-sm font-bold text-[#263445]">
             {isAvailable ? 'Available Today' : 'Off Duty'}
           </span>
         </div>
-        <span className="text-[11px] text-[#66716d]">
+        <span className="text-[11px] text-[#667085]">
           {isAvailable ? 'Accepting instant dispatch' : 'Schedule paused'}
         </span>
       </div>

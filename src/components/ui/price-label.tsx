@@ -16,20 +16,20 @@ export function PriceLabel({
 }: PriceLabelProps) {
   if (compact) {
     return (
-      <div className={`text-xs text-[#172522] ${className}`}>
+      <div className={`text-xs text-[#263445] ${className}`}>
         {diagnosticFee !== undefined && (
-          <span className="font-semibold text-[#143d35]">
+          <span className="font-bold text-[#173B67]">
             {formatCurrency(diagnosticFee)}{' '}
-            <span className="font-normal text-[#66716d]">diagnostic</span>
+            <span className="font-normal text-[#667085]">diag</span>
           </span>
         )}
         {diagnosticFee !== undefined && hourlyRate !== undefined && (
-          <span className="text-[#c8d3cc] mx-1.5">•</span>
+          <span className="text-[#E4E7EC] mx-1.5">•</span>
         )}
         {hourlyRate !== undefined && (
-          <span className="font-semibold text-[#172522]">
+          <span className="font-bold text-[#263445]">
             {formatCurrency(hourlyRate)}
-            <span className="font-normal text-[#66716d]">/hr</span>
+            <span className="font-normal text-[#667085]">/hr</span>
           </span>
         )}
       </div>
@@ -40,12 +40,12 @@ export function PriceLabel({
     <div className={`flex flex-col ${className}`}>
       {hourlyRate !== undefined && (
         <div className="flex items-baseline gap-1">
-          <span className="text-lg font-bold text-[#143d35]">{formatCurrency(hourlyRate)}</span>
-          <span className="text-xs text-[#66716d] font-normal">/hr starting rate</span>
+          <span className="text-lg font-bold text-[#173B67]">{formatCurrency(hourlyRate)}</span>
+          <span className="text-xs text-[#667085] font-normal">/hr starting rate</span>
         </div>
       )}
       {diagnosticFee !== undefined && (
-        <span className="text-xs text-[#66716d] mt-0.5">
+        <span className="text-xs text-[#667085] mt-0.5">
           {formatCurrency(diagnosticFee)} standard diagnostic inspection
         </span>
       )}

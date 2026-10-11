@@ -7,6 +7,7 @@ export interface Review {
   serviceType: string;
   verifiedBooking: boolean;
   proResponse?: string;
+  createdAt?: string;
 }
 
 export interface ServicePriceItem {
@@ -21,6 +22,22 @@ export interface WorkingHour {
   day: string;
   hours: string;
   isAvailable: boolean;
+}
+
+export type VerificationStatusType = 'submitted' | 'pending' | 'verified' | 'rejected' | 'expired';
+
+export interface VerificationRecord {
+  id: string;
+  type: 'trade_license' | 'insurance' | 'government_id' | 'background_check';
+  title: string;
+  documentNumber?: string;
+  issuer?: string;
+  status: VerificationStatusType;
+  submittedAt: string;
+  verifiedAt?: string;
+  expiresAt?: string;
+  notes?: string;
+  documentUrl?: string;
 }
 
 export interface ProfessionalProfile {
@@ -45,9 +62,11 @@ export interface ProfessionalProfile {
   avatarUrl: string;
   coverGradient?: string;
   licenseNumber: string;
-  insuranceStatus: 'Verified Active' | 'Pending Verification';
+  insuranceStatus: 'Verified Active' | 'Pending Verification' | 'Rejected' | 'Expired';
   verifiedPro: boolean;
   backgroundChecked: boolean;
+  verificationStatus?: VerificationStatusType;
+  verificationRecords?: VerificationRecord[];
   completedJobsCount: number;
   responseRate: string;
   workingHours: WorkingHour[];

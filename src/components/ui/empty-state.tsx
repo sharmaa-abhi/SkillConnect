@@ -29,15 +29,15 @@ export function EmptyState({
     <div
       role="status"
       aria-live="polite"
-      className={`flex flex-col items-center justify-center text-center p-8 sm:p-12 rounded-2xl bg-white border border-[#e3e8e3] ${className}`}
+      className={`flex flex-col items-center justify-center text-center p-8 sm:p-12 rounded-3xl bg-white border border-[#E4E7EC] shadow-2xs ${className}`}
     >
-      <div className="w-14 h-14 rounded-full bg-[#e7f4ed] flex items-center justify-center text-[#237a63] mb-4">
+      <div className="w-14 h-14 rounded-2xl bg-[#E6F7F5] flex items-center justify-center text-[#0F9D91] mb-4">
         {icon || <SearchX className="w-7 h-7" />}
       </div>
 
-      <h3 className="text-lg sm:text-xl font-bold text-[#172522] mb-2">{title}</h3>
+      <h3 className="text-lg sm:text-xl font-bold text-[#173B67] mb-2">{title}</h3>
 
-      <p className="text-sm text-[#66716d] max-w-md mb-6 leading-relaxed">
+      <p className="text-sm text-[#667085] max-w-md mb-6 leading-relaxed">
         {description || defaultDesc}
       </p>
 

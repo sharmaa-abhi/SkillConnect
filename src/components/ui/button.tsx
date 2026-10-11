@@ -3,7 +3,7 @@
 import React, { forwardRef, ButtonHTMLAttributes } from 'react';
 import { Loader2 } from 'lucide-react';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+export type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'outline' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -31,7 +31,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     // Base styles: accessible focus ring, active scale, transition
     const baseClasses =
-      'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-150 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#237a63] focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 select-none';
+      'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-150 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#173B67] focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 select-none';
 
     // Sizes
     const sizeClasses = {
@@ -40,13 +40,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       lg: 'text-base px-6 py-3 gap-2.5 h-12',
     }[size];
 
-    // Variants according to 02-UI-DESIGN-SYSTEM.md
+    // Variants according to SkillConnect Design System
+    // Primary #173B67, Secondary #0F9D91
     const variantClasses = {
-      primary: 'bg-[#237a63] hover:bg-[#1b6250] text-white shadow-sm hover:shadow-md',
-      secondary: 'bg-[#e7f4ed] hover:bg-[#d8ece0] text-[#143d35]',
-      outline: 'bg-transparent border border-[#e3e8e3] text-[#172522] hover:bg-[#f8f8f4] hover:border-[#c8d3cc]',
-      ghost: 'bg-transparent text-[#66716d] hover:text-[#172522] hover:bg-black/[0.04]',
-      danger: 'bg-[#b42318] hover:bg-[#911c13] text-white shadow-sm',
+      primary: 'bg-[#173B67] hover:bg-[#0F2A4A] text-white shadow-xs hover:shadow-sm',
+      secondary: 'bg-[#0F9D91] hover:bg-[#0B7F75] text-white shadow-xs hover:shadow-sm',
+      accent: 'bg-[#E6F7F5] hover:bg-[#D3EFEA] text-[#0F9D91] font-semibold',
+      outline: 'bg-transparent border border-[#E4E7EC] text-[#263445] hover:bg-[#F7F8FA] hover:border-[#D0D5DD]',
+      ghost: 'bg-transparent text-[#667085] hover:text-[#263445] hover:bg-black/[0.04]',
+      danger: 'bg-[#B42318] hover:bg-[#911C13] text-white shadow-xs',
     }[variant];
 
     return (
