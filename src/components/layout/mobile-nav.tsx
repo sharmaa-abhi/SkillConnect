@@ -113,13 +113,13 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="fixed inset-y-0 right-0 w-full max-w-xs bg-white shadow-2xl p-6 flex flex-col justify-between overflow-y-auto border-l border-[#E4EAF1]"
+            className="fixed inset-y-0 right-0 w-[88vw] max-w-xs sm:max-w-sm bg-white shadow-2xl p-4 sm:p-6 flex flex-col justify-between overflow-y-auto border-l border-[#E4EAF1]"
           >
             <div>
               {/* Header */}
-              <div className="flex items-center justify-between pb-5 border-b border-[#E4EAF1]">
+              <div className="flex items-center justify-between pb-4 sm:pb-5 border-b border-[#E4EAF1]">
                 <Link href="/" onClick={onClose} className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-[#173B67] flex items-center justify-center text-white font-bold">
+                  <div className="w-9 h-9 rounded-xl bg-[#173B67] flex items-center justify-center text-white font-bold shrink-0">
                     <Wrench className="w-4 h-4 text-[#0FA698]" />
                   </div>
                   <div className="flex flex-col text-left">
@@ -135,19 +135,19 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                   type="button"
                   onClick={onClose}
                   aria-label="Close navigation menu"
-                  className="p-2 -mr-2 rounded-full text-[#667085] hover:text-[#173B67] hover:bg-[#F7F9FC] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698]"
+                  className="p-2 -mr-1 rounded-full text-[#667085] hover:text-[#173B67] hover:bg-[#F7F9FC] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698] min-w-[40px] min-h-[40px] flex items-center justify-center"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               {/* Active User Quick Role Switcher */}
-              <div className="mt-4 p-3.5 rounded-2xl bg-[#F7F9FC] border border-[#E4EAF1]">
+              <div className="mt-3.5 sm:mt-4 p-3 sm:p-3.5 rounded-2xl bg-[#F7F9FC] border border-[#E4EAF1]">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] font-bold text-[#667085] uppercase tracking-wider">
-                    Demo Persona: {user.name.split(' ')[0]}
+                  <span className="text-[10px] sm:text-[11px] font-bold text-[#667085] uppercase tracking-wider truncate mr-1">
+                    Demo: {user.name.split(' ')[0]}
                   </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E7F7F4] text-[#087F75] capitalize">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E7F7F4] text-[#087F75] capitalize shrink-0">
                     {role}
                   </span>
                 </div>
@@ -155,7 +155,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                   <button
                     type="button"
                     onClick={() => switchRole('customer')}
-                    className={`py-1.5 text-center rounded-xl text-xs font-bold transition-all ${
+                    className={`py-2 text-center rounded-xl text-xs font-bold transition-all min-h-[38px] ${
                       role === 'customer'
                         ? 'bg-[#173B67] text-white shadow-2xs'
                         : 'bg-white text-[#173B67] border border-[#E4EAF1] hover:bg-slate-50'
@@ -166,7 +166,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                   <button
                     type="button"
                     onClick={() => switchRole('worker')}
-                    className={`py-1.5 text-center rounded-xl text-xs font-bold transition-all ${
+                    className={`py-2 text-center rounded-xl text-xs font-bold transition-all min-h-[38px] ${
                       role === 'worker'
                         ? 'bg-[#0FA698] text-white shadow-2xs'
                         : 'bg-white text-[#173B67] border border-[#E4EAF1] hover:bg-slate-50'
@@ -177,7 +177,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                   <button
                     type="button"
                     onClick={() => switchRole('admin')}
-                    className={`py-1.5 text-center rounded-xl text-xs font-bold transition-all ${
+                    className={`py-2 text-center rounded-xl text-xs font-bold transition-all min-h-[38px] ${
                       role === 'admin'
                         ? 'bg-[#173B67] text-white shadow-2xs'
                         : 'bg-white text-[#173B67] border border-[#E4EAF1] hover:bg-slate-50'
@@ -189,7 +189,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
               </div>
 
               {/* Navigation Links */}
-              <nav aria-label="Mobile navigation" className="mt-5 flex flex-col gap-1">
+              <nav aria-label="Mobile navigation" className="mt-4 sm:mt-5 flex flex-col gap-1">
                 {navLinks.map((item) => {
                   const Icon = item.icon;
                   return (
@@ -198,7 +198,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                       href={item.href}
                       onClick={onClose}
                       aria-current={item.isActive ? 'page' : undefined}
-                      className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                      className={`flex items-center gap-3 px-3.5 py-2.5 sm:py-3 rounded-xl text-sm font-semibold transition-all min-h-[44px] ${
                         item.isActive
                           ? 'bg-[#E7F7F4] text-[#087F75] font-bold shadow-2xs'
                           : 'text-[#173B67] hover:bg-[#F7F9FC] hover:text-[#0FA698]'

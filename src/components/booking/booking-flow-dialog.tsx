@@ -187,7 +187,7 @@ export function BookingFlowDialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-6"
       role="dialog"
       aria-modal="true"
       aria-labelledby="booking-modal-title"
@@ -207,19 +207,19 @@ export function BookingFlowDialog({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: 10 }}
         transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-        className="relative w-full max-w-xl bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-[#E4E7EC] overflow-hidden flex flex-col max-h-[90vh]"
+        className="relative w-full max-w-xl bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-[#E4E7EC] overflow-hidden flex flex-col max-h-[92dvh]"
       >
         {/* Header Bar */}
-        <div className="flex items-center justify-between p-5 border-b border-[#E4E7EC] bg-[#F7F8FA]">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#173B67] text-white flex items-center justify-center font-bold text-sm shadow-2xs">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-[#E4E7EC] bg-[#F7F8FA]">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#173B67] text-white flex items-center justify-center font-bold text-sm shadow-2xs shrink-0">
               {professional.name[0]}
             </div>
-            <div>
-              <h2 id="booking-modal-title" className="text-base font-bold text-[#173B67]">
+            <div className="min-w-0">
+              <h2 id="booking-modal-title" className="text-sm sm:text-base font-bold text-[#173B67] truncate">
                 Schedule Service Appointment
               </h2>
-              <p className="text-xs text-[#667085]">
+              <p className="text-[11px] sm:text-xs text-[#667085] truncate">
                 With {professional.name} • {professional.tradeTitle}
               </p>
             </div>
@@ -229,14 +229,14 @@ export function BookingFlowDialog({
             type="button"
             onClick={handleClose}
             aria-label="Close booking dialog"
-            className="p-1.5 rounded-xl text-[#667085] hover:text-[#263445] hover:bg-[#EBF1F8] transition-colors"
+            className="p-1.5 rounded-xl text-[#667085] hover:text-[#263445] hover:bg-[#EBF1F8] transition-colors shrink-0 ml-2"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Step Progress Indicators */}
-        <div className="flex items-center justify-between px-6 py-3 bg-white border-b border-[#E4E7EC] text-xs">
+        <div className="flex items-center justify-between px-3 sm:px-6 py-2.5 sm:py-3 bg-white border-b border-[#E4E7EC] text-xs">
           {[
             { num: 1, label: 'Scope & Service' },
             { num: 2, label: 'Date & Time' },
@@ -431,7 +431,7 @@ export function BookingFlowDialog({
                 <label className="block text-xs font-bold text-[#263445] uppercase tracking-wider mb-2.5">
                   Select Preferred Date:
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 gap-2">
                   {availableDates.map((d) => (
                     <button
                       key={d.value}

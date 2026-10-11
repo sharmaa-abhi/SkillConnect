@@ -6,6 +6,7 @@ import { initialDemoBookings, initialWorkerRequests } from '@/data/bookings';
 import { professionals as staticProfessionals } from '@/data/professionals';
 
 const FAVORITES_STORAGE_KEY = 'skillconnect_favorites';
+const COMPARISON_STORAGE_KEY = 'skillconnect_comparison_pros';
 const BOOKINGS_STORAGE_KEY = 'skillconnect_demo_bookings';
 const REQUESTS_STORAGE_KEY = 'skillconnect_worker_requests';
 const VERIFICATIONS_STORAGE_KEY = 'skillconnect_verifications';
@@ -13,6 +14,7 @@ const PROS_STORAGE_KEY = 'skillconnect_custom_pros';
 const USER_STORAGE_KEY = 'skillconnect_active_user';
 
 const defaultFavorites = ['pro-marcus-vance', 'pro-elena-rodriguez'];
+const defaultComparison: string[] = [];
 
 export const defaultCustomerUser: UserProfile = {
   id: 'usr-customer-sarah',
@@ -115,6 +117,9 @@ export const initialVerificationRecords: VerificationRecord[] = [
 let cachedFavoritesRaw: string | null = null;
 let cachedFavorites: string[] = defaultFavorites;
 
+let cachedComparisonRaw: string | null = null;
+let cachedComparison: string[] = defaultComparison;
+
 let cachedBookingsRaw: string | null = null;
 let cachedBookings: DemoBooking[] = initialDemoBookings;
 
@@ -181,6 +186,56 @@ export function toggleFavoritePro(proId: string): boolean {
   const updated = exists ? current.filter((id) => id !== proId) : [...current, proId];
   saveFavorites(updated);
   return !exists;
+}
+
+// ---------------- PRO COMPARISON MATRIX ----------------
+export function getSavedComparison(): string[] {
+  if (typeof window === 'undefined') return defaultComparison;
+  try {
+    const raw = localStorage.getItem(COMPARISON_STORAGE_KEY);
+    if (!raw) return defaultComparison;
+    if (raw === cachedComparisonRaw) return cachedComparison;
+    cachedComparisonRaw = raw;
+    cachedComparison = JSON.parse(raw);
+    return cachedComparison;
+  } catch {
+    return defaultComparison;
+  }
+}
+
+export function saveComparison(comparison: string[]): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const raw = JSON.stringify(comparison);
+    cachedComparisonRaw = raw;
+    cachedComparison = comparison;
+    localStorage.setItem(COMPARISON_STORAGE_KEY, raw);
+    notifyStorageChange();
+  } catch (err) {
+    console.warn('LocalStorage save comparison failed:', err);
+  }
+}
+
+export function toggleComparisonPro(proId: string): { isAdded: boolean; count: number; error?: string } {
+  if (typeof window === 'undefined') return { isAdded: false, count: 0 };
+  const current = getSavedComparison();
+  const exists = current.includes(proId);
+  if (exists) {
+    const updated = current.filter((id) => id !== proId);
+    saveComparison(updated);
+    return { isAdded: false, count: updated.length };
+  } else {
+    if (current.length >= 3) {
+      return { isAdded: false, count: current.length, error: 'Maximum 3 professionals can be compared side-by-side.' };
+    }
+    const updated = [...current, proId];
+    saveComparison(updated);
+    return { isAdded: true, count: updated.length };
+  }
+}
+
+export function clearComparison(): void {
+  saveComparison([]);
 }
 
 // ---------------- BOOKINGS ----------------
@@ -618,6 +673,10 @@ export function useFavorites(): string[] {
   return useSyncExternalStore(subscribeStorage, getSavedFavorites, () => defaultFavorites);
 }
 
+export function useComparison(): string[] {
+  return useSyncExternalStore(subscribeStorage, getSavedComparison, () => defaultComparison);
+}
+
 export function useBookings(): DemoBooking[] {
   return useSyncExternalStore(subscribeStorage, getDemoBookings, () => initialDemoBookings);
 }
@@ -642,6 +701,7 @@ export function resetAllDemoData(): void {
   if (typeof window === 'undefined') return;
   try {
     localStorage.removeItem(FAVORITES_STORAGE_KEY);
+    localStorage.removeItem(COMPARISON_STORAGE_KEY);
     localStorage.removeItem(BOOKINGS_STORAGE_KEY);
     localStorage.removeItem(REQUESTS_STORAGE_KEY);
     localStorage.removeItem(VERIFICATIONS_STORAGE_KEY);
@@ -650,6 +710,8 @@ export function resetAllDemoData(): void {
 
     cachedFavoritesRaw = null;
     cachedFavorites = defaultFavorites;
+    cachedComparisonRaw = null;
+    cachedComparison = defaultComparison;
     cachedBookingsRaw = null;
     cachedBookings = initialDemoBookings;
     cachedRequestsRaw = null;

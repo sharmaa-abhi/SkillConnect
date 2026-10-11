@@ -229,40 +229,40 @@ export function AICostEstimator({
               Itemized Cost Breakdown
             </div>
             <div className="divide-y divide-[#E4E7EC] p-4 flex flex-col gap-2.5">
-              <div className="flex justify-between items-center text-[#263445]">
-                <div>
-                  <span className="font-semibold">Diagnostic Evaluation Inspection</span>
-                  <p className="text-xs text-[#667085]">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 text-[#263445]">
+                <div className="flex-1">
+                  <span className="font-semibold text-xs sm:text-sm">Diagnostic Evaluation Inspection</span>
+                  <p className="text-[11px] sm:text-xs text-[#667085]">
                     On-site physical testing & written scope. Fully credited if repair authorized.
                   </p>
                 </div>
-                <span className="font-bold text-[#173B67]">
+                <span className="font-bold text-[#173B67] text-sm shrink-0">
                   {formatCurrency(estimateResult.diagnosticFeeCredit)}
                 </span>
               </div>
 
-              <div className="flex justify-between items-center text-[#263445] pt-2">
-                <div>
-                  <span className="font-semibold">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 text-[#263445] pt-2">
+                <div className="flex-1">
+                  <span className="font-semibold text-xs sm:text-sm">
                     Estimated Skilled Labor ({estimateResult.estimatedHoursMin} – {estimateResult.estimatedHoursMax} hrs)
                   </span>
-                  <p className="text-xs text-[#667085]">
+                  <p className="text-[11px] sm:text-xs text-[#667085]">
                     Standard hourly rate benchmark (~$85/hr for certified specialists)
                   </p>
                 </div>
-                <span className="font-bold text-[#263445]">
+                <span className="font-bold text-[#263445] text-sm shrink-0">
                   {formatCurrency(estimateResult.laborEstimateMin)} – {formatCurrency(estimateResult.laborEstimateMax)}
                 </span>
               </div>
 
-              <div className="flex justify-between items-center text-[#263445] pt-2">
-                <div>
-                  <span className="font-semibold">Parts & Required Consumables</span>
-                  <p className="text-xs text-[#667085]">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 text-[#263445] pt-2">
+                <div className="flex-1">
+                  <span className="font-semibold text-xs sm:text-sm">Parts & Required Consumables</span>
+                  <p className="text-[11px] sm:text-xs text-[#667085]">
                     {hasParts ? 'Customer supplied main unit (seals & fittings only)' : 'Standard contractor-grade parts'}
                   </p>
                 </div>
-                <span className="font-bold text-[#263445]">
+                <span className="font-bold text-[#263445] text-sm shrink-0">
                   {formatCurrency(estimateResult.partsEstimateMin)} – {formatCurrency(estimateResult.partsEstimateMax)}
                 </span>
               </div>

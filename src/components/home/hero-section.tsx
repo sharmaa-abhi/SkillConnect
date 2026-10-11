@@ -151,19 +151,17 @@ export function HeroSection() {
                   </div>
                 </div>
 
-                <div className="mt-4 p-3.5 rounded-2xl bg-[#F7F8FA] border border-[#E4E7EC] text-xs flex items-center justify-between">
+                <div className="mt-4 p-3 sm:p-3.5 rounded-2xl bg-[#F7F8FA] border border-[#E4E7EC] text-xs grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-2">
                   <div>
-                    <span className="text-[#667085] block text-[11px] font-semibold">Diagnostic Fee</span>
+                    <span className="text-[#667085] block text-[10px] sm:text-[11px] font-semibold">Diagnostic Fee</span>
                     <span className="font-extrabold text-[#173B67] text-sm">$75.00</span>
                   </div>
-                  <div className="h-6 w-px bg-[#E4E7EC]" />
                   <div>
-                    <span className="text-[#667085] block text-[11px] font-semibold">Hourly Labor</span>
+                    <span className="text-[#667085] block text-[10px] sm:text-[11px] font-semibold">Hourly Labor</span>
                     <span className="font-bold text-[#263445] text-sm">$95.00/hr</span>
                   </div>
-                  <div className="h-6 w-px bg-[#E4E7EC]" />
-                  <div className="text-right">
-                    <span className="text-[#15803D] font-bold flex items-center gap-1">
+                  <div className="col-span-2 sm:col-span-1 pt-1.5 sm:pt-0 border-t sm:border-t-0 border-[#E4E7EC] text-left sm:text-right flex sm:flex-col items-center sm:items-end justify-between sm:justify-start">
+                    <span className="text-[#15803D] font-bold flex items-center gap-1 text-[11px]">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#15803D] animate-pulse" />
                       Available Today
                     </span>
@@ -181,15 +179,15 @@ export function HeroSection() {
               </div>
 
               {/* Floating Pill: Instant Booking Confirmation */}
-              <div className="absolute -bottom-6 -left-4 sm:-left-6 bg-white p-3.5 rounded-2xl shadow-lg border border-[#E4E7EC] z-20 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#E6F7F5] text-[#0F9D91] flex items-center justify-center flex-shrink-0">
-                  <CheckCircle2 className="w-5 h-5" />
+              <div className="absolute -bottom-4 left-1 sm:-bottom-6 sm:-left-6 bg-white p-2.5 sm:p-3.5 rounded-2xl shadow-lg border border-[#E4E7EC] z-20 flex items-center gap-2.5 sm:gap-3 max-w-[calc(100%-0.5rem)]">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#E6F7F5] text-[#0F9D91] flex items-center justify-center flex-shrink-0">
+                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <div>
-                  <span className="text-[11px] font-bold text-[#15803D] uppercase tracking-wider block">
+                <div className="min-w-0">
+                  <span className="text-[10px] sm:text-[11px] font-bold text-[#15803D] uppercase tracking-wider block">
                     Escrow Protected
                   </span>
-                  <p className="text-xs font-bold text-[#173B67]">
+                  <p className="text-[11px] sm:text-xs font-bold text-[#173B67] truncate">
                     Funds held safely until sign-off
                   </p>
                 </div>

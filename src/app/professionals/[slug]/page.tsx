@@ -84,9 +84,9 @@ export default function ProfessionalProfilePage({
   };
 
   return (
-    <div className="pb-24 lg:pb-16 bg-[#F7F8FA]">
+    <div className="pb-32 lg:pb-16 bg-[#F7F8FA]">
       {/* Breadcrumb Navigation */}
-      <div className="bg-white border-b border-[#E4E7EC] py-3 text-xs text-[#667085]">
+      <div className="bg-white border-b border-[#E4E7EC] py-2.5 sm:py-3 text-xs text-[#667085]">
         <Container>
           <div className="flex items-center gap-1.5 flex-wrap">
             <Link href="/" className="hover:text-[#173B67]">Home</Link>
@@ -97,18 +97,18 @@ export default function ProfessionalProfilePage({
               {pro.categoryName}
             </Link>
             <ChevronRight className="w-3.5 h-3.5" />
-            <span className="font-bold text-[#173B67]">{pro.name}</span>
+            <span className="font-bold text-[#173B67] truncate max-w-[140px] sm:max-w-none">{pro.name}</span>
           </div>
         </Container>
       </div>
 
-      <Container className="pt-8">
+      <Container className="pt-5 sm:pt-8">
         {/* Profile Hero Header Card */}
-        <div className="bg-white rounded-3xl border border-[#E4E7EC] p-6 sm:p-8 shadow-xs mb-8">
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+        <div className="bg-white rounded-3xl border border-[#E4E7EC] p-4 sm:p-8 shadow-xs mb-8">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-5 sm:gap-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5">
               {/* Avatar Photo */}
-              <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-[#173B67] flex-shrink-0 shadow-xs">
+              <div className="relative w-20 h-20 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-[#173B67] flex-shrink-0 shadow-xs">
                 <img
                   src={pro.avatarUrl}
                   alt={pro.name}
@@ -461,10 +461,10 @@ export default function ProfessionalProfilePage({
       </Container>
 
       {/* Mobile Fixed Bottom Booking Bar */}
-      <div className="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md p-4 border-t border-[#E4E7EC] z-40 shadow-2xl flex items-center justify-between gap-4">
+      <div className="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md px-4 py-3 sm:py-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] border-t border-[#E4E7EC] z-40 shadow-2xl flex items-center justify-between gap-4">
         <div>
-          <span className="text-[11px] text-[#667085] block">Diagnostic Fee</span>
-          <span className="font-black text-lg text-[#173B67]">
+          <span className="text-[10px] sm:text-[11px] text-[#667085] block font-medium">Diagnostic Fee</span>
+          <span className="font-black text-base sm:text-lg text-[#173B67]">
             {formatCurrency(pro.diagnosticFee)}
           </span>
         </div>
@@ -472,7 +472,7 @@ export default function ProfessionalProfilePage({
           variant="primary"
           size="md"
           onClick={() => setBookingDialogOpen(true)}
-          className="flex-1 justify-center font-bold"
+          className="flex-1 justify-center font-bold text-sm min-h-[44px]"
         >
           Book Appointment
         </Button>
