@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   X,
@@ -12,8 +13,9 @@ import {
   LayoutDashboard,
   ArrowRight,
   ShieldAlert,
+  Wrench,
+  HelpCircle,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/auth-context';
 
 interface MobileNavProps {
@@ -23,6 +25,7 @@ interface MobileNavProps {
 
 export function MobileNav({ isOpen, onClose }: MobileNavProps) {
   const { user, role, switchRole, logout } = useAuth();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -46,18 +49,54 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
   }, [isOpen]);
 
   const navLinks = [
-    { label: 'Browse Services', href: '/services', icon: Search },
-    { label: 'Find Professionals', href: '/professionals', icon: Users },
-    { label: 'How It Works & Trust', href: '/trust', icon: ShieldCheck },
-    { label: 'Customer Dashboard', href: '/customer/dashboard', icon: LayoutDashboard },
-    { label: 'Worker Dashboard', href: '/worker/dashboard', icon: Briefcase },
-    { label: 'Admin Verification Desk', href: '/admin', icon: ShieldAlert },
+    {
+      label: 'All Services',
+      href: '/services',
+      icon: Search,
+      isActive: pathname === '/services',
+    },
+    {
+      label: 'Find Professionals',
+      href: '/professionals',
+      icon: Users,
+      isActive: pathname.startsWith('/professionals'),
+    },
+    {
+      label: 'How It Works',
+      href: '/trust',
+      icon: HelpCircle,
+      isActive: pathname === '/trust' || pathname === '/how-it-works',
+    },
+    {
+      label: 'Customer Portal',
+      href: '/customer/dashboard',
+      icon: LayoutDashboard,
+      isActive: pathname.startsWith('/customer'),
+    },
+    {
+      label: 'Pro Portal',
+      href: '/worker/dashboard',
+      icon: Briefcase,
+      isActive: pathname.startsWith('/worker'),
+    },
+    {
+      label: 'Admin Trust',
+      href: '/admin',
+      icon: ShieldAlert,
+      isActive: pathname.startsWith('/admin'),
+    },
   ];
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+        <div
+          id="mobile-navigation-drawer"
+          className="fixed inset-0 z-50 lg:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile navigation menu"
+        >
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -68,45 +107,58 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
             className="fixed inset-0 bg-black/50 backdrop-blur-xs"
           />
 
-          {/* Slide-out drawer */}
+          {/* Slide-out Drawer from Right */}
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="fixed inset-y-0 right-0 w-full max-w-xs bg-white shadow-2xl p-6 flex flex-col justify-between overflow-y-auto"
+            className="fixed inset-y-0 right-0 w-full max-w-xs bg-white shadow-2xl p-6 flex flex-col justify-between overflow-y-auto border-l border-[#E4EAF1]"
           >
             <div>
-              <div className="flex items-center justify-between pb-6 border-b border-[#E4E7EC]">
-                <Link href="/" onClick={onClose} className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#173B67] flex items-center justify-center text-white font-bold text-base">
-                    S
+              {/* Header */}
+              <div className="flex items-center justify-between pb-5 border-b border-[#E4EAF1]">
+                <Link href="/" onClick={onClose} className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-[#173B67] flex items-center justify-center text-white font-bold">
+                    <Wrench className="w-4 h-4 text-[#0FA698]" />
                   </div>
-                  <span className="font-bold text-lg text-[#173B67]">SkillConnect</span>
+                  <div className="flex flex-col text-left">
+                    <span className="font-black text-lg text-[#173B67] leading-none">
+                      Skill<span className="text-[#0FA698]">Connect</span>
+                    </span>
+                    <span className="text-[10px] text-[#667085] font-medium leading-tight mt-0.5">
+                      Trusted Local Services
+                    </span>
+                  </div>
                 </Link>
                 <button
                   type="button"
                   onClick={onClose}
                   aria-label="Close navigation menu"
-                  className="p-2 -mr-2 rounded-lg text-[#667085] hover:text-[#263445] hover:bg-[#F7F8FA]"
+                  className="p-2 -mr-2 rounded-full text-[#667085] hover:text-[#173B67] hover:bg-[#F7F9FC] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698]"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              {/* Active Role Quick Switch */}
-              <div className="mt-4 p-3 rounded-xl bg-[#F7F8FA] border border-[#E4E7EC]">
-                <span className="text-[11px] font-bold text-[#667085] block mb-1.5 uppercase tracking-wider">
-                  Current User ({user.name.split(' ')[0]})
-                </span>
-                <div className="grid grid-cols-3 gap-1">
+              {/* Active User Quick Role Switcher */}
+              <div className="mt-4 p-3.5 rounded-2xl bg-[#F7F9FC] border border-[#E4EAF1]">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-bold text-[#667085] uppercase tracking-wider">
+                    Demo Persona: {user.name.split(' ')[0]}
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E7F7F4] text-[#087F75] capitalize">
+                    {role}
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-1.5">
                   <button
                     type="button"
                     onClick={() => switchRole('customer')}
-                    className={`py-1 text-center rounded-lg text-xs font-bold transition-all ${
+                    className={`py-1.5 text-center rounded-xl text-xs font-bold transition-all ${
                       role === 'customer'
-                        ? 'bg-[#173B67] text-white'
-                        : 'bg-white text-[#263445] border border-[#E4E7EC]'
+                        ? 'bg-[#173B67] text-white shadow-2xs'
+                        : 'bg-white text-[#173B67] border border-[#E4EAF1] hover:bg-slate-50'
                     }`}
                   >
                     Customer
@@ -114,10 +166,10 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                   <button
                     type="button"
                     onClick={() => switchRole('worker')}
-                    className={`py-1 text-center rounded-lg text-xs font-bold transition-all ${
+                    className={`py-1.5 text-center rounded-xl text-xs font-bold transition-all ${
                       role === 'worker'
-                        ? 'bg-[#0F9D91] text-white'
-                        : 'bg-white text-[#263445] border border-[#E4E7EC]'
+                        ? 'bg-[#0FA698] text-white shadow-2xs'
+                        : 'bg-white text-[#173B67] border border-[#E4EAF1] hover:bg-slate-50'
                     }`}
                   >
                     Worker
@@ -125,10 +177,10 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                   <button
                     type="button"
                     onClick={() => switchRole('admin')}
-                    className={`py-1 text-center rounded-lg text-xs font-bold transition-all ${
+                    className={`py-1.5 text-center rounded-xl text-xs font-bold transition-all ${
                       role === 'admin'
-                        ? 'bg-[#173B67] text-white'
-                        : 'bg-white text-[#263445] border border-[#E4E7EC]'
+                        ? 'bg-[#173B67] text-white shadow-2xs'
+                        : 'bg-white text-[#173B67] border border-[#E4EAF1] hover:bg-slate-50'
                     }`}
                   >
                     Admin
@@ -136,8 +188,8 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                 </div>
               </div>
 
-              {/* Navigation links */}
-              <nav className="mt-6 flex flex-col gap-1.5">
+              {/* Navigation Links */}
+              <nav aria-label="Mobile navigation" className="mt-5 flex flex-col gap-1">
                 {navLinks.map((item) => {
                   const Icon = item.icon;
                   return (
@@ -145,39 +197,49 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                       key={item.href}
                       href={item.href}
                       onClick={onClose}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-[#263445] hover:bg-[#EBF1F8] hover:text-[#173B67] transition-colors"
+                      aria-current={item.isActive ? 'page' : undefined}
+                      className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                        item.isActive
+                          ? 'bg-[#E7F7F4] text-[#087F75] font-bold shadow-2xs'
+                          : 'text-[#173B67] hover:bg-[#F7F9FC] hover:text-[#0FA698]'
+                      }`}
                     >
-                      <Icon className="w-4 h-4 text-[#0F9D91]" />
+                      <Icon className={`w-4 h-4 ${item.isActive ? 'text-[#087F75]' : 'text-[#0FA698]'}`} />
                       <span>{item.label}</span>
                     </Link>
                   );
                 })}
               </nav>
 
-              <div className="mt-6 pt-6 border-t border-[#E4E7EC] flex flex-col gap-3">
-                <Link href="/register?role=worker" onClick={onClose}>
-                  <Button variant="secondary" className="w-full justify-center" rightIcon={<ArrowRight className="w-4 h-4" />}>
-                    Join as a Pro
-                  </Button>
+              {/* Primary Actions */}
+              <div className="mt-6 pt-5 border-t border-[#E4EAF1] flex flex-col gap-2.5">
+                <Link
+                  href="/register?role=worker"
+                  onClick={onClose}
+                  className="w-full inline-flex items-center justify-center gap-2 bg-[#0FA698] hover:bg-[#087F75] text-white font-bold text-sm py-3 px-4 rounded-full shadow-xs transition-all active:scale-[0.98]"
+                >
+                  <span>Join as a Pro</span>
+                  <ArrowRight className="w-4 h-4" />
                 </Link>
+
                 <button
                   type="button"
                   onClick={() => {
                     logout();
                     onClose();
                   }}
-                  className="py-2 text-xs font-semibold text-[#B42318] hover:bg-red-50 rounded-xl transition-colors text-center"
+                  className="w-full py-2.5 text-xs font-semibold text-[#B42318] hover:bg-red-50 rounded-xl transition-colors text-center"
                 >
                   Sign Out
                 </button>
               </div>
             </div>
 
-            {/* Prototype notice badge */}
-            <div className="mt-8 pt-4 border-t border-[#E4E7EC]">
-              <div className="flex items-start gap-2 p-3 rounded-xl bg-[#F7F8FA] border border-[#E4E7EC] text-xs text-[#667085]">
-                <ShieldCheck className="w-4 h-4 text-[#0F9D91] flex-shrink-0 mt-0.5" />
-                <span>Verified trade licenses, upfront diagnostic fees & escrow protection.</span>
+            {/* Bottom Verification Footer */}
+            <div className="mt-6 pt-4 border-t border-[#E4EAF1]">
+              <div className="flex items-start gap-2 p-3 rounded-2xl bg-[#F7F9FC] border border-[#E4EAF1] text-[11px] text-[#667085] leading-relaxed">
+                <ShieldCheck className="w-4 h-4 text-[#0FA698] shrink-0 mt-0.5" />
+                <span>Verified trade licenses, upfront diagnostic fees &amp; escrow milestone protection.</span>
               </div>
             </div>
           </motion.div>
