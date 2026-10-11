@@ -220,13 +220,13 @@ export default function WorkerDashboardPage() {
   );
 
   return (
-    <div className="py-8 sm:py-12 bg-[#F7F8FA]">
+    <div className="py-6 sm:py-12 bg-[#F7F8FA]">
       <Container>
         {/* Worker Header Card */}
-        <div className="bg-white rounded-3xl border border-[#E4E7EC] p-6 sm:p-8 shadow-xs mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="flex items-start sm:items-center gap-5">
-              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#173B67] text-white flex items-center justify-center font-bold text-2xl flex-shrink-0 overflow-hidden shadow-xs">
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E4E7EC] p-4 sm:p-8 shadow-xs mb-6 sm:mb-8">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
+            <div className="flex items-start sm:items-center gap-3.5 sm:gap-5">
+              <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-[#173B67] text-white flex items-center justify-center font-bold text-xl sm:text-2xl flex-shrink-0 overflow-hidden shadow-xs">
                 <img
                   src={workerPro.avatarUrl}
                   alt={workerPro.name}
@@ -239,13 +239,13 @@ export default function WorkerDashboardPage() {
                   <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#EBF1F8] text-[#173B67]">
                     Pro Worker Portal
                   </span>
-                  <span className="text-xs text-[#15803D] font-bold flex items-center gap-1">
+                  <span className="text-[11px] sm:text-xs text-[#15803D] font-bold flex items-center gap-1">
                     <ShieldCheck className="w-3.5 h-3.5 text-[#0F9D91]" />
                     {workerPro.licenseNumber} Verified Active
                   </span>
                 </div>
 
-                <h1 className="text-2xl sm:text-3xl font-black text-[#173B67] tracking-tight">
+                <h1 className="text-xl sm:text-3xl font-black text-[#173B67] tracking-tight">
                   {workerPro.name}
                 </h1>
                 <p className="text-xs sm:text-sm text-[#667085]">
@@ -255,18 +255,18 @@ export default function WorkerDashboardPage() {
             </div>
 
             {/* Availability Toggle Box */}
-            <div className="p-4 rounded-2xl bg-[#F7F8FA] border border-[#E4E7EC] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="p-3 sm:p-4 rounded-2xl bg-[#F7F8FA] border border-[#E4E7EC] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
               <AvailabilitySwitch
                 isAvailable={isAvailableToday}
                 onToggle={handleAvailabilityToggle}
               />
 
-              <Link href={`/professionals/${workerPro.slug}`}>
+              <Link href={`/professionals/${workerPro.slug}`} className="w-full sm:w-auto">
                 <Button
                   variant="outline"
                   size="sm"
                   rightIcon={<ExternalLink className="w-3.5 h-3.5" />}
-                  className="text-xs"
+                  className="text-xs w-full sm:w-auto justify-center min-h-[38px]"
                 >
                   View Public Profile
                 </Button>

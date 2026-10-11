@@ -2,15 +2,19 @@
 
 import React, { useState, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Search, SlidersHorizontal, ArrowUpDown, X, ShieldCheck } from 'lucide-react';
+import { Search, SlidersHorizontal, ArrowUpDown, X, ShieldCheck, Scale } from 'lucide-react';
 import { Container } from '@/components/layout/container';
 import { FilterState } from '@/types';
 import { serviceCategories } from '@/data/services';
 import { filterAndSortProfessionals } from '@/lib/search';
-import { useProfessionalsList } from '@/lib/demo-storage';
+import { useProfessionalsList, useComparison, toggleComparisonPro, clearComparison } from '@/lib/demo-storage';
 import { ProfessionalGrid } from '@/components/professionals/professional-grid';
 import { FilterSidebar } from '@/components/professionals/filter-sidebar';
 import { FilterDrawerMobile } from '@/components/professionals/filter-drawer-mobile';
+import { ComparisonFloatingBar } from '@/components/professionals/comparison-floating-bar';
+import { ComparisonModal } from '@/components/professionals/comparison-modal';
+import { BookingFlowDialog } from '@/components/booking/booking-flow-dialog';
+import { Professional } from '@/types/professional';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Button } from '@/components/ui/button';
 
@@ -39,6 +43,13 @@ function ProfessionalsDirectoryContent() {
 
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [showDesktopSidebar, setShowDesktopSidebar] = useState(true);
+  const [comparisonModalOpen, setComparisonModalOpen] = useState(false);
+  const [bookingDialogPro, setBookingDialogPro] = useState<Professional | null>(null);
+
+  const comparisonIds = useComparison();
+  const comparedPros = useMemo(() => {
+    return allPros.filter((p) => comparisonIds.includes(p.id));
+  }, [allPros, comparisonIds]);
 
   // Handle filter changes
   const handleFilterChange = (updated: Partial<FilterState>) => {
@@ -95,16 +106,16 @@ function ProfessionalsDirectoryContent() {
         </div>
 
         {/* Search & Sort Controls Bar */}
-        <div className="bg-white p-3 sm:p-4 rounded-3xl border border-[#E4E7EC] shadow-2xs mb-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3.5">
+        <div className="bg-white p-3 sm:p-4 rounded-3xl border border-[#E4E7EC] shadow-2xs mb-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
           {/* Left Controls: Filter Button on the side left + Search Input */}
-          <div className="flex items-center gap-2.5 w-full md:max-w-xl">
+          <div className="flex items-center gap-2 sm:gap-2.5 w-full md:max-w-xl">
             {/* Side-Left Filter Button */}
             <Button
               variant={activeFiltersCount > 0 ? 'secondary' : 'outline'}
               size="md"
               onClick={() => setMobileFilterOpen(true)}
               leftIcon={<SlidersHorizontal className="w-4 h-4" />}
-              className="rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm font-bold shrink-0 flex items-center gap-2 border-[#D0D5DD] hover:border-[#173B67] transition-all"
+              className="rounded-2xl px-3 sm:px-3.5 py-2.5 text-xs sm:text-sm font-bold shrink-0 flex items-center gap-1.5 sm:gap-2 border-[#D0D5DD] hover:border-[#173B67] transition-all min-h-[42px]"
             >
               <span>Filters</span>
               {activeFiltersCount > 0 && (
@@ -121,14 +132,14 @@ function ProfessionalsDirectoryContent() {
                 type="text"
                 value={filters.query}
                 onChange={(e) => handleFilterChange({ query: e.target.value })}
-                placeholder="Search by name, skill, neighborhood (e.g. 94107, Mission)..."
-                className="w-full pl-10 pr-8 py-2.5 bg-[#F7F8FA] text-xs sm:text-sm rounded-xl border border-[#E4E7EC] focus:outline-none focus:ring-2 focus:ring-[#173B67] text-[#263445] transition-all"
+                placeholder="Search pros, skills, ZIP (e.g. 94107)..."
+                className="w-full pl-9 sm:pl-10 pr-8 py-2.5 bg-[#F7F8FA] text-xs sm:text-sm rounded-xl border border-[#E4E7EC] focus:outline-none focus:ring-2 focus:ring-[#173B67] text-[#263445] transition-all min-h-[42px]"
               />
               {filters.query && (
                 <button
                   type="button"
                   onClick={() => handleFilterChange({ query: '' })}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#667085] hover:text-[#263445]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#667085] hover:text-[#263445] p-1"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -136,20 +147,33 @@ function ProfessionalsDirectoryContent() {
             </div>
           </div>
 
-          {/* Right Controls: Desktop Sidebar Toggle & Sort */}
-          <div className="flex items-center gap-3 justify-between md:justify-end shrink-0">
+          {/* Right Controls: Compare Button, Desktop Sidebar Toggle & Sort */}
+          <div className="flex items-center gap-2 sm:gap-3 justify-between md:justify-end shrink-0 flex-wrap sm:flex-nowrap">
+            {/* Quick Compare Trigger in Toolbar */}
+            {comparisonIds.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setComparisonModalOpen(true)}
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-[#0F9D91] hover:bg-[#0D877D] px-3 py-2 rounded-xl transition-all shadow-xs shrink-0 active:scale-95 min-h-[38px]"
+                title="View side-by-side comparison"
+              >
+                <Scale className="w-3.5 h-3.5" />
+                <span>Compare ({comparisonIds.length})</span>
+              </button>
+            )}
+
             {/* Desktop Quick Toggle for Left Sidebar */}
             <button
               type="button"
               onClick={() => setShowDesktopSidebar(!showDesktopSidebar)}
-              className="hidden lg:inline-flex items-center gap-1.5 text-xs font-bold text-[#173B67] bg-[#EBF1F8] hover:bg-[#D9E6F5] px-3 py-2 rounded-xl border border-[#173B67]/15 transition-colors"
+              className="hidden lg:inline-flex items-center gap-1.5 text-xs font-bold text-[#173B67] bg-[#EBF1F8] hover:bg-[#D9E6F5] px-3 py-2 rounded-xl border border-[#173B67]/15 transition-colors min-h-[38px]"
             >
               <SlidersHorizontal className="w-3.5 h-3.5 text-[#0F9D91]" />
               <span>{showDesktopSidebar ? 'Hide Left Sidebar' : 'Show Left Sidebar'}</span>
             </button>
 
             {/* Sort Dropdown */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2 ml-auto md:ml-0">
               <span className="text-xs text-[#667085] whitespace-nowrap hidden sm:inline font-semibold">
                 Sort:
               </span>
@@ -161,7 +185,7 @@ function ProfessionalsDirectoryContent() {
                       sortBy: e.target.value as FilterState['sortBy'],
                     })
                   }
-                  className="bg-[#F7F8FA] border border-[#E4E7EC] text-xs font-bold text-[#173B67] rounded-xl px-3 py-2.5 pr-8 focus:outline-none focus:ring-2 focus:ring-[#173B67] cursor-pointer"
+                  className="bg-[#F7F8FA] border border-[#E4E7EC] text-xs font-bold text-[#173B67] rounded-xl px-2.5 sm:px-3 py-2 sm:py-2.5 pr-7 sm:pr-8 focus:outline-none focus:ring-2 focus:ring-[#173B67] cursor-pointer min-h-[38px]"
                 >
                   <option value="recommended">Recommended (Top Ranked)</option>
                   <option value="rating">Highest Rated</option>
@@ -324,6 +348,38 @@ function ProfessionalsDirectoryContent() {
         onReset={handleResetFilters}
         resultsCount={filteredPros.length}
       />
+
+      {/* Floating Comparison Dock Bar */}
+      <ComparisonFloatingBar
+        comparedPros={comparedPros}
+        onOpenModal={() => setComparisonModalOpen(true)}
+        onRemovePro={(id) => toggleComparisonPro(id)}
+        onClearAll={() => clearComparison()}
+      />
+
+      {/* Side-by-Side Professional Comparison Modal */}
+      {comparisonModalOpen && (
+        <ComparisonModal
+          isOpen={comparisonModalOpen}
+          onClose={() => setComparisonModalOpen(false)}
+          comparedPros={comparedPros}
+          onRemovePro={(id) => toggleComparisonPro(id)}
+          onClearAll={() => clearComparison()}
+          onBookPro={(pro) => {
+            setComparisonModalOpen(false);
+            setBookingDialogPro(pro);
+          }}
+        />
+      )}
+
+      {/* Booking Dialog Triggered from Comparison */}
+      {bookingDialogPro && (
+        <BookingFlowDialog
+          isOpen={!!bookingDialogPro}
+          onClose={() => setBookingDialogPro(null)}
+          professional={bookingDialogPro}
+        />
+      )}
     </div>
   );
 }

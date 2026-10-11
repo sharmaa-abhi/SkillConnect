@@ -184,18 +184,19 @@ export default function ServicesPage() {
         )}
 
         {/* Sub-Services Diagnostic Pricing Guide */}
-        <div className="mt-16 p-8 rounded-3xl bg-white border border-[#E4E7EC] shadow-2xs">
+        <div className="mt-12 sm:mt-16 p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#E4E7EC] shadow-2xs">
           <div className="flex items-center gap-3 mb-2">
-            <ShieldCheck className="w-6 h-6 text-[#0F9D91]" />
-            <h2 className="text-xl font-bold text-[#173B67]">
+            <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-[#0F9D91] shrink-0" />
+            <h2 className="text-lg sm:text-xl font-bold text-[#173B67]">
               Standard Diagnostic Pricing & Scope Benchmark
             </h2>
           </div>
-          <p className="text-xs sm:text-sm text-[#667085] mb-6 max-w-2xl">
+          <p className="text-xs sm:text-sm text-[#667085] mb-5 max-w-2xl leading-relaxed">
             We require standard benchmark diagnostic estimates so you have full clarity on costs before work begins on your home.
           </p>
 
-          <div className="overflow-x-auto">
+          {/* Desktop/Tablet Table View */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm">
               <thead>
                 <tr className="border-b border-[#E4E7EC] text-[#667085] font-bold uppercase tracking-wider text-[11px]">
@@ -216,6 +217,23 @@ export default function ServicesPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View (No Horizontal Table Scroll Needed) */}
+          <div className="sm:hidden space-y-3">
+            {subServices.map((sub) => (
+              <div key={sub.id} className="p-3.5 rounded-xl border border-[#E4E7EC] bg-[#F7F8FA]/50 flex flex-col gap-2">
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="font-bold text-xs text-[#173B67] leading-snug">{sub.name}</h3>
+                  <span className="font-bold text-xs text-[#263445] shrink-0">{sub.typicalCostRange}</span>
+                </div>
+                <p className="text-[11px] text-[#667085] leading-relaxed">{sub.description}</p>
+                <div className="flex items-center gap-1.5 text-[10px] text-[#667085] pt-1 border-t border-[#E4E7EC]">
+                  <span className="font-medium">Estimated Labor:</span>
+                  <span className="font-bold text-[#173B67]">{sub.estimatedLaborHours}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </Container>

@@ -98,20 +98,20 @@ export function FilterDrawerMobile({
             </div>
 
             {/* Bottom Actions */}
-            <div className="p-4 px-6 border-t border-[#E4E7EC] bg-[#F7F8FA] flex items-center gap-3">
+            <div className="p-3 sm:p-4 px-4 sm:px-6 border-t border-[#E4E7EC] bg-[#F7F8FA] flex items-center gap-2.5 sm:gap-3">
               <Button
                 variant="outline"
                 size="md"
                 onClick={onReset}
-                className="flex-1 justify-center rounded-xl font-bold"
+                className="flex-1 justify-center rounded-xl font-bold min-h-[44px] text-xs sm:text-sm"
               >
-                Reset All
+                Reset
               </Button>
               <Button
                 variant="primary"
                 size="md"
                 onClick={onClose}
-                className="flex-1 justify-center rounded-xl font-bold shadow-xs"
+                className="flex-1 justify-center rounded-xl font-bold shadow-xs min-h-[44px] text-xs sm:text-sm"
               >
                 Show {resultsCount} {resultsCount === 1 ? 'Pro' : 'Pros'}
               </Button>

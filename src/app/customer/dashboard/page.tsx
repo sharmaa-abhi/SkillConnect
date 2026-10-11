@@ -88,13 +88,13 @@ export default function CustomerDashboardPage() {
   const favoritedPros = allPros.filter((p) => favoriteIds.includes(p.id));
 
   return (
-    <div className="py-8 sm:py-12 bg-[#F7F8FA]">
+    <div className="py-6 sm:py-12 bg-[#F7F8FA]">
       <Container>
         {/* Welcome Banner */}
-        <div className="bg-white rounded-3xl border border-[#E4E7EC] p-6 sm:p-8 shadow-xs mb-8">
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E4E7EC] p-4 sm:p-8 shadow-xs mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-start sm:items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-[#173B67] text-white flex items-center justify-center font-bold text-2xl overflow-hidden shadow-xs flex-shrink-0">
+            <div className="flex items-start sm:items-center gap-3.5 sm:gap-4">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#173B67] text-white flex items-center justify-center font-bold text-xl sm:text-2xl overflow-hidden shadow-xs flex-shrink-0">
                 {user.avatarUrl ? (
                   <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
                 ) : (
@@ -106,23 +106,23 @@ export default function CustomerDashboardPage() {
                   <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#EBF1F8] text-[#173B67]">
                     Customer Account
                   </span>
-                  <span className="text-xs text-[#667085]">ID: {user.id}</span>
+                  <span className="text-[11px] text-[#667085]">ID: {user.id}</span>
                 </div>
-                <h1 className="text-2xl sm:text-3xl font-black text-[#173B67] tracking-tight">
+                <h1 className="text-xl sm:text-3xl font-black text-[#173B67] tracking-tight">
                   Welcome back, {user.name}
                 </h1>
-                <p className="text-xs sm:text-sm text-[#667085] mt-0.5">
+                <p className="text-xs sm:text-sm text-[#667085] mt-0.5 leading-relaxed">
                   Manage your service appointments, track pre-authorized escrow holds, and update your home address.
                 </p>
               </div>
             </div>
 
-            <Link href="/professionals">
+            <Link href="/professionals" className="w-full sm:w-auto">
               <Button
                 variant="primary"
                 size="md"
                 leftIcon={<Plus className="w-4 h-4" />}
-                className="font-bold shadow-xs whitespace-nowrap"
+                className="font-bold shadow-xs whitespace-nowrap w-full sm:w-auto justify-center min-h-[44px]"
               >
                 Book New Service
               </Button>
@@ -130,41 +130,41 @@ export default function CustomerDashboardPage() {
           </div>
 
           {/* Quick Metrics */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-[#E4E7EC]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-6 pt-6 border-t border-[#E4E7EC]">
             <div>
-              <span className="text-xs font-semibold text-[#667085]">Active Appointments</span>
-              <p className="text-2xl font-extrabold text-[#173B67] mt-0.5">
+              <span className="text-[11px] sm:text-xs font-semibold text-[#667085]">Active Appointments</span>
+              <p className="text-xl sm:text-2xl font-extrabold text-[#173B67] mt-0.5">
                 {upcomingBookings.length}
               </p>
             </div>
             <div>
-              <span className="text-xs font-semibold text-[#667085]">Saved Professionals</span>
-              <p className="text-2xl font-extrabold text-[#263445] mt-0.5">
+              <span className="text-[11px] sm:text-xs font-semibold text-[#667085]">Saved Professionals</span>
+              <p className="text-xl sm:text-2xl font-extrabold text-[#263445] mt-0.5">
                 {favoritedPros.length}
               </p>
             </div>
             <div>
-              <span className="text-xs font-semibold text-[#667085]">Completed Services</span>
-              <p className="text-2xl font-extrabold text-[#263445] mt-0.5">
+              <span className="text-[11px] sm:text-xs font-semibold text-[#667085]">Completed Services</span>
+              <p className="text-xl sm:text-2xl font-extrabold text-[#263445] mt-0.5">
                 {pastBookings.filter((b) => b.status === 'completed').length}
               </p>
             </div>
             <div>
-              <span className="text-xs font-semibold text-[#667085]">Escrow Protection</span>
-              <p className="text-xs font-bold text-[#15803D] flex items-center gap-1 mt-2">
-                <ShieldCheck className="w-4 h-4" />
-                <span>$2,500 Guarantee Active</span>
+              <span className="text-[11px] sm:text-xs font-semibold text-[#667085]">Escrow Protection</span>
+              <p className="text-[11px] sm:text-xs font-bold text-[#15803D] flex items-center gap-1 mt-1 sm:mt-2">
+                <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                <span>$2,500 Guarantee</span>
               </p>
             </div>
           </div>
         </div>
 
         {/* Dashboard Tabs */}
-        <div className="flex border-b border-[#E4E7EC] mb-6 overflow-x-auto">
+        <div className="flex border-b border-[#E4E7EC] mb-6 overflow-x-auto scrollbar-none">
           <button
             type="button"
             onClick={() => setActiveTab('upcoming')}
-            className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 -mb-px transition-all whitespace-nowrap ${
+            className={`py-2.5 sm:py-3 px-3.5 sm:px-5 text-xs sm:text-sm font-bold border-b-2 -mb-px transition-all whitespace-nowrap min-h-[44px] ${
               activeTab === 'upcoming'
                 ? 'border-[#173B67] text-[#173B67]'
                 : 'border-transparent text-[#667085] hover:text-[#263445]'
@@ -176,7 +176,7 @@ export default function CustomerDashboardPage() {
           <button
             type="button"
             onClick={() => setActiveTab('past')}
-            className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 -mb-px transition-all whitespace-nowrap ${
+            className={`py-2.5 sm:py-3 px-3.5 sm:px-5 text-xs sm:text-sm font-bold border-b-2 -mb-px transition-all whitespace-nowrap min-h-[44px] ${
               activeTab === 'past'
                 ? 'border-[#173B67] text-[#173B67]'
                 : 'border-transparent text-[#667085] hover:text-[#263445]'
