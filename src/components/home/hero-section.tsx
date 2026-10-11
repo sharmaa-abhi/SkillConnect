@@ -26,38 +26,39 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative pt-10 pb-16 lg:pt-20 lg:pb-24 bg-gradient-to-b from-[#EBF1F8]/50 via-[#F7F8FA] to-[#F7F8FA] overflow-hidden">
+    <section className="relative pt-16 sm:pt-20 lg:pt-24 pb-14 sm:pb-16 lg:pb-24 bg-gradient-to-b from-[#EBF1F8]/50 via-[#F7F8FA] to-[#F7F8FA] overflow-hidden">
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
           {/* Left Column: Headlines, Search Form, Category Chips */}
-          <div className="lg:col-span-7 flex flex-col gap-6">
+          <div className="lg:col-span-7 flex flex-col gap-5 sm:gap-6">
             {/* Trust Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#173B67]/20 shadow-2xs w-fit">
-              <ShieldCheck className="w-4 h-4 text-[#0F9D91]" />
-              <span className="text-xs font-bold text-[#173B67]">
-                Verified State Licenses • Upfront Diagnostic Pricing • Escrow Protection
+            <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white border border-[#173B67]/20 shadow-2xs w-fit max-w-full">
+              <ShieldCheck className="w-4 h-4 text-[#0F9D91] shrink-0" />
+              <span className="text-[11px] sm:text-xs font-bold text-[#173B67] leading-tight">
+                <span className="hidden sm:inline">Verified State Licenses • Upfront Diagnostic Pricing • Escrow Protection</span>
+                <span className="sm:hidden">Verified Licenses • Upfront Fees • Escrow</span>
               </span>
             </div>
 
             {/* Display H1 */}
-            <h1 className="text-3xl sm:text-4xl lg:text-[46px] font-black text-[#173B67] tracking-tight leading-[1.12]">
+            <h1 className="text-2xl sm:text-4xl lg:text-[46px] font-black text-[#173B67] tracking-tight leading-[1.12]">
               Find trusted help.{' '}
               <span className="text-[#0F9D91] block sm:inline">Book confidently.</span>
             </h1>
 
             {/* Body Large */}
-            <p className="text-base sm:text-lg text-[#667085] max-w-xl leading-relaxed">
+            <p className="text-sm sm:text-base lg:text-lg text-[#667085] max-w-xl leading-relaxed">
               Connect with verified local trade professionals. Transparent diagnostic fees, guaranteed craftsmanship, and funds held safely in escrow until you sign off.
             </p>
 
             {/* Unified Search Pill Container */}
             <form
               onSubmit={handleSearch}
-              className="bg-white p-2.5 rounded-2xl sm:rounded-3xl border border-[#D0D5DD] shadow-md hover:shadow-lg transition-all flex flex-col md:flex-row items-stretch md:items-center gap-2"
+              className="bg-white p-2 sm:p-2.5 rounded-2xl sm:rounded-3xl border border-[#D0D5DD] shadow-md hover:shadow-lg transition-all flex flex-col md:flex-row items-stretch md:items-center gap-2"
             >
               {/* Service Input */}
-              <div className="flex-1 flex items-center gap-3 px-3.5 py-2.5">
-                <Search className="w-5 h-5 text-[#0F9D91] flex-shrink-0" />
+              <div className="flex-1 flex items-center gap-2.5 sm:gap-3 px-3 py-2 sm:px-3.5 sm:py-2.5">
+                <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#0F9D91] flex-shrink-0" />
                 <div className="flex-1">
                   <label htmlFor="hero-service-search" className="sr-only">
                     What service do you need?
@@ -67,8 +68,8 @@ export function HeroSection() {
                     type="text"
                     value={serviceQuery}
                     onChange={(e) => setServiceQuery(e.target.value)}
-                    placeholder="What do you need help with? (e.g. leaky sink, electrical panel)"
-                    className="w-full text-sm text-[#263445] placeholder:text-[#667085]/70 focus:outline-none bg-transparent"
+                    placeholder="What do you need help with? (e.g. leaky sink)"
+                    className="w-full text-xs sm:text-sm text-[#263445] placeholder:text-[#667085]/70 focus:outline-none bg-transparent"
                   />
                 </div>
               </div>

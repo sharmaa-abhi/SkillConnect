@@ -81,22 +81,22 @@ export function SiteHeader() {
   return (
     <>
       {/* Modern Floating Navbar Container */}
-      <header className="sticky top-4 sm:top-5 z-40 w-full px-4 sm:px-6 lg:px-8 transition-all duration-300 pointer-events-none">
-        <div className="pointer-events-auto max-w-[1440px] mx-auto bg-white/95 backdrop-blur-md border border-[#E4EAF1] shadow-[0_10px_35px_-8px_rgba(23,59,103,0.08),0_2px_8px_-2px_rgba(23,59,103,0.04)] rounded-[28px] sm:rounded-full px-3 sm:px-4 lg:px-5 py-3 sm:py-3.5 flex items-center justify-between min-h-[76px] transition-all">
+      <header className="sticky top-2 sm:top-4 lg:top-5 z-40 w-full px-2.5 sm:px-6 lg:px-8 transition-all duration-300 pointer-events-none">
+        <div className="pointer-events-auto max-w-[1440px] mx-auto bg-white/95 backdrop-blur-md border border-[#E4EAF1] shadow-[0_10px_35px_-8px_rgba(23,59,103,0.08),0_2px_8px_-2px_rgba(23,59,103,0.04)] rounded-2xl sm:rounded-full px-2.5 sm:px-4 lg:px-5 py-2.5 sm:py-3.5 flex items-center justify-between min-h-[62px] sm:min-h-[76px] transition-all">
           {/* Brand Section */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 group shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698] rounded-2xl"
+            className="flex items-center gap-2 sm:gap-2.5 group shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698] rounded-2xl"
             aria-label="SkillConnect Home"
           >
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#173B67] flex items-center justify-center text-white shadow-xs group-hover:bg-[#0F2A4A] group-hover:scale-105 transition-all shrink-0">
-              <Wrench className="w-5 h-5 text-[#0FA698]" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-[#173B67] flex items-center justify-center text-white shadow-xs group-hover:bg-[#0F2A4A] group-hover:scale-105 transition-all shrink-0">
+              <Wrench className="w-4 h-4 sm:w-5 sm:h-5 text-[#0FA698]" />
             </div>
             <div className="flex flex-col text-left">
-              <span className="text-xl sm:text-[22px] font-black tracking-tight text-[#173B67] leading-none">
+              <span className="text-lg sm:text-xl lg:text-[22px] font-black tracking-tight text-[#173B67] leading-none">
                 Skill<span className="text-[#0FA698]">Connect</span>
               </span>
-              <span className="text-xs text-[#667085] font-medium tracking-normal leading-tight mt-1 hidden sm:block">
+              <span className="text-[11px] text-[#667085] font-medium tracking-normal leading-tight mt-1 hidden md:block">
                 Trusted Local Service Professionals
               </span>
             </div>
@@ -249,14 +249,15 @@ export function SiteHeader() {
           </div>
 
           {/* Mobile & Tablet Controls */}
-          <div className="flex lg:hidden items-center gap-2">
+          <div className="flex lg:hidden items-center gap-1.5 sm:gap-2">
             <button
               type="button"
-              onClick={() => switchRole(role === 'customer' ? 'worker' : 'customer')}
-              className="text-[11px] font-bold px-2.5 py-1.5 rounded-full bg-[#E7F7F4] text-[#087F75] border border-[#0FA698]/20 transition-colors"
-              aria-label={`Toggle demo role. Current role is ${role}`}
+              onClick={() => switchRole(role === 'customer' ? 'worker' : role === 'worker' ? 'admin' : 'customer')}
+              className="text-[10px] sm:text-[11px] font-bold px-2 sm:px-2.5 py-1.5 rounded-full bg-[#E7F7F4] text-[#087F75] border border-[#0FA698]/20 transition-colors whitespace-nowrap active:scale-95"
+              aria-label={`Switch demo role. Currently active role is ${role}`}
+              title="Tap to switch persona role"
             >
-              Role: {role}
+              <span className="capitalize">{role}</span>
             </button>
             <button
               type="button"
@@ -264,7 +265,7 @@ export function SiteHeader() {
               aria-expanded={mobileNavOpen}
               aria-controls="mobile-navigation-drawer"
               aria-label="Open navigation menu"
-              className="p-2.5 rounded-full text-[#173B67] bg-[#F7F9FC] hover:bg-white border border-[#E4EAF1] hover:border-[#D0D9E4] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698]"
+              className="p-2 sm:p-2.5 rounded-xl sm:rounded-full text-[#173B67] bg-[#F7F9FC] hover:bg-white border border-[#E4EAF1] hover:border-[#D0D9E4] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698] shrink-0 active:scale-95"
             >
               <Menu className="w-5 h-5" />
             </button>

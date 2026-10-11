@@ -138,48 +138,83 @@ export function DemoExperienceWidget() {
     setIsOpen(false);
   };
 
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+  const isProDetailPage = pathname.includes('/professionals/') && pathname !== '/professionals';
+  const [isMinimizedOnMobile, setIsMinimizedOnMobile] = useState(false);
+
   return (
     <>
       {/* Floating Bottom-Right Trigger Pill */}
-      <div className="fixed bottom-5 right-5 z-40">
-        <button
-          type="button"
-          onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-full bg-[#173B67] text-white shadow-xl hover:bg-[#0F2A4A] transition-all hover:scale-105 border border-white/20 group"
-          aria-label="Open Demo Accounts & Experience Hub"
-        >
-          <div className="w-6 h-6 rounded-full bg-[#0F9D91] text-white flex items-center justify-center text-xs font-bold animate-pulse">
-            <Sparkles className="w-3.5 h-3.5" />
+      <div
+        className={`fixed z-30 transition-all duration-300 ${
+          isProDetailPage ? 'bottom-20 sm:bottom-5 right-3 sm:right-5' : 'bottom-4 sm:bottom-5 right-3 sm:right-5'
+        }`}
+      >
+        {isMinimizedOnMobile ? (
+          <button
+            type="button"
+            onClick={() => {
+              setIsMinimizedOnMobile(false);
+              setIsOpen(true);
+            }}
+            className="w-11 h-11 rounded-full bg-[#173B67] text-white shadow-xl hover:bg-[#0F2A4A] transition-all hover:scale-105 border border-white/20 flex items-center justify-center relative group"
+            aria-label="Open Demo Accounts & Experience Hub"
+            title="Demo Accounts Hub"
+          >
+            <Sparkles className="w-5 h-5 text-[#0F9D91] animate-pulse" />
+            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#0F9D91] rounded-full border-2 border-white" />
+          </button>
+        ) : (
+          <div className="flex items-center gap-1 bg-[#173B67] rounded-full shadow-xl border border-white/20 p-1 pl-2">
+            <button
+              type="button"
+              onClick={() => setIsOpen(true)}
+              className="flex items-center gap-2 sm:gap-2.5 py-1.5 pr-2 text-white hover:opacity-90 transition-all group"
+              aria-label="Open Demo Accounts & Experience Hub"
+            >
+              <div className="w-6 h-6 rounded-full bg-[#0F9D91] text-white flex items-center justify-center text-xs font-bold shrink-0 animate-pulse">
+                <Sparkles className="w-3.5 h-3.5" />
+              </div>
+              <div className="flex flex-col text-left leading-tight">
+                <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#0F9D91]">
+                  Demo: <span className="text-white capitalize">{role}</span>
+                </span>
+                <span className="text-[11px] font-medium text-white/90 hidden sm:inline">
+                  {user.name.split(' ')[0]}
+                </span>
+              </div>
+              <ChevronUp className="w-3.5 h-3.5 text-white/70 group-hover:-translate-y-0.5 transition-transform ml-0.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsMinimizedOnMobile(true)}
+              aria-label="Minimize demo badge"
+              title="Minimize"
+              className="w-6 h-6 rounded-full text-white/60 hover:text-white hover:bg-white/10 flex items-center justify-center transition-colors text-xs"
+            >
+              ×
+            </button>
           </div>
-          <div className="flex flex-col text-left leading-tight pr-1">
-            <span className="text-[11px] font-black uppercase tracking-wider text-[#0F9D91]">
-              Demo Accounts
-            </span>
-            <span className="text-xs font-medium text-white/90">
-              Active: <strong className="font-bold text-white">{user.name.split(' ')[0]} ({role})</strong>
-            </span>
-          </div>
-          <ChevronUp className="w-4 h-4 text-white/70 group-hover:-translate-y-0.5 transition-transform" />
-        </button>
+        )}
       </div>
 
       {/* Modal Backdrop & Container */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
           <div
-            className="bg-white w-full max-w-4xl rounded-3xl border border-[#E4E7EC] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            className="bg-white w-full max-w-4xl rounded-2xl sm:rounded-3xl border border-[#E4E7EC] shadow-2xl overflow-hidden flex flex-col max-h-[92dvh]"
             role="dialog"
             aria-modal="true"
             aria-labelledby="demo-modal-title"
           >
             {/* Header */}
-            <div className="p-6 sm:p-7 bg-[#173B67] text-white flex items-start justify-between gap-4 border-b border-white/10">
+            <div className="p-4 sm:p-7 bg-[#173B67] text-white flex items-start justify-between gap-3 border-b border-white/10">
               <div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0F9D91] text-white text-xs font-bold uppercase tracking-wider mb-2">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0F9D91] text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
                   Instant Experience Switcher
                 </div>
-                <h2 id="demo-modal-title" className="text-2xl font-black text-white">
+                <h2 id="demo-modal-title" className="text-xl sm:text-2xl font-black text-white">
                   SkillConnect Demo Accounts
                 </h2>
                 <p className="text-xs sm:text-sm text-white/80 mt-1 max-w-2xl leading-relaxed">
@@ -190,7 +225,7 @@ export function DemoExperienceWidget() {
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="text-white/70 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors"
+                className="text-white/70 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors shrink-0"
                 aria-label="Close dialog"
               >
                 <X className="w-5 h-5" />
@@ -198,7 +233,7 @@ export function DemoExperienceWidget() {
             </div>
 
             {/* Persona Cards Grid */}
-            <div className="p-6 sm:p-7 overflow-y-auto divide-y divide-[#E4E7EC] sm:divide-y-0 sm:grid sm:grid-cols-3 sm:gap-5">
+            <div className="p-4 sm:p-7 overflow-y-auto divide-y divide-[#E4E7EC] sm:divide-y-0 sm:grid sm:grid-cols-3 sm:gap-5 space-y-4 sm:space-y-0">
               {DEMO_PERSONAS.map((persona) => {
                 const isActive = user.email === persona.email;
 
