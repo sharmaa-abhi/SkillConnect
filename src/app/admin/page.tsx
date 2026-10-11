@@ -8,6 +8,8 @@ import {
   XCircle,
   Search,
   Lock,
+  Scale,
+  Filter,
 } from 'lucide-react';
 import { Container } from '@/components/layout/container';
 import {
@@ -15,6 +17,7 @@ import {
   updateVerificationRecordStatus,
   useBookings,
   updateDemoBookingStatus,
+  resolveDemoBookingDispute,
   useProfessionalsList,
 } from '@/lib/demo-storage';
 import { VerificationStatusBadge } from '@/components/ui/badge';
@@ -29,10 +32,21 @@ export default function AdminDashboardPage() {
   const { role, switchRole } = useAuth();
   const [activeTab, setActiveTab] = useState<'verifications' | 'bookings' | 'categories' | 'disputes'>('verifications');
   const [auditSearch, setAuditSearch] = useState('');
+  const [auditStatusFilter, setAuditStatusFilter] = useState<'all' | 'pending' | 'verified' | 'rejected'>('all');
+  const [bookingStatusFilter, setBookingStatusFilter] = useState<string>('all');
+  const [mediationNotes, setMediationNotes] = useState<Record<string, string>>({});
 
   const records = useVerificationRecords();
   const bookings = useBookings();
   const professionals = useProfessionalsList();
+
+  const pendingRecords = records.filter(
+    (r) => r.status === 'pending' || r.status === 'submitted'
+  );
+  const disputedBookings = bookings.filter((b) => b.status === 'disputed');
+  const activeEscrowAmount = bookings
+    .filter((b) => b.paymentStatus === 'authorized_hold' || b.paymentStatus === 'disputed_hold')
+    .reduce((sum, b) => sum + b.diagnosticFee, 0);
 
   // If user is not admin, show guard with quick authorization button
   if (role !== 'admin') {
@@ -113,9 +127,21 @@ export default function AdminDashboardPage() {
     });
   };
 
-  const pendingRecords = records.filter(
-    (r) => r.status === 'pending' || r.status === 'submitted'
-  );
+  const handleResolveDispute = (
+    bookingId: string,
+    decision: 'release_to_worker' | 'refund_to_customer'
+  ) => {
+    const note = mediationNotes[bookingId] || '';
+    resolveDemoBookingDispute(bookingId, decision, note);
+    showToast({
+      type: decision === 'release_to_worker' ? 'success' : 'info',
+      title: decision === 'release_to_worker' ? 'Dispute Resolved: Released to Pro' : 'Dispute Resolved: Refunded to Customer',
+      message:
+        decision === 'release_to_worker'
+          ? `Escrow funds for #${bookingId} disbursed to contractor.`
+          : `Escrow hold for #${bookingId} pre-authorization refunded in full to customer.`,
+    });
+  };
 
   return (
     <div className="py-8 sm:py-12 bg-[#F7F8FA]">
@@ -170,18 +196,20 @@ export default function AdminDashboardPage() {
               <span className="text-[11px] text-[#B54708]">Action required</span>
             </div>
             <div>
-              <span className="text-xs font-semibold text-[#667085]">Total Platform Bookings</span>
-              <p className="text-2xl font-black text-[#263445] mt-0.5">
-                {bookings.length}
+              <span className="text-xs font-semibold text-[#667085]">Escrow Funds Protected</span>
+              <p className="text-2xl font-black text-[#0F9D91] mt-0.5">
+                {formatCurrency(activeEscrowAmount)}
               </p>
-              <span className="text-[11px] text-[#0F9D91] font-semibold">Under escrow protection</span>
+              <span className="text-[11px] text-[#0F9D91] font-semibold">Across {bookings.length} platform bookings</span>
             </div>
             <div>
-              <span className="text-xs font-semibold text-[#667085]">Dispute Rate</span>
-              <p className="text-2xl font-black text-[#15803D] mt-0.5">
-                0.2%
+              <span className="text-xs font-semibold text-[#667085]">Disputes Desk</span>
+              <p className={`text-2xl font-black mt-0.5 ${disputedBookings.length > 0 ? 'text-[#B42318]' : 'text-[#15803D]'}`}>
+                {disputedBookings.length} Active
               </p>
-              <span className="text-[11px] text-[#667085]">Below 1.0% platform threshold</span>
+              <span className="text-[11px] text-[#667085]">
+                {disputedBookings.length > 0 ? 'Mediation required' : 'Zero unresolved disputes'}
+              </span>
             </div>
           </div>
         </div>
@@ -214,6 +242,24 @@ export default function AdminDashboardPage() {
 
           <button
             type="button"
+            onClick={() => setActiveTab('disputes')}
+            className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 -mb-px transition-all whitespace-nowrap flex items-center gap-1.5 ${
+              activeTab === 'disputes'
+                ? 'border-[#B42318] text-[#B42318]'
+                : 'border-transparent text-[#667085] hover:text-[#263445]'
+            }`}
+          >
+            <Scale className="w-3.5 h-3.5" />
+            <span>Disputes & Mediation</span>
+            {disputedBookings.length > 0 && (
+              <span className="w-5 h-5 rounded-full bg-[#B42318] text-white text-[10px] font-black flex items-center justify-center">
+                {disputedBookings.length}
+              </span>
+            )}
+          </button>
+
+          <button
+            type="button"
             onClick={() => setActiveTab('categories')}
             className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 -mb-px transition-all whitespace-nowrap ${
               activeTab === 'categories'
@@ -238,27 +284,63 @@ export default function AdminDashboardPage() {
                 </p>
               </div>
 
-              <div className="relative w-full sm:w-64">
-                <Search className="w-4 h-4 text-[#667085] absolute left-3 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  value={auditSearch}
-                  onChange={(e) => setAuditSearch(e.target.value)}
-                  placeholder="Filter by license or issuer..."
-                  className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-[#D0D5DD] focus:outline-none focus:ring-2 focus:ring-[#173B67]"
-                />
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <div className="relative w-full sm:w-64">
+                  <Search className="w-4 h-4 text-[#667085] absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={auditSearch}
+                    onChange={(e) => setAuditSearch(e.target.value)}
+                    placeholder="Filter by license, title, issuer..."
+                    className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-[#D0D5DD] focus:outline-none focus:ring-2 focus:ring-[#173B67]"
+                  />
+                </div>
               </div>
+            </div>
+
+            {/* Status Filter Pills */}
+            <div className="flex flex-wrap items-center gap-2 mb-5 text-xs">
+              <span className="text-[#667085] font-semibold flex items-center gap-1">
+                <Filter className="w-3.5 h-3.5" />
+                <span>Filter Status:</span>
+              </span>
+              {[
+                { id: 'all', label: `All (${records.length})` },
+                { id: 'pending', label: `Action Required (${pendingRecords.length})` },
+                { id: 'verified', label: `Verified (${records.filter((r) => r.status === 'verified').length})` },
+                { id: 'rejected', label: `Rejected (${records.filter((r) => r.status === 'rejected').length})` },
+              ].map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => setAuditStatusFilter(f.id as typeof auditStatusFilter)}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+                    auditStatusFilter === f.id
+                      ? 'bg-[#173B67] text-white shadow-2xs'
+                      : 'bg-[#F7F8FA] text-[#667085] hover:bg-[#E4E7EC]'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
             </div>
 
             <div className="space-y-4">
               {records
-                .filter(
-                  (r) =>
+                .filter((r) => {
+                  const matchesSearch =
                     !auditSearch ||
                     r.title.toLowerCase().includes(auditSearch.toLowerCase()) ||
                     r.documentNumber?.toLowerCase().includes(auditSearch.toLowerCase()) ||
-                    r.issuer?.toLowerCase().includes(auditSearch.toLowerCase())
-                )
+                    r.issuer?.toLowerCase().includes(auditSearch.toLowerCase());
+                  const matchesStatus =
+                    auditStatusFilter === 'all'
+                      ? true
+                      : auditStatusFilter === 'pending'
+                      ? r.status === 'pending' || r.status === 'submitted'
+                      : r.status === auditStatusFilter;
+                  return matchesSearch && matchesStatus;
+                })
                 .map((rec) => {
                   const isActionable = rec.status === 'pending' || rec.status === 'submitted';
 
@@ -336,68 +418,107 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* TAB 2: BOOKINGS & ESCROW DISPUTE OVERSIGHT */}
+        {/* TAB 2: BOOKINGS & ESCROW OVERSIGHT */}
         {activeTab === 'bookings' && (
           <div className="bg-white rounded-3xl border border-[#E4E7EC] p-6 sm:p-8 shadow-xs">
-            <div className="pb-6 border-b border-[#E4E7EC] mb-6">
-              <h3 className="font-bold text-lg text-[#173B67]">
-                Platform Escrow & Booking Lifecycle Oversight
-              </h3>
-              <p className="text-xs text-[#667085]">
-                View all scheduled and historical bookings. Platform administrators can intervene to resolve disputes or force escrow disbursement.
-              </p>
+            <div className="pb-6 border-b border-[#E4E7EC] mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="font-bold text-lg text-[#173B67]">
+                  Platform Escrow & Booking Lifecycle Oversight
+                </h3>
+                <p className="text-xs text-[#667085]">
+                  View all scheduled and historical bookings. Platform administrators can intervene to resolve disputes or force escrow disbursement.
+                </p>
+              </div>
+
+              {/* Booking filter pills */}
+              <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                {['all', 'confirmed', 'completed', 'disputed', 'cancelled'].map((st) => (
+                  <button
+                    key={st}
+                    type="button"
+                    onClick={() => setBookingStatusFilter(st)}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold capitalize transition-all ${
+                      bookingStatusFilter === st
+                        ? 'bg-[#173B67] text-white'
+                        : 'bg-[#F7F8FA] text-[#667085] hover:bg-[#E4E7EC]'
+                    }`}
+                  >
+                    {st === 'all' ? 'All Bookings' : st}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="divide-y divide-[#E4E7EC]">
-              {bookings.map((b) => (
-                <div key={b.id} className="py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs sm:text-sm">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-[#173B67]">#{b.id}</span>
-                      <span className="font-bold text-[#263445]">{b.customerName} → {b.professionalName}</span>
-                      <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-[#EBF1F8] text-[#173B67]">
-                        {b.categoryName}
-                      </span>
-                    </div>
-                    <p className="text-xs text-[#667085]">
-                      Scheduled: <strong>{b.appointmentDate} at {b.appointmentTime}</strong> • Diagnostic Hold: <strong>{formatCurrency(b.diagnosticFee)}</strong>
-                    </p>
-                    <p className="text-xs text-[#667085]">
-                      Address: {b.customerAddress}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="text-right">
-                      <span className="text-[11px] text-[#667085] block">Payment State</span>
-                      <span className="font-bold text-[#173B67] capitalize">
-                        {b.paymentStatus?.replace(/_/g, ' ') || 'Authorized Hold'}
-                      </span>
-                    </div>
-
-                    {b.status === 'confirmed' && (
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleForceRelease(b.id)}
-                          className="text-xs"
-                        >
-                          Release to Worker
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleForceRefund(b.id)}
-                          className="text-xs text-[#B42318] hover:bg-red-50"
-                        >
-                          Force Refund
-                        </Button>
+              {bookings
+                .filter((b) => bookingStatusFilter === 'all' || b.status === bookingStatusFilter)
+                .map((b) => (
+                  <div key={b.id} className="py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs sm:text-sm">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-bold text-[#173B67]">#{b.id}</span>
+                        <span className="font-bold text-[#263445]">{b.customerName} → {b.professionalName}</span>
+                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-[#EBF1F8] text-[#173B67]">
+                          {b.categoryName}
+                        </span>
+                        {b.status === 'disputed' && (
+                          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-[#B42318] border border-red-200">
+                            Disputed Escrow
+                          </span>
+                        )}
                       </div>
-                    )}
+                      <p className="text-xs text-[#667085]">
+                        Scheduled: <strong>{b.appointmentDate} at {b.appointmentTime}</strong> • Diagnostic Hold: <strong>{formatCurrency(b.diagnosticFee)}</strong>
+                      </p>
+                      <p className="text-xs text-[#667085]">
+                        Address: {b.customerAddress}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <span className="text-[11px] text-[#667085] block">Payment State</span>
+                        <span className="font-bold text-[#173B67] capitalize">
+                          {b.paymentStatus?.replace(/_/g, ' ') || 'Authorized Hold'}
+                        </span>
+                      </div>
+
+                      {b.status === 'confirmed' && (
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleForceRelease(b.id)}
+                            className="text-xs"
+                          >
+                            Release to Worker
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleForceRefund(b.id)}
+                            className="text-xs text-[#B42318] hover:bg-red-50"
+                          >
+                            Force Refund
+                          </Button>
+                        </div>
+                      )}
+
+                      {b.status === 'disputed' && (
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={() => setActiveTab('disputes')}
+                          leftIcon={<Scale className="w-3.5 h-3.5" />}
+                          className="text-xs bg-[#B42318] hover:bg-[#912018]"
+                        >
+                          Review in Disputes Desk
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         )}
@@ -428,6 +549,145 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 4: DISPUTES & ESCROW MEDIATION DESK */}
+        {activeTab === 'disputes' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-3xl border border-[#E4E7EC] p-6 sm:p-8 shadow-xs">
+              <div className="pb-6 border-b border-[#E4E7EC] mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-red-50 text-[#B42318] border border-red-200">
+                      Dispute Mediation Desk
+                    </span>
+                    <span className="text-xs text-[#667085]">
+                      $2,500 Platform Workmanship Guarantee
+                    </span>
+                  </div>
+                  <h3 className="font-bold text-xl text-[#173B67]">
+                    Active Escrow Mediation & Conflict Resolution
+                  </h3>
+                  <p className="text-xs text-[#667085] mt-0.5">
+                    When either party reports non-performance, diagnostic mismatch, or quality disagreement, funds are held in escrow pending impartial platform mediation.
+                  </p>
+                </div>
+              </div>
+
+              {disputedBookings.length > 0 ? (
+                <div className="space-y-6">
+                  {disputedBookings.map((b) => (
+                    <div
+                      key={b.id}
+                      className="p-6 rounded-2xl bg-amber-50/40 border border-amber-200 space-y-4"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-amber-200">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-9 h-9 rounded-xl bg-[#B42318] text-white flex items-center justify-center font-bold">
+                            <Scale className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <span className="font-mono text-xs font-bold text-[#173B67]">#{b.id}</span>
+                            <h4 className="font-bold text-sm text-[#263445]">
+                              {b.customerName} vs. {b.professionalName} ({b.categoryName})
+                            </h4>
+                          </div>
+                        </div>
+
+                        <div className="text-right">
+                          <span className="text-xs text-[#667085] block">Held in Escrow:</span>
+                          <span className="text-lg font-black text-[#173B67]">
+                            {formatCurrency(b.diagnosticFee)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div className="p-3.5 rounded-xl bg-white border border-[#E4E7EC] space-y-1.5">
+                          <span className="font-bold text-[#173B67] block uppercase tracking-wider text-[10px]">
+                            Dispute Grounds Filed by Homeowner
+                          </span>
+                          <p className="text-[#263445] leading-relaxed italic">
+                            &ldquo;{b.disputeReason || 'Homeowner contested diagnostic completion or arrival window punctuality.'}&rdquo;
+                          </p>
+                          <span className="text-[11px] text-[#667085] block mt-1">
+                            Service Date: {b.appointmentDate} • Time: {b.appointmentTime}
+                          </span>
+                        </div>
+
+                        <div className="p-3.5 rounded-xl bg-white border border-[#E4E7EC] space-y-1.5">
+                          <span className="font-bold text-[#173B67] block uppercase tracking-wider text-[10px]">
+                            Contractor Profile & Credential Audit
+                          </span>
+                          <p className="text-[#263445]">
+                            <strong>{b.professionalName}</strong> • {b.professionalTrade}
+                          </p>
+                          <p className="text-[#667085]">
+                            Service Address: {b.customerAddress}
+                          </p>
+                          <span className="inline-block text-[10px] font-bold text-[#15803D] bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 mt-1">
+                            Verified State Trade License
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Mediation Decision Action Box */}
+                      <div className="pt-3 border-t border-amber-200 space-y-3">
+                        <div>
+                          <label className="block text-[11px] font-bold text-[#263445] uppercase tracking-wider mb-1">
+                            Administrative Audit Resolution Note:
+                          </label>
+                          <input
+                            type="text"
+                            value={mediationNotes[b.id] || ''}
+                            onChange={(e) =>
+                              setMediationNotes((prev) => ({ ...prev, [b.id]: e.target.value }))
+                            }
+                            placeholder="e.g. Verified late arrival via GPS logs, granting full customer refund."
+                            className="w-full p-2.5 rounded-xl border border-[#D0D5DD] text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#173B67]"
+                          />
+                        </div>
+
+                        <div className="flex flex-wrap items-center justify-end gap-3">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleResolveDispute(b.id, 'release_to_worker')}
+                            leftIcon={<CheckCircle2 className="w-3.5 h-3.5 text-[#15803D]" />}
+                            className="text-xs font-bold"
+                          >
+                            Rule for Pro (Release Escrow)
+                          </Button>
+
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={() => handleResolveDispute(b.id, 'refund_to_customer')}
+                            leftIcon={<XCircle className="w-3.5 h-3.5" />}
+                            className="text-xs font-bold bg-[#B42318] hover:bg-[#912018]"
+                          >
+                            Rule for Customer (100% Refund)
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 bg-[#F7F8FA] rounded-2xl border border-dashed border-[#D0D5DD]">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-[#15803D] flex items-center justify-center mx-auto mb-3">
+                    <CheckCircle2 className="w-6 h-6" />
+                  </div>
+                  <h4 className="font-bold text-base text-[#173B67]">
+                    Zero Active Escrow Disputes
+                  </h4>
+                  <p className="text-xs text-[#667085] mt-1 max-w-sm mx-auto">
+                    All completed appointments have received mutual customer sign-off with smooth escrow release.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         )}

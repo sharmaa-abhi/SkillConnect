@@ -13,7 +13,8 @@ import { DemoBooking } from '@/types/booking';
 import { formatCurrency } from '@/lib/formatters';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/context/toast-context';
-import { addBookingReview } from '@/lib/demo-storage';
+import { addBookingReview, rescheduleDemoBooking, raiseDemoBookingDispute } from '@/lib/demo-storage';
+import { AlertTriangle } from 'lucide-react';
 
 export interface BookingListItemProps {
   booking: DemoBooking;
@@ -28,12 +29,48 @@ export function BookingListItem({ booking, onCancelBooking }: BookingListItemPro
   const [reviewComment, setReviewComment] = useState('');
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
-  const handleReschedule = () => {
+  // Reschedule Dialog State
+  const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
+  const [newDateInput, setNewDateInput] = useState(booking.appointmentDate);
+  const [newTimeInput, setNewTimeInput] = useState(booking.appointmentTime);
+
+  // Dispute Dialog State
+  const [disputeModalOpen, setDisputeModalOpen] = useState(false);
+  const [disputeReasonInput, setDisputeReasonInput] = useState('');
+  const [isSubmittingDispute, setIsSubmittingDispute] = useState(false);
+
+  const handleRescheduleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    rescheduleDemoBooking(booking.id, newDateInput, newTimeInput);
+    setRescheduleModalOpen(false);
     showToast({
-      type: 'info',
-      title: 'Reschedule Requested',
-      message: `A reschedule inquiry has been transmitted to ${booking.professionalName}. They will confirm your updated window.`,
+      type: 'success',
+      title: 'Appointment Rescheduled',
+      message: `Your booking #${booking.id} with ${booking.professionalName} is now set for ${newDateInput} at ${newTimeInput}.`,
     });
+  };
+
+  const handleDisputeSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!disputeReasonInput.trim()) {
+      showToast({
+        type: 'error',
+        title: 'Dispute Reason Required',
+        message: 'Please provide details explaining why you are requesting escrow mediation.',
+      });
+      return;
+    }
+    setIsSubmittingDispute(true);
+    setTimeout(() => {
+      raiseDemoBookingDispute(booking.id, disputeReasonInput.trim());
+      setIsSubmittingDispute(false);
+      setDisputeModalOpen(false);
+      showToast({
+        type: 'info',
+        title: 'Dispute Filed with Trust Desk',
+        message: `Booking #${booking.id} has been submitted for administrative escrow mediation under our $2,500 guarantee.`,
+      });
+    }, 400);
   };
 
   const handleReviewSubmit = (e: React.FormEvent) => {
@@ -63,6 +100,7 @@ export function BookingListItem({ booking, onCancelBooking }: BookingListItemPro
   const isUpcoming = booking.status === 'confirmed' || booking.status === 'in_progress';
   const isCancelled = booking.status === 'cancelled';
   const isCompleted = booking.status === 'completed';
+  const isDisputed = booking.status === 'disputed';
 
   return (
     <>
@@ -91,12 +129,14 @@ export function BookingListItem({ booking, onCancelBooking }: BookingListItemPro
                 className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full capitalize ${
                   isUpcoming
                     ? 'bg-blue-50 text-[#173B67] border border-blue-200'
-                    : isCancelled
+                    : isDisputed
                     ? 'bg-red-50 text-[#B42318] border border-red-200'
+                    : isCancelled
+                    ? 'bg-gray-100 text-[#667085] border border-gray-200'
                     : 'bg-emerald-50 text-[#15803D] border border-emerald-200'
                 }`}
               >
-                {booking.status.replace('_', ' ')}
+                {isDisputed ? 'Dispute in Mediation' : booking.status.replace('_', ' ')}
               </span>
               <span className="text-[11px] text-[#0F9D91] font-semibold bg-[#E6F7F5] px-2 py-0.5 rounded-md">
                 {booking.categoryName}
@@ -147,11 +187,13 @@ export function BookingListItem({ booking, onCancelBooking }: BookingListItemPro
                 ? 'Released upon sign-off'
                 : booking.paymentStatus === 'refunded_to_customer'
                 ? 'Pre-authorization released'
+                : booking.paymentStatus === 'disputed_hold'
+                ? 'Mediation Hold ($2,500 Guarantee)'
                 : 'Escrow protected'}
             </span>
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             <Button
               variant="outline"
               size="sm"
@@ -166,10 +208,23 @@ export function BookingListItem({ booking, onCancelBooking }: BookingListItemPro
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={handleReschedule}
+                  onClick={() => {
+                    setNewDateInput(booking.appointmentDate);
+                    setNewTimeInput(booking.appointmentTime);
+                    setRescheduleModalOpen(true);
+                  }}
                   className="text-xs"
                 >
                   Reschedule
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setDisputeModalOpen(true)}
+                  className="text-xs text-amber-700 hover:bg-amber-50"
+                  title="Raise escrow dispute or request mediation"
+                >
+                  Dispute
                 </Button>
                 {onCancelBooking && (
                   <Button
@@ -184,15 +239,35 @@ export function BookingListItem({ booking, onCancelBooking }: BookingListItemPro
               </>
             )}
 
-            {isCompleted && !booking.reviewed && (
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => setReviewModalOpen(true)}
-                className="text-xs font-semibold"
-              >
-                Leave Review
-              </Button>
+            {isCompleted && (
+              <div className="flex items-center gap-1.5">
+                {!booking.reviewed && (
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => setReviewModalOpen(true)}
+                    className="text-xs font-semibold"
+                  >
+                    Leave Review
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setDisputeModalOpen(true)}
+                  className="text-xs text-[#667085] hover:text-[#B42318] hover:bg-red-50"
+                  title="Report workmanship defect under $2,500 guarantee"
+                >
+                  Dispute
+                </Button>
+              </div>
+            )}
+
+            {isDisputed && (
+              <span className="text-xs font-bold text-[#B42318] bg-red-50 px-2.5 py-1 rounded-xl border border-red-200 flex items-center gap-1">
+                <AlertTriangle className="w-3.5 h-3.5" />
+                <span>Admin Mediation Active</span>
+              </span>
             )}
 
             {isCancelled && (
@@ -398,6 +473,172 @@ export function BookingListItem({ booking, onCancelBooking }: BookingListItemPro
                 isLoading={isSubmittingReview}
               >
                 Publish Review
+              </Button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* RESCHEDULE MODAL */}
+      {rescheduleModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
+          role="dialog"
+          aria-modal="true"
+        >
+          <form
+            onSubmit={handleRescheduleSubmit}
+            className="relative w-full max-w-md bg-white rounded-3xl border border-[#E4E7EC] shadow-2xl p-6"
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC] mb-4">
+              <div>
+                <h3 className="font-bold text-base text-[#173B67]">
+                  Reschedule Appointment
+                </h3>
+                <p className="text-xs text-[#667085]">
+                  With {booking.professionalName} (#{booking.id})
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setRescheduleModalOpen(false)}
+                className="p-1 rounded-lg text-[#667085] hover:bg-[#F7F8FA]"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-[#263445] uppercase tracking-wider mb-1.5">
+                  Select New Arrival Date
+                </label>
+                <select
+                  value={newDateInput}
+                  onChange={(e) => setNewDateInput(e.target.value)}
+                  className="w-full p-2.5 text-xs sm:text-sm rounded-xl border border-[#D0D5DD] bg-white focus:outline-none focus:ring-2 focus:ring-[#173B67]"
+                >
+                  <option value="Tomorrow, Oct 12">Tomorrow, Oct 12</option>
+                  <option value="Wednesday, Oct 13">Wednesday, Oct 13</option>
+                  <option value="Thursday, Oct 14">Thursday, Oct 14</option>
+                  <option value="Friday, Oct 15">Friday, Oct 15</option>
+                  <option value="Saturday, Oct 16">Saturday, Oct 16</option>
+                  <option value="Monday, Oct 18">Monday, Oct 18</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#263445] uppercase tracking-wider mb-1.5">
+                  Select Arrival Window
+                </label>
+                <select
+                  value={newTimeInput}
+                  onChange={(e) => setNewTimeInput(e.target.value)}
+                  className="w-full p-2.5 text-xs sm:text-sm rounded-xl border border-[#D0D5DD] bg-white focus:outline-none focus:ring-2 focus:ring-[#173B67]"
+                >
+                  <option value="8:00 AM - 10:00 AM">8:00 AM - 10:00 AM (Morning)</option>
+                  <option value="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM (Morning)</option>
+                  <option value="1:00 PM - 3:00 PM">1:00 PM - 3:00 PM (Afternoon)</option>
+                  <option value="3:30 PM - 5:30 PM">3:30 PM - 5:30 PM (Afternoon)</option>
+                  <option value="5:30 PM - 7:30 PM">5:30 PM - 7:30 PM (Evening)</option>
+                </select>
+              </div>
+
+              <div className="p-3 rounded-xl bg-[#F7F8FA] border border-[#E4E7EC] text-xs text-[#667085] leading-relaxed">
+                Your diagnostic hold of {formatCurrency(booking.diagnosticFee)} remains safely locked in escrow with no re-booking penalties.
+              </div>
+            </div>
+
+            <div className="pt-4 mt-5 border-t border-[#E4E7EC] flex items-center justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setRescheduleModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" variant="primary" size="sm">
+                Confirm Reschedule
+              </Button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* DISPUTE MEDIATION FILING MODAL */}
+      {disputeModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
+          role="dialog"
+          aria-modal="true"
+        >
+          <form
+            onSubmit={handleDisputeSubmit}
+            className="relative w-full max-w-lg bg-white rounded-3xl border border-[#E4E7EC] shadow-2xl p-6"
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC] mb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-red-100 text-[#B42318] flex items-center justify-center">
+                  <AlertTriangle className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base text-[#173B67]">
+                    Request Escrow Dispute Mediation
+                  </h3>
+                  <p className="text-xs text-[#667085]">Booking #{booking.id}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDisputeModalOpen(false)}
+                className="p-1 rounded-lg text-[#667085] hover:bg-[#F7F8FA]"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-[#263445] leading-relaxed">
+                <strong>$2,500 SkillConnect Craftsmanship Guarantee:</strong> Submitting this dispute places your diagnostic fee hold of {formatCurrency(booking.diagnosticFee)} on administrative pause. Our Operations Desk will mediate within 24 hours.
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#263445] uppercase tracking-wider mb-1.5">
+                  Explain the Issue / Ground for Mediation: <span className="text-[#B42318]">*</span>
+                </label>
+                <textarea
+                  rows={4}
+                  required
+                  value={disputeReasonInput}
+                  onChange={(e) => setDisputeReasonInput(e.target.value)}
+                  placeholder="Describe what occurred (e.g. technician arrived significantly late, did not possess required diagnostic tools, or workmanship failed within warranty window)..."
+                  className="w-full p-3 text-xs sm:text-sm rounded-xl border border-[#D0D5DD] focus:outline-none focus:ring-2 focus:ring-[#173B67]"
+                />
+              </div>
+
+              <div className="text-[11px] text-[#667085]">
+                Both customer and service professional accounts will receive mediation updates in their respective dashboards.
+              </div>
+            </div>
+
+            <div className="pt-4 mt-5 border-t border-[#E4E7EC] flex items-center justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setDisputeModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSubmittingDispute}
+                className="bg-[#B42318] hover:bg-[#912018]"
+              >
+                Submit Dispute to Admin Desk
               </Button>
             </div>
           </form>

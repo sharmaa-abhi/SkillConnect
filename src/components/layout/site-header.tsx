@@ -228,10 +228,22 @@ export function SiteHeader() {
 
             {/* Primary Call-to-Action Pill */}
             <Link
-              href="/register?role=worker"
+              href={
+                role === 'worker'
+                  ? '/worker/dashboard'
+                  : role === 'admin'
+                  ? '/admin'
+                  : '/register?role=worker'
+              }
               className="inline-flex items-center justify-center gap-2 bg-[#0FA698] hover:bg-[#087F75] text-white font-bold text-sm px-5 py-2.5 rounded-full shadow-xs hover:shadow-md active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698] focus-visible:ring-offset-2 shrink-0 group"
             >
-              <span>Join as a Pro</span>
+              <span>
+                {role === 'worker'
+                  ? 'Pro Dashboard'
+                  : role === 'admin'
+                  ? 'Admin Portal'
+                  : 'Join as a Pro'}
+              </span>
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>

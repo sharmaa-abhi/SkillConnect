@@ -1,5 +1,5 @@
-export type BookingStatus = 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
-export type PaymentHoldStatus = 'authorized_hold' | 'released_to_worker' | 'refunded_to_customer';
+export type BookingStatus = 'confirmed' | 'in_progress' | 'completed' | 'cancelled' | 'disputed';
+export type PaymentHoldStatus = 'authorized_hold' | 'released_to_worker' | 'refunded_to_customer' | 'disputed_hold';
 
 export interface BookingTimelineEvent {
   status: BookingStatus;
@@ -32,6 +32,9 @@ export interface DemoBooking {
   status: BookingStatus;
   timeline?: BookingTimelineEvent[];
   cancellationReason?: string;
+  disputeReason?: string;
+  disputeFiledAt?: string;
+  disputeResolution?: string;
   reviewed?: boolean;
   userRating?: number;
   userReviewComment?: string;

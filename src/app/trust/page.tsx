@@ -12,14 +12,10 @@ import {
   AlertTriangle,
   ArrowRight,
   Sparkles,
-  HelpCircle,
   FileCheck2,
   BadgeCheck,
   ChevronDown,
-  DollarSign,
   Wrench,
-  Clock,
-  ThumbsUp,
   UserCheck,
 } from 'lucide-react';
 import { Container } from '@/components/layout/container';

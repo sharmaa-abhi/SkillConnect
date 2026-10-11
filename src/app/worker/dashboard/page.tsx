@@ -34,18 +34,24 @@ import {
 import { VerificationStatusBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/context/toast-context';
+import { useAuth } from '@/context/auth-context';
 import { formatCurrency } from '@/lib/formatters';
 import { ServicePriceItem, WorkingHour, Professional, Review } from '@/types/professional';
 
 export default function WorkerDashboardPage() {
   const { showToast } = useToast();
+  const { user } = useAuth();
   const requests = useWorkerRequests();
   const bookings = useBookings();
   const allPros = useProfessionalsList();
   const verificationRecords = useVerificationRecords();
 
-  // Find worker profile (defaulting to Marcus Vance)
-  const workerPro = allPros.find((p: Professional) => p.id === 'pro-marcus-vance') || allPros[0];
+  // Find worker profile (matching logged in user or defaulting to Marcus Vance)
+  const workerPro =
+    (user.workerProfileId && allPros.find((p: Professional) => p.id === user.workerProfileId)) ||
+    allPros.find((p: Professional) => p.name.toLowerCase().includes(user.name.toLowerCase().split(' ')[0])) ||
+    allPros.find((p: Professional) => p.id === 'pro-marcus-vance') ||
+    allPros[0];
 
   const [activeTab, setActiveTab] = useState<'requests' | 'services' | 'hours' | 'verification' | 'reviews' | 'payouts'>('requests');
   const [isAvailableToday, setIsAvailableToday] = useState(workerPro.availableToday);
@@ -61,6 +67,16 @@ export default function WorkerDashboardPage() {
 
   // Working Hours State
   const [workingHours, setWorkingHours] = useState<WorkingHour[]>(workerPro.workingHours);
+
+  const [prevWorkerId, setPrevWorkerId] = useState(workerPro.id);
+  if (workerPro.id !== prevWorkerId) {
+    setPrevWorkerId(workerPro.id);
+    setIsAvailableToday(workerPro.availableToday);
+    setDiagnosticFee(workerPro.diagnosticFee);
+    setHourlyRate(workerPro.hourlyRate);
+    setPricingItems(workerPro.pricingItems);
+    setWorkingHours(workerPro.workingHours);
+  }
 
   // Verification Submission Form State
   const [docType, setDocType] = useState<'trade_license' | 'insurance' | 'government_id' | 'background_check'>('trade_license');
@@ -190,6 +206,18 @@ export default function WorkerDashboardPage() {
   const acceptedCount = requests.filter((r) => r.status === 'accepted').length;
   const workerBookings = bookings.filter((b) => b.professionalId === workerPro.id);
   const confirmedBookings = workerBookings.filter((b) => b.status === 'confirmed');
+  const completedBookings = workerBookings.filter((b) => b.status === 'completed');
+  const activeEscrowBookings = workerBookings.filter(
+    (b) => b.status === 'confirmed' || b.status === 'in_progress'
+  );
+  const activeEscrowAmount = activeEscrowBookings.reduce(
+    (sum, b) => sum + b.diagnosticFee + (b.estimatedLaborRate || 0),
+    0
+  );
+  const availablePayoutAmount = completedBookings.reduce(
+    (sum, b) => sum + (b.totalEstimateHigh || b.diagnosticFee + (b.estimatedLaborRate || 85)),
+    0
+  );
 
   return (
     <div className="py-8 sm:py-12 bg-[#F7F8FA]">
@@ -862,13 +890,17 @@ export default function WorkerDashboardPage() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="p-4 rounded-2xl bg-[#F7F8FA] border border-[#E4E7EC]">
                 <span className="text-xs text-[#667085]">Available for Payout</span>
-                <p className="text-2xl font-black text-[#173B67] mt-1">$1,420.00</p>
+                <p className="text-2xl font-black text-[#173B67] mt-1">
+                  {formatCurrency(availablePayoutAmount > 0 ? availablePayoutAmount : 1420)}
+                </p>
                 <span className="text-[11px] text-[#15803D] font-semibold mt-1 block">Scheduled for direct deposit tonight</span>
               </div>
               <div className="p-4 rounded-2xl bg-[#F7F8FA] border border-[#E4E7EC]">
                 <span className="text-xs text-[#667085]">In Active Escrow</span>
-                <p className="text-2xl font-black text-[#263445] mt-1">$485.00</p>
-                <span className="text-[11px] text-[#667085] mt-1 block">Across 3 active dispatches</span>
+                <p className="text-2xl font-black text-[#263445] mt-1">
+                  {formatCurrency(activeEscrowAmount > 0 ? activeEscrowAmount : 485)}
+                </p>
+                <span className="text-[11px] text-[#667085] mt-1 block">Across {activeEscrowBookings.length > 0 ? activeEscrowBookings.length : 3} active dispatches</span>
               </div>
               <div className="p-4 rounded-2xl bg-[#F7F8FA] border border-[#E4E7EC]">
                 <span className="text-xs text-[#667085]">YTD Gross Volume</span>
@@ -880,6 +912,28 @@ export default function WorkerDashboardPage() {
             <div className="pt-4 border-t border-[#E4E7EC]">
               <h4 className="font-bold text-sm text-[#173B67] mb-3">Recent Payout Transactions</h4>
               <div className="divide-y divide-[#E4E7EC] text-xs">
+                {completedBookings.length > 0 &&
+                  completedBookings.map((cb) => (
+                    <div key={cb.id} className="py-3 flex justify-between items-center">
+                      <div>
+                        <span className="font-bold text-[#263445] block">
+                          Direct Deposit #{cb.id}
+                        </span>
+                        <span className="text-[#667085]">
+                          {cb.customerName} • {cb.serviceDescription}
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-bold text-[#15803D]">
+                          +{formatCurrency(cb.diagnosticFee + (cb.estimatedLaborRate || 85))}
+                        </span>
+                        <span className="text-[10px] text-[#667085] block">
+                          Completed {cb.appointmentDate}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+
                 <div className="py-3 flex justify-between items-center">
                   <div>
                     <span className="font-bold text-[#263445] block">Direct Deposit #TX-9012</span>

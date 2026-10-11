@@ -214,11 +214,23 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
               {/* Primary Actions */}
               <div className="mt-6 pt-5 border-t border-[#E4EAF1] flex flex-col gap-2.5">
                 <Link
-                  href="/register?role=worker"
+                  href={
+                    role === 'worker'
+                      ? '/worker/dashboard'
+                      : role === 'admin'
+                      ? '/admin'
+                      : '/register?role=worker'
+                  }
                   onClick={onClose}
                   className="w-full inline-flex items-center justify-center gap-2 bg-[#0FA698] hover:bg-[#087F75] text-white font-bold text-sm py-3 px-4 rounded-full shadow-xs transition-all active:scale-[0.98]"
                 >
-                  <span>Join as a Pro</span>
+                  <span>
+                    {role === 'worker'
+                      ? 'Pro Dashboard'
+                      : role === 'admin'
+                      ? 'Admin Portal'
+                      : 'Join as a Pro'}
+                  </span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
 

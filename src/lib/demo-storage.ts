@@ -252,6 +252,8 @@ export function updateDemoBookingStatus(
             ? `Booking cancelled. ${cancellationReason ? `Reason: ${cancellationReason}. ` : ''}Escrow funds hold released.`
             : status === 'completed'
             ? 'Service completed and customer sign-off recorded. Escrow released.'
+            : status === 'disputed'
+            ? `Dispute raised: ${cancellationReason || 'Mediation requested by customer'}. Escrow on administrative hold.`
             : `Status changed to ${status}.`,
       };
 
@@ -260,6 +262,8 @@ export function updateDemoBookingStatus(
           ? 'refunded_to_customer'
           : status === 'completed'
           ? 'released_to_worker'
+          : status === 'disputed'
+          ? 'disputed_hold'
           : b.paymentStatus;
 
       return {
@@ -274,6 +278,103 @@ export function updateDemoBookingStatus(
     notifyStorageChange();
   } catch (err) {
     console.warn('LocalStorage update failed:', err);
+  }
+}
+
+export function rescheduleDemoBooking(
+  bookingId: string,
+  newDate: string,
+  newTime: string
+): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const current = getDemoBookings();
+    const updated = current.map((b) => {
+      if (b.id !== bookingId) return b;
+      const timeline = b.timeline || [];
+      const newEvent = {
+        status: b.status,
+        timestamp: new Date().toISOString(),
+        note: `Appointment rescheduled from ${b.appointmentDate} (${b.appointmentTime}) to ${newDate} (${newTime}).`,
+      };
+      return {
+        ...b,
+        appointmentDate: newDate,
+        appointmentTime: newTime,
+        timeline: [...timeline, newEvent],
+      };
+    });
+    localStorage.setItem(BOOKINGS_STORAGE_KEY, JSON.stringify(updated));
+    notifyStorageChange();
+  } catch (err) {
+    console.warn('LocalStorage reschedule failed:', err);
+  }
+}
+
+export function raiseDemoBookingDispute(bookingId: string, reason: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const current = getDemoBookings();
+    const updated = current.map((b) => {
+      if (b.id !== bookingId) return b;
+      const timeline = b.timeline || [];
+      const newEvent = {
+        status: 'disputed' as const,
+        timestamp: new Date().toISOString(),
+        note: `Dispute filed by customer: ${reason}. Escrow hold locked for administrator mediation.`,
+      };
+      return {
+        ...b,
+        status: 'disputed' as const,
+        paymentStatus: 'disputed_hold' as const,
+        disputeReason: reason,
+        disputeFiledAt: new Date().toISOString(),
+        timeline: [...timeline, newEvent],
+      };
+    });
+    localStorage.setItem(BOOKINGS_STORAGE_KEY, JSON.stringify(updated));
+    notifyStorageChange();
+  } catch (err) {
+    console.warn('LocalStorage dispute failed:', err);
+  }
+}
+
+export function resolveDemoBookingDispute(
+  bookingId: string,
+  decision: 'release_to_worker' | 'refund_to_customer',
+  notes?: string
+): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const current = getDemoBookings();
+    const updated = current.map((b) => {
+      if (b.id !== bookingId) return b;
+      const isRelease = decision === 'release_to_worker';
+      const status: DemoBooking['status'] = isRelease ? 'completed' : 'cancelled';
+      const paymentStatus = isRelease ? 'released_to_worker' : 'refunded_to_customer';
+      const resolutionNote = isRelease
+        ? `Admin Operations resolved dispute in favor of service professional. Escrow funds released. ${notes ? `Audit note: ${notes}` : ''}`
+        : `Admin Operations resolved dispute in favor of homeowner. Escrow hold refunded in full. ${notes ? `Audit note: ${notes}` : ''}`;
+
+      const timeline = b.timeline || [];
+      const newEvent = {
+        status,
+        timestamp: new Date().toISOString(),
+        note: resolutionNote,
+      };
+
+      return {
+        ...b,
+        status,
+        paymentStatus,
+        disputeResolution: resolutionNote,
+        timeline: [...timeline, newEvent],
+      };
+    });
+    localStorage.setItem(BOOKINGS_STORAGE_KEY, JSON.stringify(updated));
+    notifyStorageChange();
+  } catch (err) {
+    console.warn('LocalStorage resolve dispute failed:', err);
   }
 }
 

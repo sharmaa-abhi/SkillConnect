@@ -38,6 +38,16 @@ export default function CustomerDashboardPage() {
   const [cityInput, setCityInput] = useState(user.city || '');
   const [zipInput, setZipInput] = useState(user.zipCode || '');
 
+  const [prevUserId, setPrevUserId] = useState(user.id);
+  if (user.id !== prevUserId) {
+    setPrevUserId(user.id);
+    setNameInput(user.name);
+    setPhoneInput(user.phone || '');
+    setAddressInput(user.address || '');
+    setCityInput(user.city || '');
+    setZipInput(user.zipCode || '');
+  }
+
   const bookings = useBookings();
   const favoriteIds = useFavorites();
 
@@ -70,7 +80,7 @@ export default function CustomerDashboardPage() {
   };
 
   const upcomingBookings = bookings.filter(
-    (b) => b.status === 'confirmed' || b.status === 'in_progress'
+    (b) => b.status === 'confirmed' || b.status === 'in_progress' || b.status === 'disputed'
   );
   const pastBookings = bookings.filter(
     (b) => b.status === 'completed' || b.status === 'cancelled'
