@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Calendar,
   Heart,
@@ -10,14 +11,11 @@ import {
   Plus,
   User,
   MapPin,
-  Phone,
-  Mail,
   Edit2,
   Save,
 } from 'lucide-react';
 import { Container } from '@/components/layout/container';
-import { updateDemoBookingStatus, useBookings, useFavorites } from '@/lib/demo-storage';
-import { professionals } from '@/data/professionals';
+import { updateDemoBookingStatus, useBookings, useFavorites, useProfessionalsList } from '@/lib/demo-storage';
 import { BookingListItem } from '@/components/dashboard/booking-list-item';
 import { ProfessionalGrid } from '@/components/professionals/professional-grid';
 import { Button } from '@/components/ui/button';
@@ -26,8 +24,10 @@ import { useToast } from '@/context/toast-context';
 import { useAuth } from '@/context/auth-context';
 
 export default function CustomerDashboardPage() {
+  const router = useRouter();
   const { showToast } = useToast();
   const { user, updateProfile } = useAuth();
+  const allPros = useProfessionalsList();
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past' | 'favorites' | 'profile'>('upcoming');
 
   // Customer Profile Editor State
@@ -75,7 +75,7 @@ export default function CustomerDashboardPage() {
   const pastBookings = bookings.filter(
     (b) => b.status === 'completed' || b.status === 'cancelled'
   );
-  const favoritedPros = professionals.filter((p) => favoriteIds.includes(p.id));
+  const favoritedPros = allPros.filter((p) => favoriteIds.includes(p.id));
 
   return (
     <div className="py-8 sm:py-12 bg-[#F7F8FA]">
@@ -217,7 +217,7 @@ export default function CustomerDashboardPage() {
                 description="You have no upcoming service appointments. Need help with plumbing, electrical, carpentry, or HVAC?"
                 icon={<Calendar className="w-7 h-7" />}
                 onReset={() => {
-                  window.location.href = '/professionals';
+                  router.push('/professionals');
                 }}
                 actionText="Find & Book a Local Pro"
               />
@@ -253,7 +253,7 @@ export default function CustomerDashboardPage() {
                 description="Click the heart icon on any professional card to save them to your personal shortlist."
                 icon={<Heart className="w-7 h-7" />}
                 onReset={() => {
-                  window.location.href = '/professionals';
+                  router.push('/professionals');
                 }}
                 actionText="Explore Verified Professionals"
               />

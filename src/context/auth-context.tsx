@@ -1,9 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext } from 'react';
 import { UserProfile, UserRole } from '@/types/auth';
 import {
-  getActiveUser,
+  useActiveUser,
   setActiveUser,
   switchDemoRole,
   defaultCustomerUser,
@@ -24,35 +24,15 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUserState] = useState<UserProfile>(defaultCustomerUser);
-
-  // Sync initial user from localStorage on mount
-  useEffect(() => {
-    const saved = getActiveUser();
-    setUserState(saved);
-
-    const handleStorageChange = () => {
-      setUserState(getActiveUser());
-    };
-
-    window.addEventListener('skillconnect-storage-change', handleStorageChange);
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('skillconnect-storage-change', handleStorageChange);
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
+  const user = useActiveUser();
 
   const switchRole = (newRole: UserRole) => {
-    const updated = switchDemoRole(newRole);
-    setUserState(updated);
+    switchDemoRole(newRole);
   };
 
   const updateProfile = (updated: Partial<UserProfile>) => {
     const merged: UserProfile = { ...user, ...updated };
     setActiveUser(merged);
-    setUserState(merged);
   };
 
   const login = (email: string, role: UserRole) => {
@@ -66,13 +46,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       role,
     };
     setActiveUser(loggedUser);
-    setUserState(loggedUser);
   };
 
   const logout = () => {
     // Reset to demo customer
     setActiveUser(defaultCustomerUser);
-    setUserState(defaultCustomerUser);
   };
 
   return (

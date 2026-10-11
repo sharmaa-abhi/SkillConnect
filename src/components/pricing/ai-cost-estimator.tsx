@@ -4,20 +4,15 @@ import React, { useState } from 'react';
 import {
   Sparkles,
   Calculator,
-  ShieldCheck,
-  Clock,
-  Wrench,
-  AlertCircle,
-  ArrowRight,
   CheckCircle2,
   Info,
 } from 'lucide-react';
-import { generateCostEstimate, EstimateInput } from '@/lib/ai-estimator';
+import { generateCostEstimate } from '@/lib/ai-estimator';
 import { AIEstimateResult } from '@/types';
 import { serviceCategories } from '@/data/services';
 import { formatCurrency } from '@/lib/formatters';
 import { Button } from '@/components/ui/button';
-import { professionals } from '@/data/professionals';
+import { useProfessionalsList } from '@/lib/demo-storage';
 import { BookingFlowDialog } from '@/components/booking/booking-flow-dialog';
 import { ProfessionalProfile } from '@/types/professional';
 
@@ -48,6 +43,7 @@ export function AICostEstimator({
 
   // Selected pro for direct booking from estimate
   const [bookingPro, setBookingPro] = useState<ProfessionalProfile | null>(null);
+  const allPros = useProfessionalsList();
 
   const handleGenerate = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -68,7 +64,7 @@ export function AICostEstimator({
   };
 
   const matchedPros = estimateResult
-    ? professionals.filter((p) => estimateResult.recommendedProIds.includes(p.id))
+    ? allPros.filter((p) => estimateResult.recommendedProIds.includes(p.id))
     : [];
 
   return (

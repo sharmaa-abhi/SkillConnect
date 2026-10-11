@@ -7,11 +7,7 @@ import { useRouter } from 'next/navigation';
 import {
   Sparkles,
   ArrowRight,
-  ShieldCheck,
   CheckCircle2,
-  User,
-  Wrench,
-  Shield,
   Key,
 } from 'lucide-react';
 import { Container } from '@/components/layout/container';
@@ -42,7 +38,7 @@ const DEMO_CARDS: DemoCard[] = [
     badgeClass: 'bg-blue-50 text-[#173B67] border-blue-200',
     targetPath: '/customer/dashboard',
     features: [
-      'Pre-scheduled service with Master Electrician Marcus Vance',
+      'Pre-scheduled electrical service with Elena Rodriguez',
       'Completed plumbing service ready for verified review',
       'Interactive 4-step booking flow with escrow pre-authorization',
       'Saved favorite specialists & profile address manager',
@@ -51,7 +47,7 @@ const DEMO_CARDS: DemoCard[] = [
   {
     role: 'worker',
     name: 'Marcus Vance',
-    tagline: 'Licensed Master Electrician',
+    tagline: 'Licensed Master Plumber & Pipe Specialist',
     avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=256&q=80',
     email: 'marcus.vance@example.com',
     badge: 'Pro Worker Demo',

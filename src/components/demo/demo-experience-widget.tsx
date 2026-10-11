@@ -6,14 +6,11 @@ import Image from 'next/image';
 import {
   Sparkles,
   X,
-  User,
-  Wrench,
   ShieldCheck,
   RotateCcw,
   Copy,
   Check,
   ArrowRight,
-  ExternalLink,
   ChevronUp,
 } from 'lucide-react';
 import { useAuth } from '@/context/auth-context';
@@ -46,7 +43,7 @@ const DEMO_PERSONAS: DemoPersona[] = [
     targetPath: '/customer/dashboard',
     description: 'Experience SkillConnect from the customer perspective: discovery, transparent booking, and review submission.',
     highlights: [
-      'Active scheduled booking with Master Electrician Marcus Vance',
+      'Active scheduled electrical booking with Elena Rodriguez',
       'Completed plumbing service eligible for verified review submission',
       'Saved favorites list and address management',
       '4-step booking flow with diagnostic fee credit and escrow pre-authorization',
@@ -55,7 +52,7 @@ const DEMO_PERSONAS: DemoPersona[] = [
   {
     role: 'worker',
     name: 'Marcus Vance',
-    title: 'Master Electrician (License #CA-EL-88912)',
+    title: 'Master Plumber (License #CA-LIC #982410-C36)',
     email: 'marcus.vance@example.com',
     password: 'WorkerDemo2026!',
     avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=256&q=80',

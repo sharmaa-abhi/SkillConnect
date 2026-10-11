@@ -17,7 +17,7 @@ function RegisterFormContent() {
   const initialRole = searchParams.get('role') === 'worker' ? 'worker' : 'customer';
 
   const { showToast } = useToast();
-  const { login } = useAuth();
+  const { login, updateProfile } = useAuth();
   const [role, setRole] = useState<'customer' | 'worker'>(initialRole);
 
   const [name, setName] = useState('');
@@ -62,6 +62,7 @@ function RegisterFormContent() {
       setIsLoading(false);
       setIsSuccess(true);
       login(email, role);
+      updateProfile({ name: name.trim(), phone: phone.trim() || undefined });
 
       setPassword('');
       setConfirmPassword('');

@@ -159,6 +159,16 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                     Join as a Pro
                   </Button>
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    onClose();
+                  }}
+                  className="py-2 text-xs font-semibold text-[#B42318] hover:bg-red-50 rounded-xl transition-colors text-center"
+                >
+                  Sign Out
+                </button>
               </div>
             </div>
 

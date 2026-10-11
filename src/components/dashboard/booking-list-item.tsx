@@ -5,11 +5,8 @@ import {
   Calendar,
   Clock,
   MapPin,
-  ShieldCheck,
   Star,
   CheckCircle2,
-  FileText,
-  AlertCircle,
   X,
 } from 'lucide-react';
 import { DemoBooking } from '@/types/booking';

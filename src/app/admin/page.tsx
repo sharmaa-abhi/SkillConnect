@@ -4,18 +4,10 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import {
   ShieldCheck,
-  ShieldAlert,
-  Users,
-  DollarSign,
   CheckCircle2,
   XCircle,
-  AlertTriangle,
-  Clock,
-  Layers,
   Search,
-  ExternalLink,
   Lock,
-  ArrowRight,
 } from 'lucide-react';
 import { Container } from '@/components/layout/container';
 import {
@@ -23,7 +15,7 @@ import {
   updateVerificationRecordStatus,
   useBookings,
   updateDemoBookingStatus,
-  getCustomProfessionals,
+  useProfessionalsList,
 } from '@/lib/demo-storage';
 import { VerificationStatusBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -40,7 +32,7 @@ export default function AdminDashboardPage() {
 
   const records = useVerificationRecords();
   const bookings = useBookings();
-  const professionals = getCustomProfessionals();
+  const professionals = useProfessionalsList();
 
   // If user is not admin, show guard with quick authorization button
   if (role !== 'admin') {

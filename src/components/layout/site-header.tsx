@@ -11,7 +11,6 @@ import {
   User,
   LogOut,
   ChevronDown,
-  Sparkles,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/layout/container';

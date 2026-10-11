@@ -13,10 +13,8 @@ import {
   Plus,
   Trash2,
   Save,
-  FileCheck,
   MessageSquare,
   UploadCloud,
-  AlertTriangle,
   Send,
 } from 'lucide-react';
 import { Container } from '@/components/layout/container';
@@ -27,7 +25,7 @@ import {
   useWorkerRequests,
   updateJobRequestStatus,
   useBookings,
-  getCustomProfessionals,
+  useProfessionalsList,
   saveCustomProfessional,
   replyToProReview,
   useVerificationRecords,
@@ -43,7 +41,7 @@ export default function WorkerDashboardPage() {
   const { showToast } = useToast();
   const requests = useWorkerRequests();
   const bookings = useBookings();
-  const allPros = getCustomProfessionals();
+  const allPros = useProfessionalsList();
   const verificationRecords = useVerificationRecords();
 
   // Find worker profile (defaulting to Marcus Vance)
@@ -190,6 +188,8 @@ export default function WorkerDashboardPage() {
 
   const pendingCount = requests.filter((r) => r.status === 'pending').length;
   const acceptedCount = requests.filter((r) => r.status === 'accepted').length;
+  const workerBookings = bookings.filter((b) => b.professionalId === workerPro.id);
+  const confirmedBookings = workerBookings.filter((b) => b.status === 'confirmed');
 
   return (
     <div className="py-8 sm:py-12 bg-[#F7F8FA]">
@@ -341,25 +341,44 @@ export default function WorkerDashboardPage() {
               </div>
 
               <div className="divide-y divide-[#E4E7EC] text-xs sm:text-sm">
-                <div className="py-3.5 flex items-center justify-between">
-                  <div>
-                    <span className="font-bold text-[#263445] block">Today, Oct 11 • 3:30 PM - 5:30 PM</span>
-                    <span className="text-xs text-[#667085]">Jonathan Hall • Dual Vanity Valve Replacement • Pacific Heights</span>
-                  </div>
-                  <span className="font-bold text-[#15803D] bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 text-xs">
-                    Confirmed
-                  </span>
-                </div>
-
-                <div className="py-3.5 flex items-center justify-between">
-                  <div>
-                    <span className="font-bold text-[#263445] block">Tomorrow, Oct 12 • 10:00 AM - 12:00 PM</span>
-                    <span className="text-xs text-[#667085]">Sarah Jenkins • Slow Drain & Corroded P-Trap • Castro Street</span>
-                  </div>
-                  <span className="font-bold text-[#15803D] bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 text-xs">
-                    Confirmed
-                  </span>
-                </div>
+                {confirmedBookings.length > 0 ? (
+                  confirmedBookings.map((b) => (
+                    <div key={b.id} className="py-3.5 flex items-center justify-between">
+                      <div>
+                        <span className="font-bold text-[#263445] block">
+                          {b.appointmentDate} • {b.appointmentTime}
+                        </span>
+                        <span className="text-xs text-[#667085]">
+                          {b.customerName} • {b.serviceDescription} • {b.customerAddress}
+                        </span>
+                      </div>
+                      <span className="font-bold text-[#15803D] bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 text-xs">
+                        Confirmed #{b.id}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    <div className="py-3.5 flex items-center justify-between">
+                      <div>
+                        <span className="font-bold text-[#263445] block">Today, Oct 11 • 3:30 PM - 5:30 PM</span>
+                        <span className="text-xs text-[#667085]">Jonathan Hall • Dual Vanity Valve Replacement • Pacific Heights</span>
+                      </div>
+                      <span className="font-bold text-[#15803D] bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 text-xs">
+                        Confirmed
+                      </span>
+                    </div>
+                    <div className="py-3.5 flex items-center justify-between">
+                      <div>
+                        <span className="font-bold text-[#263445] block">Tomorrow, Oct 12 • 10:00 AM - 12:00 PM</span>
+                        <span className="text-xs text-[#667085]">Sarah Jenkins • Slow Drain & Corroded P-Trap • Castro Street</span>
+                      </div>
+                      <span className="font-bold text-[#15803D] bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 text-xs">
+                        Confirmed
+                      </span>
+                    </div>
+                  </>
+                )}
 
                 <div className="py-3.5 flex items-center justify-between">
                   <div>

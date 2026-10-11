@@ -35,6 +35,7 @@ export default function ProfessionalProfilePage({
   const allPros = useProfessionalsList();
 
   const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
+  const [selectedPricingItem, setSelectedPricingItem] = useState<ServicePriceItem | undefined>(undefined);
   const [activeTab, setActiveTab] = useState<'about' | 'pricing' | 'reviews' | 'hours'>('about');
 
   // Find professional by slug from live custom store
@@ -279,13 +280,26 @@ export default function ProfessionalProfilePage({
                         <h4 className="text-sm font-bold text-[#263445]">{item.title}</h4>
                         <p className="text-xs text-[#667085] mt-0.5">{item.description}</p>
                       </div>
-                      <div className="text-left sm:text-right flex-shrink-0">
-                        <span className="text-base font-black text-[#173B67]">
-                          {formatCurrency(item.price)}
-                        </span>
-                        <span className="text-xs text-[#667085] ml-1">
-                          /{item.unit === 'diagnostic' ? 'diagnostic' : item.unit === 'fixed' ? 'fixed' : 'hr'}
-                        </span>
+                      <div className="flex items-center gap-3 self-end sm:self-center">
+                        <div className="text-left sm:text-right flex-shrink-0">
+                          <span className="text-base font-black text-[#173B67]">
+                            {formatCurrency(item.price)}
+                          </span>
+                          <span className="text-xs text-[#667085] ml-1">
+                            /{item.unit === 'diagnostic' ? 'diagnostic' : item.unit === 'fixed' ? 'fixed' : 'hr'}
+                          </span>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedPricingItem(item);
+                            setBookingDialogOpen(true);
+                          }}
+                          className="font-bold text-xs"
+                        >
+                          Book Service
+                        </Button>
                       </div>
                     </div>
                   ))}
@@ -465,11 +479,17 @@ export default function ProfessionalProfilePage({
       </div>
 
       {/* Multi-Step Booking Flow Modal */}
-      <BookingFlowDialog
-        isOpen={bookingDialogOpen}
-        onClose={() => setBookingDialogOpen(false)}
-        professional={pro}
-      />
+      {bookingDialogOpen && (
+        <BookingFlowDialog
+          isOpen={bookingDialogOpen}
+          onClose={() => {
+            setBookingDialogOpen(false);
+            setSelectedPricingItem(undefined);
+          }}
+          professional={pro}
+          initialServiceItem={selectedPricingItem}
+        />
+      )}
     </div>
   );
 }

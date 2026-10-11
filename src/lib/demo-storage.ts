@@ -112,6 +112,24 @@ export const initialVerificationRecords: VerificationRecord[] = [
   },
 ];
 
+let cachedFavoritesRaw: string | null = null;
+let cachedFavorites: string[] = defaultFavorites;
+
+let cachedBookingsRaw: string | null = null;
+let cachedBookings: DemoBooking[] = initialDemoBookings;
+
+let cachedRequestsRaw: string | null = null;
+let cachedRequests: JobRequest[] = initialWorkerRequests;
+
+let cachedVerificationsRaw: string | null = null;
+let cachedVerifications: VerificationRecord[] = initialVerificationRecords;
+
+let cachedProsRaw: string | null = null;
+let cachedPros: Professional[] = staticProfessionals;
+
+let cachedUserRaw: string | null = null;
+let cachedUser: UserProfile = defaultCustomerUser;
+
 function notifyStorageChange() {
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new Event('skillconnect-storage-change'));
@@ -133,7 +151,11 @@ export function getSavedFavorites(): string[] {
   if (typeof window === 'undefined') return defaultFavorites;
   try {
     const raw = localStorage.getItem(FAVORITES_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : defaultFavorites;
+    if (!raw) return defaultFavorites;
+    if (raw === cachedFavoritesRaw) return cachedFavorites;
+    cachedFavoritesRaw = raw;
+    cachedFavorites = JSON.parse(raw);
+    return cachedFavorites;
   } catch {
     return defaultFavorites;
   }
@@ -142,7 +164,10 @@ export function getSavedFavorites(): string[] {
 export function saveFavorites(favorites: string[]): void {
   if (typeof window === 'undefined') return;
   try {
-    localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favorites));
+    const raw = JSON.stringify(favorites);
+    cachedFavoritesRaw = raw;
+    cachedFavorites = favorites;
+    localStorage.setItem(FAVORITES_STORAGE_KEY, raw);
     notifyStorageChange();
   } catch (err) {
     console.warn('LocalStorage save failed:', err);
@@ -164,10 +189,12 @@ export function getDemoBookings(): DemoBooking[] {
   try {
     const raw = localStorage.getItem(BOOKINGS_STORAGE_KEY);
     if (!raw) {
-      localStorage.setItem(BOOKINGS_STORAGE_KEY, JSON.stringify(initialDemoBookings));
       return initialDemoBookings;
     }
-    return JSON.parse(raw);
+    if (raw === cachedBookingsRaw) return cachedBookings;
+    cachedBookingsRaw = raw;
+    cachedBookings = JSON.parse(raw);
+    return cachedBookings;
   } catch {
     return initialDemoBookings;
   }
@@ -306,10 +333,12 @@ export function getWorkerRequests(): JobRequest[] {
   try {
     const raw = localStorage.getItem(REQUESTS_STORAGE_KEY);
     if (!raw) {
-      localStorage.setItem(REQUESTS_STORAGE_KEY, JSON.stringify(initialWorkerRequests));
       return initialWorkerRequests;
     }
-    return JSON.parse(raw);
+    if (raw === cachedRequestsRaw) return cachedRequests;
+    cachedRequestsRaw = raw;
+    cachedRequests = JSON.parse(raw);
+    return cachedRequests;
   } catch {
     return initialWorkerRequests;
   }
@@ -320,7 +349,10 @@ export function updateJobRequestStatus(id: string, status: 'accepted' | 'decline
   try {
     const current = getWorkerRequests();
     const updated = current.map((r) => (r.id === id ? { ...r, status } : r));
-    localStorage.setItem(REQUESTS_STORAGE_KEY, JSON.stringify(updated));
+    const raw = JSON.stringify(updated);
+    cachedRequestsRaw = raw;
+    cachedRequests = updated;
+    localStorage.setItem(REQUESTS_STORAGE_KEY, raw);
 
     // Sync with booking if linked
     const linked = current.find((r) => r.id === id);
@@ -344,10 +376,12 @@ export function getVerificationRecords(): VerificationRecord[] {
   try {
     const raw = localStorage.getItem(VERIFICATIONS_STORAGE_KEY);
     if (!raw) {
-      localStorage.setItem(VERIFICATIONS_STORAGE_KEY, JSON.stringify(initialVerificationRecords));
       return initialVerificationRecords;
     }
-    return JSON.parse(raw);
+    if (raw === cachedVerificationsRaw) return cachedVerifications;
+    cachedVerificationsRaw = raw;
+    cachedVerifications = JSON.parse(raw);
+    return cachedVerifications;
   } catch {
     return initialVerificationRecords;
   }
@@ -362,7 +396,10 @@ export function submitVerificationRecord(record: Omit<VerificationRecord, 'id' |
   if (typeof window !== 'undefined') {
     const current = getVerificationRecords();
     const updated = [newRec, ...current];
-    localStorage.setItem(VERIFICATIONS_STORAGE_KEY, JSON.stringify(updated));
+    const raw = JSON.stringify(updated);
+    cachedVerificationsRaw = raw;
+    cachedVerifications = updated;
+    localStorage.setItem(VERIFICATIONS_STORAGE_KEY, raw);
     notifyStorageChange();
   }
   return newRec;
@@ -386,7 +423,10 @@ export function updateVerificationRecordStatus(
           }
         : r
     );
-    localStorage.setItem(VERIFICATIONS_STORAGE_KEY, JSON.stringify(updated));
+    const raw = JSON.stringify(updated);
+    cachedVerificationsRaw = raw;
+    cachedVerifications = updated;
+    localStorage.setItem(VERIFICATIONS_STORAGE_KEY, raw);
     notifyStorageChange();
   } catch (err) {
     console.warn('LocalStorage verification update failed:', err);
@@ -394,15 +434,17 @@ export function updateVerificationRecordStatus(
 }
 
 // ---------------- CUSTOM PROFESSIONALS DATA (For live edits & replies) ----------------
-export function getCustomProfessionals() {
+export function getCustomProfessionals(): Professional[] {
   if (typeof window === 'undefined') return staticProfessionals;
   try {
     const raw = localStorage.getItem(PROS_STORAGE_KEY);
     if (!raw) {
-      localStorage.setItem(PROS_STORAGE_KEY, JSON.stringify(staticProfessionals));
       return staticProfessionals;
     }
-    return JSON.parse(raw);
+    if (raw === cachedProsRaw) return cachedPros;
+    cachedProsRaw = raw;
+    cachedPros = JSON.parse(raw);
+    return cachedPros;
   } catch {
     return staticProfessionals;
   }
@@ -413,7 +455,10 @@ export function saveCustomProfessional(pro: Professional): void {
   try {
     const current = getCustomProfessionals();
     const updated = current.map((p: Professional) => (p.id === pro.id ? pro : p));
-    localStorage.setItem(PROS_STORAGE_KEY, JSON.stringify(updated));
+    const raw = JSON.stringify(updated);
+    cachedProsRaw = raw;
+    cachedPros = updated;
+    localStorage.setItem(PROS_STORAGE_KEY, raw);
     notifyStorageChange();
   } catch (err) {
     console.warn('LocalStorage save pro failed:', err);
@@ -436,7 +481,11 @@ export function getActiveUser(): UserProfile {
   if (typeof window === 'undefined') return defaultCustomerUser;
   try {
     const raw = localStorage.getItem(USER_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : defaultCustomerUser;
+    if (!raw) return defaultCustomerUser;
+    if (raw === cachedUserRaw) return cachedUser;
+    cachedUserRaw = raw;
+    cachedUser = JSON.parse(raw);
+    return cachedUser;
   } catch {
     return defaultCustomerUser;
   }
@@ -445,7 +494,10 @@ export function getActiveUser(): UserProfile {
 export function setActiveUser(user: UserProfile): void {
   if (typeof window === 'undefined') return;
   try {
-    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+    const raw = JSON.stringify(user);
+    cachedUserRaw = raw;
+    cachedUser = user;
+    localStorage.setItem(USER_STORAGE_KEY, raw);
     notifyStorageChange();
   } catch (err) {
     console.warn('LocalStorage user save failed:', err);
@@ -481,7 +533,7 @@ export function useActiveUser(): UserProfile {
   return useSyncExternalStore(subscribeStorage, getActiveUser, () => defaultCustomerUser);
 }
 
-export function useProfessionalsList() {
+export function useProfessionalsList(): Professional[] {
   return useSyncExternalStore(subscribeStorage, getCustomProfessionals, () => staticProfessionals);
 }
 
@@ -494,6 +546,20 @@ export function resetAllDemoData(): void {
     localStorage.removeItem(VERIFICATIONS_STORAGE_KEY);
     localStorage.removeItem(PROS_STORAGE_KEY);
     localStorage.removeItem(USER_STORAGE_KEY);
+
+    cachedFavoritesRaw = null;
+    cachedFavorites = defaultFavorites;
+    cachedBookingsRaw = null;
+    cachedBookings = initialDemoBookings;
+    cachedRequestsRaw = null;
+    cachedRequests = initialWorkerRequests;
+    cachedVerificationsRaw = null;
+    cachedVerifications = initialVerificationRecords;
+    cachedProsRaw = null;
+    cachedPros = staticProfessionals;
+    cachedUserRaw = null;
+    cachedUser = defaultCustomerUser;
+
     notifyStorageChange();
   } catch (err) {
     console.warn('Reset demo data failed:', err);

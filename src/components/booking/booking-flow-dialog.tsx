@@ -14,7 +14,6 @@ import {
   Paperclip,
   AlertCircle,
   MapPin,
-  FileText,
   User,
   Phone,
 } from 'lucide-react';
@@ -68,16 +67,6 @@ export function BookingFlowDialog({
 
   // Confirmation State
   const [confirmedBooking, setConfirmedBooking] = useState<DemoBooking | null>(null);
-
-  // Sync initial scope if passed
-  useEffect(() => {
-    if (initialScopeDescription) {
-      setIssueDescription(initialScopeDescription);
-    }
-    if (user.name) setCustomerName(user.name);
-    if (user.phone) setCustomerPhone(user.phone);
-    if (user.address) setCustomerAddress(`${user.address}, ${user.city || 'San Francisco'}`);
-  }, [initialScopeDescription, user]);
 
   // Available dates
   const availableDates = [
