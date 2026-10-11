@@ -48,6 +48,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
   const navLinks = [
     { label: 'Browse Services', href: '/services', icon: Search },
     { label: 'Find Professionals', href: '/professionals', icon: Users },
+    { label: 'How It Works & Trust', href: '/trust', icon: ShieldCheck },
     { label: 'Customer Dashboard', href: '/customer/dashboard', icon: LayoutDashboard },
     { label: 'Worker Dashboard', href: '/worker/dashboard', icon: Briefcase },
     { label: 'Admin Verification Desk', href: '/admin', icon: ShieldAlert },

@@ -120,6 +120,11 @@ export function SiteFooter() {
                   Admin Verification Desk
                 </Link>
               </li>
+              <li>
+                <Link href="/trust" className="text-[#0F9D91] hover:underline font-bold">
+                  How It Works &amp; Trust →
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -136,6 +141,13 @@ export function SiteFooter() {
               <p className="text-[11px] text-white/70">
                 All bookings completed through SkillConnect are protected against defective trade workmanship and non-performance.
               </p>
+              <Link
+                href="/trust"
+                className="text-[#0F9D91] hover:text-white transition-colors font-bold text-[11px] mt-1 inline-flex items-center gap-1"
+              >
+                <span>Read our full Trust &amp; Safety charter</span>
+                <span>→</span>
+              </Link>
             </div>
           </div>
         </div>

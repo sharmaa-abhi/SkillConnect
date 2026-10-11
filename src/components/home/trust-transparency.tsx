@@ -1,5 +1,6 @@
 import React from 'react';
-import { ShieldCheck, Scale, Lock, HeartHandshake } from 'lucide-react';
+import Link from 'next/link';
+import { ShieldCheck, Scale, Lock, HeartHandshake, ArrowRight } from 'lucide-react';
 import { Container } from '@/components/layout/container';
 
 export function TrustTransparency() {
@@ -63,6 +64,17 @@ export function TrustTransparency() {
               </div>
             );
           })}
+        </div>
+
+        {/* Action Link to Full Trust Charter */}
+        <div className="mt-10 text-center">
+          <Link
+            href="/trust"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#173B67] text-white text-xs sm:text-sm font-bold shadow-xs hover:bg-[#0F2A4A] transition-all hover:scale-105"
+          >
+            <span>Read How SkillConnect Protects You &amp; Your Money</span>
+            <ArrowRight className="w-4 h-4 text-[#0F9D91]" />
+          </Link>
         </div>
       </Container>
     </section>

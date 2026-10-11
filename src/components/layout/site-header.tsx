@@ -65,6 +65,16 @@ export function SiteHeader() {
               Find Professionals
             </Link>
             <Link
+              href="/trust"
+              className={`px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-semibold transition-all ${
+                pathname === '/trust' || pathname === '/how-it-works'
+                  ? 'bg-[#173B67] text-white shadow-xs'
+                  : 'text-[#263445] hover:text-[#173B67] hover:bg-[#F7F8FA]'
+              }`}
+            >
+              How It Works &amp; Trust
+            </Link>
+            <Link
               href="/customer/dashboard"
               className={`px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-semibold transition-all ${
                 pathname === '/customer/dashboard'
