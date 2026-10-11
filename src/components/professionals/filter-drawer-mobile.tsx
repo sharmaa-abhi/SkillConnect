@@ -24,7 +24,6 @@ export function FilterDrawerMobile({
   onReset,
   resultsCount,
 }: FilterDrawerMobileProps) {
-  // Close drawer on Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -35,7 +34,6 @@ export function FilterDrawerMobile({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Lock body scroll when drawer is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -69,16 +67,16 @@ export function FilterDrawerMobile({
             className="fixed inset-x-0 bottom-0 max-h-[85vh] bg-white rounded-t-3xl shadow-2xl flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 px-6 border-b border-[#e3e8e3]">
+            <div className="flex items-center justify-between p-4 px-6 border-b border-[#E4E7EC]">
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-5 h-5 text-[#237a63]" />
-                <h3 className="font-bold text-lg text-[#172522]">Filters & Sorting</h3>
+                <SlidersHorizontal className="w-5 h-5 text-[#0F9D91]" />
+                <h3 className="font-bold text-lg text-[#173B67]">Filters & Ranking</h3>
               </div>
               <button
                 type="button"
                 onClick={onClose}
                 aria-label="Close filters"
-                className="p-2 -mr-2 rounded-full text-[#66716d] hover:bg-[#f8f8f4]"
+                className="p-2 -mr-2 rounded-full text-[#667085] hover:bg-[#F7F8FA]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -95,7 +93,7 @@ export function FilterDrawerMobile({
             </div>
 
             {/* Bottom Actions */}
-            <div className="p-4 px-6 border-t border-[#e3e8e3] bg-[#f8f8f4] flex items-center gap-3">
+            <div className="p-4 px-6 border-t border-[#E4E7EC] bg-[#F7F8FA] flex items-center gap-3">
               <Button
                 variant="outline"
                 size="md"
