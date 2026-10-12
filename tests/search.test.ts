@@ -71,7 +71,7 @@ const searchRemoteZip = performSmartProSearch(professionals, {
   sortBy: 'recommended',
 });
 assert.equal(searchRemoteZip.results.length, 0, 'Must show zero results without fabricating fake pros');
-assert.equal(searchRemoteZip.diagnostics.emptyReason, 'no_coverage');
+assert.equal(searchRemoteZip.diagnostics.emptyReason, 'no_pros_in_zip');
 console.log('✓ Valid service in uncovered ZIP returns 0 results cleanly without fabricated pros');
 
 console.log('ALL SEARCH TESTS PASSED!\n');
