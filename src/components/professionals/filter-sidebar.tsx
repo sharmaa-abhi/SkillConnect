@@ -3,7 +3,7 @@
 import React from 'react';
 import { FilterState } from '@/types';
 import { serviceCategories } from '@/data/services';
-import { RotateCcw, Star, Check, ShieldCheck } from 'lucide-react';
+import { RotateCcw, Star, Check, ShieldCheck, MapPin } from 'lucide-react';
 
 export interface FilterSidebarProps {
   filters: FilterState;
@@ -24,7 +24,8 @@ export function FilterSidebar({
     filters.availableToday ||
     Boolean(filters.verifiedOnly) ||
     filters.priceTier !== 'all' ||
-    Boolean(filters.query);
+    Boolean(filters.query) ||
+    Boolean(filters.location);
 
   return (
     <aside className={`flex flex-col gap-6 p-6 rounded-3xl bg-white border border-[#E4E7EC] shadow-2xs ${className}`}>
@@ -43,8 +44,25 @@ export function FilterSidebar({
         )}
       </div>
 
-      {/* Verified Only Toggle */}
+      {/* Location / ZIP Code */}
       <div>
+        <label className="block text-xs font-bold uppercase tracking-wider text-[#667085] mb-2">
+          Service Location / ZIP
+        </label>
+        <div className="relative">
+          <MapPin className="w-3.5 h-3.5 text-[#667085] absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            value={filters.location || ''}
+            onChange={(e) => onChange({ location: e.target.value })}
+            placeholder="e.g. 94107 or SoMa"
+            className="w-full pl-8 pr-3 py-2 text-xs rounded-xl border border-[#D0D5DD] bg-[#F7F8FA] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#173B67] text-[#263445]"
+          />
+        </div>
+      </div>
+
+      {/* Verified Only Toggle */}
+      <div className="pt-4 border-t border-[#E4E7EC]">
         <label className="flex items-center justify-between cursor-pointer select-none">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-[#0F9D91]" />
