@@ -22,6 +22,9 @@ import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { useToast } from '@/context/toast-context';
 import { useAuth } from '@/context/auth-context';
+import { computeCustomerMetrics } from '@/lib/metrics';
+import { PrototypeDisclaimer } from '@/components/ui/prototype-disclaimer';
+import { formatCurrency } from '@/lib/formatters';
 
 export default function CustomerDashboardPage() {
   const router = useRouter();
@@ -79,17 +82,23 @@ export default function CustomerDashboardPage() {
     });
   };
 
+  const metrics = computeCustomerMetrics(bookings, favoriteIds);
   const upcomingBookings = bookings.filter(
-    (b) => b.status === 'confirmed' || b.status === 'in_progress' || b.status === 'disputed'
+    (b) => b.status === 'pending' || b.status === 'confirmed' || b.status === 'in_progress' || b.status === 'disputed'
   );
   const pastBookings = bookings.filter(
-    (b) => b.status === 'completed' || b.status === 'cancelled'
+    (b) => b.status === 'completed' || b.status === 'cancelled' || b.status === 'declined'
   );
   const favoritedPros = allPros.filter((p) => favoriteIds.includes(p.id));
 
   return (
     <div className="py-6 sm:py-12 bg-[#F7F8FA]">
       <Container>
+        {/* Prototype Simulated Data Disclaimer */}
+        <div className="mb-6">
+          <PrototypeDisclaimer variant="banner" className="rounded-2xl" />
+        </div>
+
         {/* Welcome Banner */}
         <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E4E7EC] p-4 sm:p-8 shadow-xs mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -134,26 +143,25 @@ export default function CustomerDashboardPage() {
             <div>
               <span className="text-[11px] sm:text-xs font-semibold text-[#667085]">Active Appointments</span>
               <p className="text-xl sm:text-2xl font-extrabold text-[#173B67] mt-0.5">
-                {upcomingBookings.length}
+                {metrics.activeAppointmentsCount}
               </p>
             </div>
             <div>
               <span className="text-[11px] sm:text-xs font-semibold text-[#667085]">Saved Professionals</span>
               <p className="text-xl sm:text-2xl font-extrabold text-[#263445] mt-0.5">
-                {favoritedPros.length}
+                {metrics.savedProsCount}
               </p>
             </div>
             <div>
               <span className="text-[11px] sm:text-xs font-semibold text-[#667085]">Completed Services</span>
-              <p className="text-xl sm:text-2xl font-extrabold text-[#263445] mt-0.5">
-                {pastBookings.filter((b) => b.status === 'completed').length}
+              <p className="text-xl sm:text-2xl font-extrabold text-[#15803D] mt-0.5">
+                {metrics.completedBookingsCount}
               </p>
             </div>
             <div>
               <span className="text-[11px] sm:text-xs font-semibold text-[#667085]">Escrow Protection</span>
-              <p className="text-[11px] sm:text-xs font-bold text-[#15803D] flex items-center gap-1 mt-1 sm:mt-2">
-                <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-                <span>$2,500 Guarantee</span>
+              <p className="text-xl sm:text-2xl font-extrabold text-[#0F9D91] mt-0.5">
+                {metrics.activeEscrowTotal > 0 ? formatCurrency(metrics.activeEscrowTotal) : '$2,500 Guarantee'}
               </p>
             </div>
           </div>

@@ -24,6 +24,9 @@ import { formatCurrency, generateBookingId } from '@/lib/formatters';
 import { addDemoBooking } from '@/lib/demo-storage';
 import { useToast } from '@/context/toast-context';
 import { useAuth } from '@/context/auth-context';
+import { generateBookingDateOptions } from '@/lib/dates';
+import { calculateFees } from '@/lib/pricing';
+import { PrototypeDisclaimer } from '@/components/ui/prototype-disclaimer';
 
 export interface BookingFlowDialogProps {
   isOpen: boolean;
@@ -52,9 +55,14 @@ export function BookingFlowDialog({
   const [issueError, setIssueError] = useState('');
   const [attachedPhoto, setAttachedPhoto] = useState(false);
 
+  // Available dates dynamically derived from calendar
+  const availableDates = React.useMemo(() => {
+    return generateBookingDateOptions(new Date(), 5, professional.availableToday);
+  }, [professional.availableToday]);
+
   // Date & Time State
   const [selectedDate, setSelectedDate] = useState(
-    professional.availableToday ? 'Today, Oct 11' : 'Tomorrow, Oct 12'
+    availableDates[0]?.value || 'Today'
   );
   const [selectedSlot, setSelectedSlot] = useState('10:00 AM');
 
@@ -67,15 +75,6 @@ export function BookingFlowDialog({
 
   // Confirmation State
   const [confirmedBooking, setConfirmedBooking] = useState<DemoBooking | null>(null);
-
-  // Available dates
-  const availableDates = [
-    { label: 'Today', subtext: 'Oct 11', value: 'Today, Oct 11', available: professional.availableToday },
-    { label: 'Tomorrow', subtext: 'Oct 12', value: 'Tomorrow, Oct 12', available: true },
-    { label: 'Wednesday', subtext: 'Oct 13', value: 'Wednesday, Oct 13', available: true },
-    { label: 'Thursday', subtext: 'Oct 14', value: 'Thursday, Oct 14', available: true },
-    { label: 'Friday', subtext: 'Oct 15', value: 'Friday, Oct 15', available: true },
-  ];
 
   // Time Slots
   const morningSlots = ['8:00 AM', '10:00 AM', '11:30 AM'];
@@ -128,14 +127,25 @@ export function BookingFlowDialog({
     setStep(3);
   };
 
-  // Financial calculations
-  const diagnosticFee = professional.diagnosticFee;
+  // Financial calculations via centralized engine
+  const fees = React.useMemo(() => {
+    const isFixed = selectedServiceItem && selectedServiceItem.unit === 'fixed';
+    const labor = isFixed ? selectedServiceItem.price : professional.hourlyRate;
+    return calculateFees({
+      diagnosticFee: professional.diagnosticFee,
+      hourlyRate: labor,
+      estimatedHoursMin: 1.0,
+      estimatedHoursMax: 2.0,
+    });
+  }, [professional.diagnosticFee, professional.hourlyRate, selectedServiceItem]);
+
+  const diagnosticFee = fees.diagnosticFee;
   const estimatedLabor = selectedServiceItem && selectedServiceItem.unit === 'fixed'
     ? selectedServiceItem.price
     : professional.hourlyRate;
-  const estimatedTotalLow = diagnosticFee;
-  const estimatedTotalHigh = diagnosticFee + estimatedLabor;
-  const estimatedTax = Math.round(diagnosticFee * 0.0875 * 100) / 100;
+  const estimatedTotalLow = fees.totalMin;
+  const estimatedTotalHigh = fees.totalMax;
+  const estimatedTax = fees.taxAmount;
 
   // Step 3 Final Confirm
   const handleFinalConfirm = () => {
@@ -161,12 +171,12 @@ export function BookingFlowDialog({
       totalEstimateHigh: estimatedTotalHigh,
       taxAmount: estimatedTax,
       paymentStatus: 'authorized_hold',
-      status: 'confirmed',
+      status: 'pending',
       timeline: [
         {
-          status: 'confirmed',
+          status: 'pending',
           timestamp: new Date().toISOString(),
-          note: `Booking created with ${professional.name}. Standard diagnostic hold of ${formatCurrency(diagnosticFee)} placed in escrow protection.`,
+          note: `Booking requested with ${professional.name}. Standard diagnostic pre-authorization of ${formatCurrency(diagnosticFee)} placed in escrow protection.`,
         },
       ],
       isDemoOnly: true,
@@ -533,6 +543,8 @@ export function BookingFlowDialog({
           {/* STEP 3: ESTIMATE & DISCLOSURES */}
           {step === 3 && (
             <div className="flex flex-col gap-5">
+              <PrototypeDisclaimer variant="card" />
+
               <div className="p-4 rounded-xl bg-[#E6F7F5] border border-[#0F9D91]/30">
                 <div className="flex items-center gap-2 text-[#173B67] font-bold text-sm mb-1">
                   <ShieldCheck className="w-5 h-5 text-[#0F9D91]" />

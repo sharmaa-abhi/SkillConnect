@@ -37,6 +37,8 @@ import { useToast } from '@/context/toast-context';
 import { useAuth } from '@/context/auth-context';
 import { formatCurrency } from '@/lib/formatters';
 import { ServicePriceItem, WorkingHour, Professional, Review } from '@/types/professional';
+import { computeWorkerMetrics } from '@/lib/metrics';
+import { PrototypeDisclaimer } from '@/components/ui/prototype-disclaimer';
 
 export default function WorkerDashboardPage() {
   const { showToast } = useToast();
@@ -99,6 +101,19 @@ export default function WorkerDashboardPage() {
   // Handle Job Requests status
   const handleStatusChange = (id: string, newStatus: 'accepted' | 'declined') => {
     updateJobRequestStatus(id, newStatus);
+    if (newStatus === 'declined') {
+      showToast({
+        type: 'info',
+        title: 'Job Request Declined',
+        message: 'Request declined. Homeowner was notified and pre-authorization escrow hold released immediately.',
+      });
+    } else {
+      showToast({
+        type: 'success',
+        title: 'Job Request Accepted',
+        message: 'Appointment confirmed and scheduled on your dispatch calendar.',
+      });
+    }
   };
 
   // Add a new service pricing item
@@ -202,26 +217,23 @@ export default function WorkerDashboardPage() {
     });
   };
 
-  const pendingCount = requests.filter((r) => r.status === 'pending').length;
-  const acceptedCount = requests.filter((r) => r.status === 'accepted').length;
+  const workerMetrics = computeWorkerMetrics(workerPro, requests, bookings);
+  const pendingCount = workerMetrics.pendingRequestsCount;
+  const acceptedCount = workerMetrics.acceptedRequestsCount;
   const workerBookings = bookings.filter((b) => b.professionalId === workerPro.id);
   const confirmedBookings = workerBookings.filter((b) => b.status === 'confirmed');
   const completedBookings = workerBookings.filter((b) => b.status === 'completed');
-  const activeEscrowBookings = workerBookings.filter(
-    (b) => b.status === 'confirmed' || b.status === 'in_progress'
-  );
-  const activeEscrowAmount = activeEscrowBookings.reduce(
-    (sum, b) => sum + b.diagnosticFee + (b.estimatedLaborRate || 0),
-    0
-  );
-  const availablePayoutAmount = completedBookings.reduce(
-    (sum, b) => sum + (b.totalEstimateHigh || b.diagnosticFee + (b.estimatedLaborRate || 85)),
-    0
-  );
+  const activeEscrowAmount = workerMetrics.activeEscrowAmount;
+  const availablePayoutAmount = workerMetrics.totalEarnings;
 
   return (
     <div className="py-6 sm:py-12 bg-[#F7F8FA]">
       <Container>
+        {/* Prototype Simulated Data Disclaimer */}
+        <div className="mb-6">
+          <PrototypeDisclaimer variant="banner" className="rounded-2xl" />
+        </div>
+
         {/* Worker Header Card */}
         <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E4E7EC] p-4 sm:p-8 shadow-xs mb-6 sm:mb-8">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
@@ -277,26 +289,26 @@ export default function WorkerDashboardPage() {
           {/* Performance Summary Metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-[#E4E7EC]">
             <StatCard
-              label="Monthly Payouts"
-              value="$4,280"
+              label="Authoritative Payouts"
+              value={formatCurrency(workerMetrics.totalEarnings)}
               subtext="Stripe Auto-release"
               icon={<DollarSign className="w-5 h-5" />}
             />
             <StatCard
               label="Overall Rating"
-              value={`${workerPro.rating} ★`}
-              subtext={`${workerPro.reviewCount} customer reviews`}
+              value={`${workerMetrics.averageRating} ★`}
+              subtext={`${workerMetrics.reviewsCount} verified reviews`}
               icon={<Star className="w-5 h-5" />}
             />
             <StatCard
               label="Pending Requests"
-              value={pendingCount}
+              value={workerMetrics.pendingRequestsCount}
               subtext="Awaiting your response"
               icon={<Clock className="w-5 h-5" />}
             />
             <StatCard
               label="Completed Jobs"
-              value={workerPro.completedJobsCount}
+              value={workerMetrics.totalCompletedJobsCount}
               subtext="100% Escrow sign-off"
               icon={<CheckCircle2 className="w-5 h-5" />}
             />

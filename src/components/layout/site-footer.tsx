@@ -152,8 +152,18 @@ export function SiteFooter() {
           </div>
         </div>
 
+        {/* Prototype Simulated Data Disclosure */}
+        <div className="py-4 px-5 rounded-2xl bg-white/5 border border-white/10 text-xs text-white/80 my-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-start sm:items-center gap-2">
+            <span className="font-bold text-[#0F9D91] shrink-0">Prototype — Simulated Data:</span>
+            <span className="text-white/70 text-[11px] sm:text-xs leading-relaxed">
+              Some professional listings, estimates, dashboard metrics, and payment statuses may use simulated data. They do not represent verified live availability or actual financial transactions.
+            </span>
+          </div>
+        </div>
+
         {/* Bottom copyright & disclaimer */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/60">
+        <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/60">
           <p>© {new Date().getFullYear()} SkillConnect Platform. All rights reserved.</p>
           <div className="flex items-center gap-1 text-white/70">
             <span>Crafted with</span>

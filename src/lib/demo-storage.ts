@@ -262,25 +262,24 @@ export function addDemoBooking(booking: DemoBooking): void {
     const updated = [booking, ...current];
     localStorage.setItem(BOOKINGS_STORAGE_KEY, JSON.stringify(updated));
 
-    // Also auto-generate incoming request for worker demo if it matches Marcus Vance
-    if (booking.professionalId === 'pro-marcus-vance') {
-      const currentReqs = getWorkerRequests();
-      const newReq: JobRequest = {
-        id: `REQ-${Math.floor(100 + Math.random() * 900)}`,
-        customerName: booking.customerName,
-        customerNeighborhood: booking.customerAddress.split(',')[1]?.trim() || 'San Francisco',
-        customerPhone: booking.customerPhone || '(555) 392-8172',
-        serviceCategory: booking.categoryName,
-        issueDescription: booking.serviceDescription,
-        requestedDate: booking.appointmentDate,
-        requestedSlot: booking.appointmentTime,
-        estimatedRevenue: `$${booking.diagnosticFee} - $${booking.diagnosticFee + booking.estimatedLaborRate}`,
-        status: 'pending',
-        receivedAt: 'Just now',
-        associatedBookingId: booking.id,
-      };
-      localStorage.setItem(REQUESTS_STORAGE_KEY, JSON.stringify([newReq, ...currentReqs]));
-    }
+    // Auto-generate incoming request for worker demo portal
+    const currentReqs = getWorkerRequests();
+    const newReq: JobRequest = {
+      id: `REQ-${Math.floor(100 + Math.random() * 900)}`,
+      professionalId: booking.professionalId,
+      customerName: booking.customerName,
+      customerNeighborhood: booking.customerAddress.split(',')[1]?.trim() || 'San Francisco',
+      customerPhone: booking.customerPhone || '(555) 392-8172',
+      serviceCategory: booking.categoryName,
+      issueDescription: booking.serviceDescription,
+      requestedDate: booking.appointmentDate,
+      requestedSlot: booking.appointmentTime,
+      estimatedRevenue: `$${booking.diagnosticFee} - $${booking.diagnosticFee + booking.estimatedLaborRate}`,
+      status: booking.status === 'confirmed' ? 'accepted' : 'pending',
+      receivedAt: 'Just now',
+      associatedBookingId: booking.id,
+    };
+    localStorage.setItem(REQUESTS_STORAGE_KEY, JSON.stringify([newReq, ...currentReqs]));
 
     notifyStorageChange();
   } catch (err) {
@@ -303,22 +302,28 @@ export function updateDemoBookingStatus(
         status,
         timestamp: new Date().toISOString(),
         note:
-          status === 'cancelled'
-            ? `Booking cancelled. ${cancellationReason ? `Reason: ${cancellationReason}. ` : ''}Escrow funds hold released.`
+          status === 'declined'
+            ? `Request declined by service professional. ${cancellationReason ? `Reason: ${cancellationReason}. ` : ''}Escrow pre-authorization hold released and refunded in full to customer.`
+            : status === 'cancelled'
+            ? `Booking cancelled. ${cancellationReason ? `Reason: ${cancellationReason}. ` : ''}Escrow pre-authorization hold released and refunded in full to customer.`
             : status === 'completed'
-            ? 'Service completed and customer sign-off recorded. Escrow released.'
+            ? 'Service completed and customer sign-off recorded. Escrow released to technician.'
+            : status === 'confirmed'
+            ? 'Appointment confirmed by service professional. Pre-authorized diagnostic fee held safely in escrow.'
             : status === 'disputed'
             ? `Dispute raised: ${cancellationReason || 'Mediation requested by customer'}. Escrow on administrative hold.`
             : `Status changed to ${status}.`,
       };
 
       const paymentStatus =
-        status === 'cancelled'
+        status === 'cancelled' || status === 'declined'
           ? 'refunded_to_customer'
           : status === 'completed'
           ? 'released_to_worker'
           : status === 'disputed'
           ? 'disputed_hold'
+          : status === 'confirmed'
+          ? 'authorized_hold'
           : b.paymentStatus;
 
       return {
@@ -514,9 +519,17 @@ export function updateJobRequestStatus(id: string, status: 'accepted' | 'decline
     const linked = current.find((r) => r.id === id);
     if (linked?.associatedBookingId) {
       if (status === 'accepted') {
-        updateDemoBookingStatus(linked.associatedBookingId, 'confirmed');
+        updateDemoBookingStatus(
+          linked.associatedBookingId,
+          'confirmed',
+          'Service professional confirmed the appointment slot'
+        );
       } else {
-        updateDemoBookingStatus(linked.associatedBookingId, 'cancelled', 'Worker unable to fulfill requested slot');
+        updateDemoBookingStatus(
+          linked.associatedBookingId,
+          'declined',
+          'Professional unable to fulfill requested slot - escrow hold refunded to customer'
+        );
       }
     }
 

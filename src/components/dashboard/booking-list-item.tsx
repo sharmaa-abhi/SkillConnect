@@ -97,8 +97,10 @@ export function BookingListItem({ booking, onCancelBooking }: BookingListItemPro
     }, 400);
   };
 
+  const isPending = booking.status === 'pending';
   const isUpcoming = booking.status === 'confirmed' || booking.status === 'in_progress';
   const isCancelled = booking.status === 'cancelled';
+  const isDeclined = booking.status === 'declined';
   const isCompleted = booking.status === 'completed';
   const isDisputed = booking.status === 'disputed';
 
@@ -127,7 +129,11 @@ export function BookingListItem({ booking, onCancelBooking }: BookingListItemPro
               </span>
               <span
                 className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full capitalize ${
-                  isUpcoming
+                  isPending
+                    ? 'bg-amber-50 text-[#B54708] border border-amber-200'
+                    : isDeclined
+                    ? 'bg-rose-50 text-[#B42318] border border-rose-200'
+                    : isUpcoming
                     ? 'bg-blue-50 text-[#173B67] border border-blue-200'
                     : isDisputed
                     ? 'bg-red-50 text-[#B42318] border border-red-200'
@@ -136,7 +142,13 @@ export function BookingListItem({ booking, onCancelBooking }: BookingListItemPro
                     : 'bg-emerald-50 text-[#15803D] border border-emerald-200'
                 }`}
               >
-                {isDisputed ? 'Dispute in Mediation' : booking.status.replace('_', ' ')}
+                {isPending
+                  ? 'Awaiting Pro Acceptance'
+                  : isDeclined
+                  ? 'Declined by Pro'
+                  : isDisputed
+                  ? 'Dispute in Mediation'
+                  : booking.status.replace('_', ' ')}
               </span>
               <span className="text-[11px] text-[#0F9D91] font-semibold bg-[#E6F7F5] px-2 py-0.5 rounded-md">
                 {booking.categoryName}

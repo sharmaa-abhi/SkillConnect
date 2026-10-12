@@ -26,6 +26,8 @@ import { useToast } from '@/context/toast-context';
 import { useAuth } from '@/context/auth-context';
 import { formatCurrency } from '@/lib/formatters';
 import { serviceCategories } from '@/data/services';
+import { computeAdminMetrics } from '@/lib/metrics';
+import { PrototypeDisclaimer } from '@/components/ui/prototype-disclaimer';
 
 export default function AdminDashboardPage() {
   const { showToast } = useToast();
@@ -40,13 +42,12 @@ export default function AdminDashboardPage() {
   const bookings = useBookings();
   const professionals = useProfessionalsList();
 
+  const adminMetrics = computeAdminMetrics(professionals, records, bookings);
   const pendingRecords = records.filter(
     (r) => r.status === 'pending' || r.status === 'submitted'
   );
   const disputedBookings = bookings.filter((b) => b.status === 'disputed');
-  const activeEscrowAmount = bookings
-    .filter((b) => b.paymentStatus === 'authorized_hold' || b.paymentStatus === 'disputed_hold')
-    .reduce((sum, b) => sum + b.diagnosticFee, 0);
+  const activeEscrowAmount = adminMetrics.activeEscrowTotal;
 
   // If user is not admin, show guard with quick authorization button
   if (role !== 'admin') {
@@ -146,6 +147,11 @@ export default function AdminDashboardPage() {
   return (
     <div className="py-8 sm:py-12 bg-[#F7F8FA]">
       <Container>
+        {/* Prototype Simulated Data Disclaimer */}
+        <div className="mb-6">
+          <PrototypeDisclaimer variant="banner" className="rounded-2xl" />
+        </div>
+
         {/* Admin Header */}
         <div className="bg-white rounded-3xl border border-[#E4E7EC] p-6 sm:p-8 shadow-xs mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -184,31 +190,31 @@ export default function AdminDashboardPage() {
             <div>
               <span className="text-xs font-semibold text-[#667085]">Active Professionals</span>
               <p className="text-2xl font-black text-[#173B67] mt-0.5">
-                {professionals.length}
+                {adminMetrics.totalProsCount}
               </p>
-              <span className="text-[11px] text-[#15803D] font-semibold">100% background checked</span>
+              <span className="text-[11px] text-[#15803D] font-semibold">{adminMetrics.verifiedProsCount} verified active</span>
             </div>
             <div>
               <span className="text-xs font-semibold text-[#667085]">Pending Audits</span>
               <p className="text-2xl font-black text-[#B54708] mt-0.5">
-                {pendingRecords.length}
+                {adminMetrics.pendingAuditsCount}
               </p>
               <span className="text-[11px] text-[#B54708]">Action required</span>
             </div>
             <div>
               <span className="text-xs font-semibold text-[#667085]">Escrow Funds Protected</span>
               <p className="text-2xl font-black text-[#0F9D91] mt-0.5">
-                {formatCurrency(activeEscrowAmount)}
+                {formatCurrency(adminMetrics.activeEscrowTotal)}
               </p>
               <span className="text-[11px] text-[#0F9D91] font-semibold">Across {bookings.length} platform bookings</span>
             </div>
             <div>
               <span className="text-xs font-semibold text-[#667085]">Disputes Desk</span>
-              <p className={`text-2xl font-black mt-0.5 ${disputedBookings.length > 0 ? 'text-[#B42318]' : 'text-[#15803D]'}`}>
-                {disputedBookings.length} Active
+              <p className={`text-2xl font-black mt-0.5 ${adminMetrics.activeDisputesCount > 0 ? 'text-[#B42318]' : 'text-[#15803D]'}`}>
+                {adminMetrics.activeDisputesCount} Active
               </p>
               <span className="text-[11px] text-[#667085]">
-                {disputedBookings.length > 0 ? 'Mediation required' : 'Zero unresolved disputes'}
+                {adminMetrics.activeDisputesCount > 0 ? 'Mediation required' : 'Zero unresolved disputes'}
               </span>
             </div>
           </div>
