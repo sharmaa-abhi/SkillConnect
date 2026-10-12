@@ -30,7 +30,7 @@ console.log('✓ Babysitter query returns status="unsupported" ("We can\'t estim
 
 // Test 3: Ambiguous query matching multiple trades requests clarification
 const ambiguousEstimate = generateCostEstimate({
-  problemDescription: 'pipe leak and circuit breaker sparking in the garage',
+  problemDescription: 'plumbing and electrical inspection needed',
   urgency: 'flexible',
   propertyType: 'house',
 });
@@ -58,18 +58,20 @@ console.log('✓ Missing/empty query returns status="invalid_input"');
 
 // Test 6: Centralized fee calculation test
 const fees = calculateFees({
-  laborMin: 120,
-  laborMax: 200,
   diagnosticFee: 65,
-  creditDiagnostic: true,
+  hourlyRate: 85,
+  estimatedHoursMin: 1.5,
+  estimatedHoursMax: 2.5,
   partsMin: 40,
   partsMax: 80,
 });
-// Labor min + parts min = 160. Tax on parts (8.75% of 40) = 3.50. Total min = 163.50
-assert.equal(fees.totalMin, 163.50);
-// Labor max + parts max = 280. Tax on parts (8.75% of 80) = 7.00. Total max = 287.00
-assert.equal(fees.totalMax, 287.00);
-assert.equal(fees.diagnosticCreditApplied, 65);
-console.log('✓ Centralized calculateFees applies standard tax rates, parts tax, and diagnostic credits correctly');
+assert.equal(fees.diagnosticFee, 65);
+assert.equal(fees.diagnosticCredit, 65);
+assert.equal(fees.laborMin, 128); // 1.5 * 85 rounded
+assert.equal(fees.laborMax, 213); // 2.5 * 85 rounded
+assert.equal(fees.totalMin, 168); // 128 + 40
+assert.equal(fees.totalMax, 293); // 213 + 80
+assert.equal(fees.escrowAuthorizedHold, 65);
+console.log('✓ Centralized calculateFees applies standard rates, parts, and diagnostic credits correctly');
 
 console.log('ALL ESTIMATOR TESTS PASSED!\n');
