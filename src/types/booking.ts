@@ -1,5 +1,17 @@
-export type BookingStatus = 'confirmed' | 'in_progress' | 'completed' | 'cancelled' | 'disputed';
-export type PaymentHoldStatus = 'authorized_hold' | 'released_to_worker' | 'refunded_to_customer' | 'disputed_hold';
+export type BookingStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'in_progress'
+  | 'completed'
+  | 'declined'
+  | 'cancelled'
+  | 'disputed';
+
+export type PaymentHoldStatus =
+  | 'authorized_hold'
+  | 'released_to_worker'
+  | 'refunded_to_customer'
+  | 'disputed_hold';
 
 export interface BookingTimelineEvent {
   status: BookingStatus;
@@ -43,6 +55,7 @@ export interface DemoBooking {
 
 export interface JobRequest {
   id: string;
+  professionalId?: string;
   customerName: string;
   customerNeighborhood: string;
   customerPhone?: string;
