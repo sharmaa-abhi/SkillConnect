@@ -7,7 +7,7 @@ import { Container } from '@/components/layout/container';
 import { FilterState } from '@/types';
 import { serviceCategories } from '@/data/services';
 import { performSmartProSearch } from '@/lib/search';
-import { useProfessionalsList, useComparison } from '@/lib/demo-storage';
+import { useProfessionalsList, useComparison, toggleComparisonPro, clearComparison } from '@/lib/demo-storage';
 import { ProfessionalGrid } from '@/components/professionals/professional-grid';
 import { FilterSidebar } from '@/components/professionals/filter-sidebar';
 import { FilterDrawerMobile } from '@/components/professionals/filter-drawer-mobile';
@@ -433,15 +433,20 @@ function ProfessionalsDirectoryContent() {
 
       {/* Floating Comparison Bar */}
       <ComparisonFloatingBar
+        comparedPros={comparedPros}
         onOpenModal={() => setComparisonModalOpen(true)}
+        onRemovePro={(proId) => toggleComparisonPro(proId)}
+        onClearAll={() => clearComparison()}
       />
 
       {/* Comparison Modal */}
       <ComparisonModal
         isOpen={comparisonModalOpen}
         onClose={() => setComparisonModalOpen(false)}
-        professionals={comparedPros}
-        onSelectForBooking={(pro) => {
+        comparedPros={comparedPros}
+        onRemovePro={(proId) => toggleComparisonPro(proId)}
+        onClearAll={() => clearComparison()}
+        onBookPro={(pro: Professional) => {
           setComparisonModalOpen(false);
           setBookingDialogPro(pro);
         }}
