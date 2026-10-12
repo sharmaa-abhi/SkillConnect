@@ -1,65 +1,567 @@
 import { ProfessionalProfile } from '@/types/professional';
 import { FilterState } from '@/types';
+import { serviceCategories } from '@/data/services';
 
-export function filterAndSortProfessionals(
-  pros: ProfessionalProfile[],
-  filters: FilterState
-): ProfessionalProfile[] {
-  let results = [...pros];
+/**
+ * Normalizes user search input by trimming whitespace, lowercasing,
+ * and stripping extraneous punctuation while preserving alpha-numerics and spaces.
+ */
+export function normalizeSearchTerm(input?: string | null): string {
+  if (!input) return '';
+  return input
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, ' ') // replace punctuation with space
+    .replace(/\s+/g, ' ') // collapse multiple spaces
+    .trim();
+}
 
-  // 1. Text Search (Matches name, tradeTitle, category, skills, service areas, zipCodes)
-  if (filters.query && filters.query.trim().length > 0) {
-    const q = filters.query.toLowerCase().trim();
-    results = results.filter((pro) => {
-      const matchName = pro.name.toLowerCase().includes(q);
-      const matchTrade = pro.tradeTitle.toLowerCase().includes(q);
-      const matchCategory = pro.categoryName.toLowerCase().includes(q) || pro.categorySlug.toLowerCase().includes(q);
-      const matchSkills = pro.skills.some((skill) => skill.toLowerCase().includes(q));
-      const matchAreas = pro.serviceAreas.some((area) => area.toLowerCase().includes(q));
-      const matchZips = pro.zipCodes.some((zip) => zip.includes(q));
-      const matchBio = pro.bio.toLowerCase().includes(q);
+/**
+ * Validates a US 5-digit ZIP code format.
+ */
+export function isValidZipCode(zip: string): boolean {
+  return /^\d{5}$/.test(zip.trim());
+}
 
-      return matchName || matchTrade || matchCategory || matchSkills || matchAreas || matchZips || matchBio;
-    });
+/**
+ * Extracts a 5-digit ZIP code if present in the text.
+ */
+export function extractZipCode(text: string): string | null {
+  const match = text.match(/\b\d{5}\b/);
+  return match ? match[0] : null;
+}
+
+export interface CategoryDetectionResult {
+  categorySlug: string | null;
+  categoryName: string | null;
+  isUnsupported: boolean;
+  unsupportedServiceName?: string;
+  isAmbiguous: boolean;
+  confidence: 'high' | 'medium' | 'none';
+  keywordsMatched: string[];
+}
+
+/**
+ * Known unsupported services map to prevent incorrect fallbacks (e.g. babysitter -> Plumbing).
+ */
+const UNSUPPORTED_SERVICE_SYNONYMS: Record<string, string[]> = {
+  'Childcare & Babysitting': [
+    'babysitter',
+    'babysitting',
+    'nanny',
+    'childcare',
+    'child care',
+    'daycare',
+    'au pair',
+    'infant care',
+    'toddler care',
+  ],
+  'Pet Care & Grooming': [
+    'dog walking',
+    'dog walker',
+    'pet sitting',
+    'pet grooming',
+    'cat sitting',
+    'vet',
+    'veterinary',
+  ],
+  'Legal & Financial Consulting': [
+    'lawyer',
+    'attorney',
+    'tax prep',
+    'accountant',
+    'cpa',
+    'legal advice',
+  ],
+  'Automotive Repair': [
+    'car repair',
+    'mechanic',
+    'oil change',
+    'tire replacement',
+    'brake pads',
+    'auto body',
+  ],
+};
+
+/**
+ * Comprehensive synonym and multiword phrase dictionary for supported categories.
+ */
+const CATEGORY_SYNONYMS: Record<string, { name: string; phrases: string[] }> = {
+  plumbing: {
+    name: 'Plumbing',
+    phrases: [
+      'plumb',
+      'plumber',
+      'plumbing',
+      'leaky sink',
+      'sink leak',
+      'leaking sink',
+      'leak',
+      'leaks',
+      'leaking',
+      'pipe',
+      'pipes',
+      'burst pipe',
+      'pipe burst',
+      'copper pipe',
+      'pex',
+      'drain',
+      'drains',
+      'blocked drain',
+      'clogged drain',
+      'slow drain',
+      'drain clearing',
+      'clog',
+      'clogged',
+      'clogged toilet',
+      'toilet',
+      'running toilet',
+      'toilet overflow',
+      'faucet',
+      'dripping faucet',
+      'water heater',
+      'tankless',
+      'water leak',
+      'sewer',
+      'sewer line',
+      'backflow',
+      'p-trap',
+      'garbage disposal',
+      'shower leak',
+      'bathtub drain',
+      'hydro jetting',
+      'repiping',
+      'shut off valve',
+    ],
+  },
+  electrical: {
+    name: 'Electrical Work',
+    phrases: [
+      'electric',
+      'electrical',
+      'electrician',
+      'breaker',
+      'circuit breaker',
+      'tripping breaker',
+      'breaker panel',
+      'panel upgrade',
+      'fuse',
+      'outlet',
+      'wall outlet',
+      'sparking outlet',
+      'wire',
+      'wiring',
+      'short circuit',
+      'light',
+      'lighting',
+      'recessed lights',
+      'ceiling fan',
+      'ev charger',
+      'level 2 charger',
+      'switch',
+      'light switch',
+      'dimmer',
+      'ground fault',
+      'gfci',
+      'generator',
+      'smart switch',
+    ],
+  },
+  hvac: {
+    name: 'HVAC & Climate Control',
+    phrases: [
+      'hvac',
+      'air cond',
+      'air conditioner',
+      'air conditioning',
+      'ac repair',
+      'ac unit',
+      'ac tune up',
+      'heat pump',
+      'furnace',
+      'heater',
+      'heating',
+      'thermostat',
+      'nest thermostat',
+      'duct',
+      'air ducts',
+      'ventilation',
+      'climate control',
+      'freon',
+      'refrigerant',
+      'compressor',
+      'blower',
+    ],
+  },
+  'appliance-repair': {
+    name: 'Appliance Repair',
+    phrases: [
+      'appliance',
+      'appliances',
+      'refrigerator',
+      'fridge',
+      'freezer',
+      'washer',
+      'washing machine',
+      'dryer',
+      'clothes dryer',
+      'dishwasher',
+      'oven',
+      'stove',
+      'range',
+      'cooktop',
+      'ice maker',
+      'microwave',
+    ],
+  },
+  carpentry: {
+    name: 'Carpentry & Framing',
+    phrases: [
+      'carpenter',
+      'carpentry',
+      'woodwork',
+      'wood',
+      'cabinet',
+      'cabinets',
+      'cabinetry',
+      'door',
+      'door hanging',
+      'door sticking',
+      'deck',
+      'deck repair',
+      'framing',
+      'trim',
+      'baseboard',
+      'molding',
+      'shelving',
+      'built in',
+      'handrail',
+      'stairs',
+    ],
+  },
+  cleaning: {
+    name: 'Deep & Move-In Cleaning',
+    phrases: [
+      'clean',
+      'cleaning',
+      'deep clean',
+      'move in clean',
+      'move out clean',
+      'post renovation clean',
+      'carpet cleaning',
+      'sanitization',
+      'window detailing',
+      'maid',
+      'housekeeping',
+      'scrub',
+    ],
+  },
+  painting: {
+    name: 'Painting & Finishing',
+    phrases: [
+      'paint',
+      'painter',
+      'painting',
+      'interior paint',
+      'exterior paint',
+      'accent wall',
+      'cabinet spray',
+      'cabinet painting',
+      'drywall',
+      'drywall patch',
+      'drywall repair',
+      'sheetrock',
+      'wallpaper',
+      'primer',
+    ],
+  },
+};
+
+/**
+ * Detects the service category with synonym mapping and explicit unsupported checks.
+ * NEVER defaults to Plumbing or an arbitrary category if unknown.
+ */
+export function detectServiceCategory(rawInput: string): CategoryDetectionResult {
+  const normalized = normalizeSearchTerm(rawInput);
+  if (!normalized) {
+    return {
+      categorySlug: null,
+      categoryName: null,
+      isUnsupported: false,
+      isAmbiguous: false,
+      confidence: 'none',
+      keywordsMatched: [],
+    };
   }
 
-  // 2. Category Filter
+  // 1. Check if the query matches an explicitly unsupported domain (e.g. babysitter, pet care)
+  for (const [unsupportedName, synonyms] of Object.entries(UNSUPPORTED_SERVICE_SYNONYMS)) {
+    for (const syn of synonyms) {
+      if (normalized.includes(syn)) {
+        return {
+          categorySlug: null,
+          categoryName: null,
+          isUnsupported: true,
+          unsupportedServiceName: unsupportedName,
+          isAmbiguous: false,
+          confidence: 'high',
+          keywordsMatched: [syn],
+        };
+      }
+    }
+  }
+
+  // 2. Exact slug or category name check against active catalog
+  for (const cat of serviceCategories) {
+    if (
+      normalized === cat.slug ||
+      normalized === normalizeSearchTerm(cat.name)
+    ) {
+      return {
+        categorySlug: cat.slug,
+        categoryName: cat.name,
+        isUnsupported: false,
+        isAmbiguous: false,
+        confidence: 'high',
+        keywordsMatched: [cat.slug],
+      };
+    }
+  }
+
+  // 3. Synonym and phrase dictionary matching
+  const categoryScores: Record<string, { count: number; matched: string[] }> = {};
+
+  for (const [slug, meta] of Object.entries(CATEGORY_SYNONYMS)) {
+    for (const phrase of meta.phrases) {
+      // Regex word boundary or substring match for multiword phrases
+      const isMultiword = phrase.includes(' ');
+      const matched = isMultiword
+        ? normalized.includes(phrase)
+        : new RegExp(`\\b${phrase}\\b`, 'i').test(normalized) || normalized.includes(phrase);
+
+      if (matched) {
+        if (!categoryScores[slug]) {
+          categoryScores[slug] = { count: 0, matched: [] };
+        }
+        categoryScores[slug].count += isMultiword ? 3 : 1;
+        categoryScores[slug].matched.push(phrase);
+      }
+    }
+  }
+
+  const entries = Object.entries(categoryScores).sort((a, b) => b[1].count - a[1].count);
+
+  if (entries.length === 0) {
+    return {
+      categorySlug: null,
+      categoryName: null,
+      isUnsupported: false,
+      isAmbiguous: false,
+      confidence: 'none',
+      keywordsMatched: [],
+    };
+  }
+
+  // Check if top 2 categories have identical high scores (ambiguous request)
+  if (entries.length > 1 && entries[0][1].count === entries[1][1].count && entries[0][1].count > 0) {
+    return {
+      categorySlug: entries[0][0],
+      categoryName: CATEGORY_SYNONYMS[entries[0][0]]?.name || entries[0][0],
+      isUnsupported: false,
+      isAmbiguous: true,
+      confidence: 'medium',
+      keywordsMatched: [...entries[0][1].matched, ...entries[1][1].matched],
+    };
+  }
+
+  const topSlug = entries[0][0];
+  const topMeta = CATEGORY_SYNONYMS[topSlug];
+
+  return {
+    categorySlug: topSlug,
+    categoryName: topMeta?.name || topSlug,
+    isUnsupported: false,
+    isAmbiguous: false,
+    confidence: entries[0][1].count >= 2 ? 'high' : 'medium',
+    keywordsMatched: entries[0][1].matched,
+  };
+}
+
+export interface SearchDiagnostics {
+  normalizedQuery: string;
+  detectedCategory: CategoryDetectionResult;
+  searchedLocation: string | null;
+  searchedZip: string | null;
+  isInvalidZip: boolean;
+  hasLocationFilter: boolean;
+  totalBeforeLocationFilter: number;
+  totalResults: number;
+  emptyReason?:
+    | 'unsupported_service'
+    | 'unknown_service'
+    | 'no_pros_in_zip'
+    | 'no_pros_matching_filters'
+    | 'invalid_zip';
+  emptyMessage?: string;
+}
+
+export interface SmartSearchResult {
+  results: ProfessionalProfile[];
+  diagnostics: SearchDiagnostics;
+}
+
+/**
+ * Smart professional discovery with synonym mapping, genuine ZIP coverage validation,
+ * and diagnostic explanation for helpful empty states.
+ */
+export function performSmartProSearch(
+  pros: ProfessionalProfile[],
+  filters: FilterState
+): SmartSearchResult {
+  const normalizedRaw = normalizeSearchTerm(filters.query);
+
+  // Separate location input or extracted ZIP from query
+  let searchedLocation = filters.location ? normalizeSearchTerm(filters.location) : '';
+  let searchedZip = extractZipCode(filters.location || '');
+
+  // If query contains a 5-digit ZIP and location is not set, extract it
+  let cleanedQueryText = normalizedRaw;
+  const embeddedZip = extractZipCode(normalizedRaw);
+  if (embeddedZip) {
+    searchedZip = embeddedZip;
+    searchedLocation = embeddedZip;
+    cleanedQueryText = normalizedRaw.replace(embeddedZip, '').trim();
+  }
+
+  const isInvalidZip = Boolean(
+    filters.location &&
+      filters.location.trim().length > 0 &&
+      /^\d+$/.test(filters.location.trim()) &&
+      !isValidZipCode(filters.location.trim())
+  );
+
+  const detectedCategory = detectServiceCategory(cleanedQueryText);
+
+  // If the query is an unsupported service (e.g. babysitter)
+  if (detectedCategory.isUnsupported) {
+    return {
+      results: [],
+      diagnostics: {
+        normalizedQuery: cleanedQueryText,
+        detectedCategory,
+        searchedLocation: searchedLocation || null,
+        searchedZip,
+        isInvalidZip,
+        hasLocationFilter: Boolean(searchedLocation),
+        totalBeforeLocationFilter: 0,
+        totalResults: 0,
+        emptyReason: 'unsupported_service',
+        emptyMessage: `We don't offer ${detectedCategory.unsupportedServiceName || 'this service'} yet. SkillConnect specializes exclusively in licensed home trades (Plumbing, Electrical, HVAC, Carpentry, Cleaning, Painting, Appliance Repair).`,
+      },
+    };
+  }
+
+  // If invalid ZIP format was provided
+  if (isInvalidZip) {
+    return {
+      results: [],
+      diagnostics: {
+        normalizedQuery: cleanedQueryText,
+        detectedCategory,
+        searchedLocation: searchedLocation || null,
+        searchedZip: null,
+        isInvalidZip: true,
+        hasLocationFilter: true,
+        totalBeforeLocationFilter: 0,
+        totalResults: 0,
+        emptyReason: 'invalid_zip',
+        emptyMessage: `"${filters.location}" is not a valid 5-digit US ZIP code. Please enter a valid 5-digit code (e.g., 94107).`,
+      },
+    };
+  }
+
+  let candidates = [...pros];
+
+  // 1. Text & Category relevance filtering
+  if (cleanedQueryText.length > 0) {
+    if (detectedCategory.categorySlug) {
+      // Filter by detected category and also match pros directly
+      candidates = candidates.filter((pro) => {
+        const matchesCategory = pro.categorySlug === detectedCategory.categorySlug;
+        const matchesTextDirectly =
+          pro.name.toLowerCase().includes(cleanedQueryText) ||
+          pro.tradeTitle.toLowerCase().includes(cleanedQueryText) ||
+          pro.skills.some((s) => s.toLowerCase().includes(cleanedQueryText)) ||
+          pro.bio.toLowerCase().includes(cleanedQueryText);
+
+        return matchesCategory || matchesTextDirectly;
+      });
+    } else {
+      // Freeform text search matching name, trade, category, skills, bio
+      candidates = candidates.filter((pro) => {
+        const q = cleanedQueryText;
+        return (
+          pro.name.toLowerCase().includes(q) ||
+          pro.tradeTitle.toLowerCase().includes(q) ||
+          pro.categoryName.toLowerCase().includes(q) ||
+          pro.categorySlug.toLowerCase().includes(q) ||
+          pro.skills.some((s) => s.toLowerCase().includes(q)) ||
+          pro.bio.toLowerCase().includes(q)
+        );
+      });
+    }
+  }
+
+  // 2. Explicit Category dropdown filter override
   if (filters.category && filters.category !== 'all') {
-    results = results.filter((pro) => pro.categorySlug === filters.category);
+    candidates = candidates.filter((pro) => pro.categorySlug === filters.category);
   }
 
   // 3. Minimum Rating Filter
   if (filters.minRating !== null && filters.minRating > 0) {
-    results = results.filter((pro) => pro.rating >= filters.minRating!);
+    candidates = candidates.filter((pro) => pro.rating >= filters.minRating!);
   }
 
   // 4. Available Today
   if (filters.availableToday) {
-    results = results.filter((pro) => pro.availableToday);
+    candidates = candidates.filter((pro) => pro.availableToday);
   }
 
-  // 5. Price Tier Filter ($: <60, $$: 60-90, $$$: 90+)
+  // 5. Price Tier Filter
   if (filters.priceTier && filters.priceTier !== 'all') {
-    results = results.filter((pro) => pro.priceTier === filters.priceTier);
+    candidates = candidates.filter((pro) => pro.priceTier === filters.priceTier);
   }
 
-  // 6. Verified Only Filter
+  // 6. Verified Only
   if (filters.verifiedOnly) {
-    results = results.filter((pro) => pro.verifiedPro);
+    candidates = candidates.filter((pro) => pro.verifiedPro);
   }
 
-  // 7. Sorting
+  const totalBeforeLocation = candidates.length;
+
+  // 7. Strict Location and ZIP coverage validation
+  if (searchedZip) {
+    candidates = candidates.filter((pro) => pro.zipCodes.includes(searchedZip!));
+  } else if (searchedLocation) {
+    candidates = candidates.filter((pro) =>
+      pro.serviceAreas.some((area) =>
+        area.toLowerCase().includes(searchedLocation) || searchedLocation.includes(area.toLowerCase())
+      ) ||
+      pro.zipCodes.some((zip) => zip.includes(searchedLocation))
+    );
+  }
+
+  // 8. Sorting
   switch (filters.sortBy) {
     case 'rating':
-      results.sort((a, b) => b.rating - a.rating || b.reviewCount - a.reviewCount);
+      candidates.sort((a, b) => b.rating - a.rating || b.reviewCount - a.reviewCount);
       break;
     case 'price-asc':
-      results.sort((a, b) => a.hourlyRate - b.hourlyRate || a.diagnosticFee - b.diagnosticFee);
+      candidates.sort((a, b) => a.hourlyRate - b.hourlyRate || a.diagnosticFee - b.diagnosticFee);
       break;
     case 'recommended':
     default:
-      // Weighted score: (rating / 5 * 50) + (Math.min(reviewCount, 200) / 200 * 30) + (verifiedPro ? 20 : 0)
-      results.sort((a, b) => {
+      candidates.sort((a, b) => {
         const scoreA =
           (a.rating / 5) * 50 +
           (Math.min(a.reviewCount, 200) / 200) * 30 +
@@ -73,7 +575,48 @@ export function filterAndSortProfessionals(
       break;
   }
 
-  return results;
+  // Determine diagnostics empty message if no candidates found
+  let emptyReason: SearchDiagnostics['emptyReason'];
+  let emptyMessage: string | undefined;
+
+  if (candidates.length === 0) {
+    if (searchedZip && totalBeforeLocation > 0) {
+      emptyReason = 'no_pros_in_zip';
+      emptyMessage = `We found ${totalBeforeLocation} verified specialists, but none currently provide service coverage in ZIP ${searchedZip}. Try clearing the ZIP filter to view specialists in the greater metropolitan area.`;
+    } else if (cleanedQueryText.length > 0 && !detectedCategory.categorySlug) {
+      emptyReason = 'unknown_service';
+      emptyMessage = `We couldn't identify a matching service category for "${cleanedQueryText}". Try searching for plumbing, electrical, HVAC, carpentry, cleaning, painting, or appliance repair.`;
+    } else {
+      emptyReason = 'no_pros_matching_filters';
+      emptyMessage = `No verified professionals matched your current filter selection. Try resetting filters or adjusting search criteria.`;
+    }
+  }
+
+  return {
+    results: candidates,
+    diagnostics: {
+      normalizedQuery: cleanedQueryText,
+      detectedCategory,
+      searchedLocation: searchedLocation || null,
+      searchedZip,
+      isInvalidZip,
+      hasLocationFilter: Boolean(searchedLocation || searchedZip),
+      totalBeforeLocationFilter: totalBeforeLocation,
+      totalResults: candidates.length,
+      emptyReason,
+      emptyMessage,
+    },
+  };
+}
+
+/**
+ * Backward-compatible helper that delegates to `performSmartProSearch`.
+ */
+export function filterAndSortProfessionals(
+  pros: ProfessionalProfile[],
+  filters: FilterState
+): ProfessionalProfile[] {
+  return performSmartProSearch(pros, filters).results;
 }
 
 export interface MatchScoreResult {
