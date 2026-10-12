@@ -24,6 +24,17 @@ export function isValidZipCode(zip: string): boolean {
 }
 
 /**
+ * Validates a ZIP code string and provides detailed validation feedback.
+ */
+export function validateZipCode(zip: string): { isValid: boolean; error?: string } {
+  const trimmed = zip.trim();
+  if (!trimmed) return { isValid: true };
+  if (!/^\d+$/.test(trimmed)) return { isValid: false, error: 'ZIP code must contain digits only.' };
+  if (!/^\d{5}$/.test(trimmed)) return { isValid: false, error: 'ZIP code must be exactly 5 digits.' };
+  return { isValid: true };
+}
+
+/**
  * Extracts a 5-digit ZIP code if present in the text.
  */
 export function extractZipCode(text: string): string | null {
@@ -480,7 +491,7 @@ export function performSmartProSearch(
     };
   }
 
-  let candidates = [...pros];
+  let candidates = Array.isArray(pros) ? [...pros] : [];
 
   // 1. Text & Category relevance filtering
   if (cleanedQueryText.length > 0) {

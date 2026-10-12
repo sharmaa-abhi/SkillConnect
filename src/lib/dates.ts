@@ -18,7 +18,8 @@ const WEEKDAYS = [
 export type WeekdayName = (typeof WEEKDAYS)[number];
 
 /**
- * Parses an ISO string, YYYY-MM-DD string, or Date object into a valid Date.
+ * Parses an ISO string, YYYY-MM-DD string, month-day string, or Date object into a valid Date.
+ * Date-only strings are anchored at 12:00 UTC to prevent timezone offsets from shifting calendar days.
  */
 export function parseDateSafe(input: Date | string | number): Date {
   if (input instanceof Date) {
@@ -26,9 +27,39 @@ export function parseDateSafe(input: Date | string | number): Date {
     return input;
   }
 
+  if (typeof input === 'number') {
+    const d = new Date(input);
+    return isNaN(d.getTime()) ? new Date() : d;
+  }
+
   if (typeof input === 'string') {
-    // Check if it's already a full date or relative string like "Oct 13, 2026"
-    const parsed = new Date(input);
+    const trimmed = input.trim();
+
+    // 1. Check YYYY-MM-DD or YYYY/MM/DD
+    const matchYMD = trimmed.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
+    if (matchYMD) {
+      return new Date(
+        Date.UTC(parseInt(matchYMD[1], 10), parseInt(matchYMD[2], 10) - 1, parseInt(matchYMD[3], 10), 12, 0, 0)
+      );
+    }
+
+    // 2. Check "Month Day, Year" or "Month Day" (e.g., "October 13, 2026" or "Oct 13")
+    const matchMDY = trimmed.match(/^([A-Za-z]+)\s+(\d{1,2})(?:,\s*(\d{4}))?$/);
+    if (matchMDY) {
+      const monthNames = [
+        'january', 'february', 'march', 'april', 'may', 'june',
+        'july', 'august', 'september', 'october', 'november', 'december'
+      ];
+      const monthPrefix = matchMDY[1].toLowerCase().slice(0, 3);
+      const mIdx = monthNames.findIndex((m) => m.startsWith(monthPrefix));
+      const yr = matchMDY[3] ? parseInt(matchMDY[3], 10) : new Date().getFullYear();
+      if (mIdx !== -1) {
+        return new Date(Date.UTC(yr, mIdx, parseInt(matchMDY[2], 10), 12, 0, 0));
+      }
+    }
+
+    // 3. Fallback standard parse for ISO 8601 timestamps
+    const parsed = new Date(trimmed);
     if (!isNaN(parsed.getTime())) {
       return parsed;
     }
@@ -121,7 +152,7 @@ export function generateBookingDateOptions(
 
   for (let i = 0; i < daysCount; i++) {
     const d = new Date(base.getTime());
-    d.setDate(base.getDate() + i);
+    d.setUTCDate(base.getUTCDate() + i);
 
     const weekday = getWeekdayName(d, timeZone);
     const monthFormatter = new Intl.DateTimeFormat('en-US', {
