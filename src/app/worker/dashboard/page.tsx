@@ -223,7 +223,7 @@ export default function WorkerDashboardPage() {
   const workerBookings = bookings.filter((b) => b.professionalId === workerPro.id);
   const confirmedBookings = workerBookings.filter((b) => b.status === 'confirmed');
   const completedBookings = workerBookings.filter((b) => b.status === 'completed');
-  const activeEscrowBookings = workerBookings.filter((b) => b.status === 'confirmed' || b.paymentStatus === 'escrow_hold');
+  const activeEscrowBookings = workerBookings.filter((b) => b.status === 'confirmed' || b.paymentStatus === 'authorized_hold');
   const activeEscrowAmount = workerMetrics.activeEscrowAmount;
   const availablePayoutAmount = workerMetrics.totalEarnings;
 
