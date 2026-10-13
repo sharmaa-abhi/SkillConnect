@@ -12,9 +12,13 @@ const plumbingEstimate = generateCostEstimate({
 });
 assert.equal(plumbingEstimate.status, 'success');
 assert.equal(plumbingEstimate.categorySlug, 'plumbing');
-assert(plumbingEstimate.totalEstimateMin > 0);
-assert(plumbingEstimate.totalEstimateMax >= plumbingEstimate.totalEstimateMin);
-assert(plumbingEstimate.diagnosticFeeCredit > 0);
+assert(plumbingEstimate.totalEstimateMin !== undefined && plumbingEstimate.totalEstimateMin > 0);
+assert(
+  plumbingEstimate.totalEstimateMax !== undefined &&
+  plumbingEstimate.totalEstimateMin !== undefined &&
+  plumbingEstimate.totalEstimateMax >= plumbingEstimate.totalEstimateMin
+);
+assert(plumbingEstimate.diagnosticFeeCredit !== undefined && plumbingEstimate.diagnosticFeeCredit > 0);
 console.log(`✓ Supported plumbing query returns valid ready estimate ($${plumbingEstimate.totalEstimateMin}-$${plumbingEstimate.totalEstimateMax})`);
 
 // Test 2: Babysitter must NEVER receive Plumbing estimate!

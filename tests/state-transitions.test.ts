@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { DemoBooking, JobRequest } from '../src/types/booking';
+import { DemoBooking } from '../src/types/booking';
 
 console.log('--- RUNNING SHARED STATE & ESCROW TRANSITION TESTS ---');
 
@@ -74,6 +74,9 @@ const mockPendingBooking: DemoBooking = {
   customerAddress: '450 Townsend St, San Francisco, CA 94107',
   diagnosticFee: 65,
   estimatedLaborRate: 85,
+  totalEstimateLow: 65,
+  totalEstimateHigh: 180,
+  isDemoOnly: true,
   paymentStatus: 'authorized_hold',
   timeline: [
     {
@@ -98,6 +101,7 @@ assert.notEqual(
   'released_to_worker',
   'SAFETY: Declining pro must NEVER receive customer funds'
 );
+assert(declinedBooking.timeline && declinedBooking.timeline.length > 0);
 assert(
   declinedBooking.timeline[declinedBooking.timeline.length - 1].note.includes('refunded in full to customer')
 );

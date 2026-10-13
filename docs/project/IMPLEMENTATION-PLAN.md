@@ -104,4 +104,4 @@ gantt
 ## 3. Related Documentation
 * [Dependency and Delivery Plan](file:///docs/project/DEPENDENCY-AND-DELIVERY-PLAN.md)
 * [MVP and Release Roadmap](file:///docs/product/MVP-AND-RELEASE-ROADMAP.md)
-* [Quality and Acceptance Checklist](file:///06-QUALITY-ACCEPTANCE-CHECKLIST.md)
+* [Release Checklist](file:///docs/operations/RELEASE-CHECKLIST.md)

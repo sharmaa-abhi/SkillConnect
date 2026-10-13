@@ -31,9 +31,11 @@ const mockPro: ProfessionalProfile = {
   avatarUrl: '',
   coverGradient: '',
   licenseNumber: 'CA-LIC #982410-C36',
-  insuranceVerified: true,
-  backgroundCheckPassed: true,
-  bonded: true,
+  insuranceStatus: 'Verified Active',
+  verifiedPro: true,
+  backgroundChecked: true,
+  completedJobsCount: 0,
+  responseRate: '98%',
   pricingItems: [],
   workingHours: [],
   reviews: [
@@ -78,7 +80,9 @@ const mockBookings: DemoBooking[] = [
     diagnosticFee: 65,
     estimatedLaborRate: 85,
     paymentStatus: 'released_to_worker',
-    finalTotal: 150,
+    totalEstimateLow: 65,
+    totalEstimateHigh: 150,
+    isDemoOnly: true,
   },
   {
     id: 'BK-2',
@@ -97,6 +101,9 @@ const mockBookings: DemoBooking[] = [
     diagnosticFee: 65,
     estimatedLaborRate: 85,
     paymentStatus: 'authorized_hold',
+    totalEstimateLow: 65,
+    totalEstimateHigh: 150,
+    isDemoOnly: true,
   },
   {
     id: 'BK-3',
@@ -115,6 +122,9 @@ const mockBookings: DemoBooking[] = [
     diagnosticFee: 65,
     estimatedLaborRate: 85,
     paymentStatus: 'refunded_to_customer',
+    totalEstimateLow: 65,
+    totalEstimateHigh: 150,
+    isDemoOnly: true,
   },
 ];
 

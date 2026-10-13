@@ -60,5 +60,5 @@ Every production release candidate must satisfy all items below prior to deploym
 
 ## 4. Related Documentation
 * [CI/CD and Deployment Plan](file:///docs/operations/CI-CD-AND-DEPLOYMENT-PLAN.md)
-* [Quality and Acceptance Checklist](file:///06-QUALITY-ACCEPTANCE-CHECKLIST.md)
+* [Requirements Traceability Matrix](file:///docs/project/REQUIREMENTS-TRACEABILITY.md)
 * [Disaster Recovery and Business Continuity](file:///docs/operations/DISASTER-RECOVERY-AND-BUSINESS-CONTINUITY.md)

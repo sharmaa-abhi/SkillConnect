@@ -47,7 +47,6 @@ export default function AdminDashboardPage() {
     (r) => r.status === 'pending' || r.status === 'submitted'
   );
   const disputedBookings = bookings.filter((b) => b.status === 'disputed');
-  const activeEscrowAmount = adminMetrics.activeEscrowTotal;
 
   // If user is not admin, show guard with quick authorization button
   if (role !== 'admin') {

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { getWeekdayName, formatDateDisplay, generateBookingDateOptions, parseDateSafe } from '../src/lib/dates';
+import { getWeekdayName, formatDateDisplay, generateBookingDateOptions } from '../src/lib/dates';
 
 console.log('--- RUNNING DATE AND WEEKDAY TESTS ---');
 

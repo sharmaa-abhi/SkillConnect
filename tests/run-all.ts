@@ -13,15 +13,12 @@ console.log('SKILLCONNECT COMPREHENSIVE AUTOMATED TEST SUITE');
 console.log('GREVIX AfterCode Challenge Card 2 Verification');
 console.log('====================================================\n');
 
-let allPassed = true;
-
 for (const suite of testSuites) {
   try {
     console.log(`>>> Executing ${suite}...`);
-    const output = execSync(`npx tsx ${suite}`, { encoding: 'utf-8', stdio: 'inherit' });
-  } catch (err) {
+    execSync(`npx tsx ${suite}`, { encoding: 'utf-8', stdio: 'inherit' });
+  } catch {
     console.error(`FAILED: ${suite}`);
-    allPassed = false;
     process.exit(1);
   }
 }

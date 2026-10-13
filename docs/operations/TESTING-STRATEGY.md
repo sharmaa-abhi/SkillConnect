@@ -62,6 +62,6 @@ graph TD
 ---
 
 ## 4. Related Documentation
-* [Quality and Acceptance Checklist](file:///06-QUALITY-ACCEPTANCE-CHECKLIST.md)
+* [Release Checklist](file:///docs/operations/RELEASE-CHECKLIST.md)
 * [Accessibility Requirements](file:///docs/design/ACCESSIBILITY-REQUIREMENTS.md)
 * [CI/CD and Deployment Plan](file:///docs/operations/CI-CD-AND-DEPLOYMENT-PLAN.md)
