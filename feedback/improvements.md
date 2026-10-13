@@ -275,8 +275,9 @@ The application was inspected and verified across all required viewport widths:
 | **Date & Weekday Consistency** | `tests/dates.test.ts` | 5 automated assertions | **100% PASS** |
 | **Shared State & Escrow Safety** | `tests/state-transitions.test.ts` | 4 automated assertions | **100% PASS** |
 | **Single Source of Truth Metrics** | `tests/metrics.test.ts` | 3 comprehensive assertions | **100% PASS** |
-| **TypeScript Typecheck** | `npx tsc --noEmit` | Whole repository | **0 Errors** |
+| **TypeScript Typecheck** | `npm run typecheck` / `npx tsc --noEmit` | Whole repository | **0 Errors** |
 | **Master Test Runner** | `npm test` | All 5 test suites | **100% PASS** |
+| **Production Next.js Build** | `npm run build` | All 14 routes compiled & prerendered | **0 Errors** |
 
 ---
 

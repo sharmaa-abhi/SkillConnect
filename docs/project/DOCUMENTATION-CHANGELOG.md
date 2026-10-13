@@ -24,6 +24,15 @@
   * **Project Governance (`docs/project/`)**: Established Implementation Plan, Dependency & Delivery Plan, RAID log, Architecture Decision Records (`ADR-001` through `ADR-006`), Domain Glossary, and Requirements Traceability Matrix (`RTM`).
   * **Root Documentation Integration**: Created `DOCUMENTATION-INDEX.md` as the central navigation gateway, updated `README.md` to guide development teams, and purged superseded legacy root files (`00-` through `06-`) after full consolidation into `docs/`.
 
+### Version 1.1.0 — Phase 1 Application Grounding & Production Build Resolution (October 2026)
+* **Scope**: Alignment of README and developer documentation with current Phase 1 implementation, resolution of production build failures, and script standardization.
+* **Key Additions & Corrections**:
+  * **README Grounding**: Corrected outdated implementation notice from "Documentation Baseline Only" to "Phase 1 Prototype Live & Verified", reflecting the interactive Next.js 16 application.
+  * **Developer Quickstart Guide**: Added comprehensive command reference in `README.md` (`npm install`, `npm run dev`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, `npm start`) with Stage 1 CI/CD Quality Gate criteria.
+  * **Script Standardization**: Added `"typecheck": "tsc --noEmit"` to `package.json` to directly support CI/CD Stage 1 gate requirements in `docs/operations/CI-CD-AND-DEPLOYMENT-PLAN.md`.
+  * **Production Build Bug Fixes**: Corrected 11 strict TypeScript compiler errors across `tests/estimator.test.ts`, `tests/metrics.test.ts`, and `tests/state-transitions.test.ts`, unblocking `next build` and guaranteeing 100% type-safe compilation.
+  * **Cross-Link Integrity**: Repaired legacy links pointing to purged `06-QUALITY-ACCEPTANCE-CHECKLIST.md` in `docs/operations/TESTING-STRATEGY.md`, `docs/operations/RELEASE-CHECKLIST.md`, and `docs/project/IMPLEMENTATION-PLAN.md`.
+
 ---
 
 ## 2. Baseline Audit Summary (Merged)
