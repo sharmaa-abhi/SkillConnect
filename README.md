@@ -59,6 +59,7 @@ In alignment with the [CI/CD and Deployment Plan](file:///docs/operations/CI-CD-
 Based on reviewer evaluation received for **GREVIX AfterCode Challenge Card 2**, the SkillConnect codebase has been inspected, repaired, and verified across all identified defect areas:
 
 - 📋 [Feedback Documentation Index](feedback/README.md)
+- 🖼️ [Visual Before-and-After Comparison Matrix](feedback/visual-comparison.md) *(Side-by-side screenshots for every feedback update)*
 - 📝 [Real Reviewer Feedback Summary](feedback/feedback-summary.md)
 - 🛠️ [Technical Improvements & Root Cause Analysis](feedback/improvements.md)
 - 📸 [Before & After Screenshot Evidence](feedback/screenshots/)

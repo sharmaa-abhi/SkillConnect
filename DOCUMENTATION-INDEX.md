@@ -151,8 +151,17 @@ This document serves as the master navigation gateway and index for the **SkillC
 | [`REQUIREMENTS-TRACEABILITY.md`](file:///docs/project/REQUIREMENTS-TRACEABILITY.md) | Bidirectional RTM mapping requirements to stories, pages, tests | QA, Architects | Approved |
 | [`DOCUMENTATION-CHANGELOG.md`](file:///docs/project/DOCUMENTATION-CHANGELOG.md) | Version history, documentation additions, and merged audit compliance summary | All Stakeholders | Active |
 
+### H. Real-World Feedback & Challenge Card 2 Verification (`feedback/`)
+| Document File | Purpose Summary | Primary Audience | Status |
+| :--- | :--- | :--- | :--- |
+| [`feedback/visual-comparison.md`](file:///feedback/visual-comparison.md) | **Instant Before & After visual comparison matrix** with side-by-side screenshots for every feedback fix | Reviewers, QA, PMs | Approved |
+| [`feedback/README.md`](file:///feedback/README.md) | Master overview and navigation for Challenge Card 2 feedback review | Reviewers, Leads | Approved |
+| [`feedback/feedback-summary.md`](file:///feedback/feedback-summary.md) | Real reviewer observations, shared state architecture evaluation, fix priorities | Product, Engineering | Approved |
+| [`feedback/improvements.md`](file:///feedback/improvements.md) | Deep technical root cause analysis, code diffs, and automated test outcomes | Engineers, Architects | Approved |
+
 ---
 
 ## 4. Related Documentation
 * [README](file:///README.md)
+* [Visual Before-and-After Feedback Matrix](file:///feedback/visual-comparison.md)
 * [Requirements Traceability Matrix](file:///docs/project/REQUIREMENTS-TRACEABILITY.md)
