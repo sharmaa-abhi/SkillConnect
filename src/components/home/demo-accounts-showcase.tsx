@@ -1,13 +1,16 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   Sparkles,
   ArrowRight,
-  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  User,
+  Wrench,
+  ShieldAlert,
   Key,
 } from 'lucide-react';
 import { Container } from '@/components/layout/container';
@@ -82,6 +85,7 @@ export function DemoAccountsShowcase() {
   const { login, role: activeRole } = useAuth();
   const { showToast } = useToast();
   const router = useRouter();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleLaunch = (demo: DemoCard) => {
     login(demo.email, demo.role);
@@ -94,121 +98,163 @@ export function DemoAccountsShowcase() {
   };
 
   return (
-    <section className="py-16 sm:py-20 bg-white border-b border-[#E4E7EC]">
+    <section id="demo-personas" className="py-10 bg-[#EBF1F8]/40 border-b border-[#E4E7EC]">
       <Container>
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EBF1F8] border border-[#173B67]/20 text-[#173B67] text-xs font-bold uppercase tracking-wider mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-[#0F9D91]" />
-            <span>Interactive Demo Accounts</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#173B67] tracking-tight">
-            Experience SkillConnect from Any Perspective
-          </h2>
-          <p className="text-sm sm:text-base text-[#667085] mt-2 leading-relaxed">
-            Test the entire local-services ecosystem with 1-click demo accounts. Switch seamlessly between customer discovery, pro contractor operations, and administrative verification.
-          </p>
-        </div>
-
-        {/* 3 Personas Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {DEMO_CARDS.map((demo) => {
-            const isCurrent = activeRole === demo.role;
-
-            return (
-              <div
-                key={demo.role}
-                className={`flex flex-col justify-between p-6 sm:p-7 rounded-3xl border transition-all duration-200 ${
-                  isCurrent
-                    ? 'border-[#0F9D91] bg-[#F7FBFB] shadow-md ring-2 ring-[#0F9D91]/20'
-                    : 'border-[#E4E7EC] bg-[#F7F8FA] hover:bg-white hover:border-[#173B67]/30 hover:shadow-sm'
-                }`}
-              >
-                <div>
-                  {/* Top Pill & Avatar */}
-                  <div className="flex items-start justify-between gap-3 mb-4">
-                    <span
-                      className={`text-xs font-bold px-2.5 py-1 rounded-full border ${demo.badgeClass}`}
-                    >
-                      {demo.badge}
-                    </span>
-                    {isCurrent && (
-                      <span className="text-[10px] font-bold text-[#15803D] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                        Currently Active
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-3.5 mb-4">
-                    <div className="relative w-14 h-14 rounded-2xl overflow-hidden border-2 border-white shadow-xs flex-shrink-0 bg-slate-100">
-                      <Image
-                        src={demo.avatarUrl}
-                        alt={demo.name}
-                        fill
-                        sizes="56px"
-                        className="object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-black text-[#173B67]">{demo.name}</h3>
-                      <p className="text-xs text-[#667085] mt-0.5">{demo.tagline}</p>
-                      <span className="font-mono text-[10px] text-[#0F9D91] font-semibold block mt-0.5">
-                        {demo.email}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Highlights */}
-                  <div className="pt-3 border-t border-[#E4E7EC] mb-6">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#667085] block mb-2">
-                      Included Workflows:
-                    </span>
-                    <ul className="space-y-2 text-xs text-[#263445]">
-                      {demo.features.map((feat, idx) => (
-                        <li key={idx} className="flex items-start gap-2 leading-relaxed">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#0F9D91] flex-shrink-0 mt-0.5" />
-                          <span>{feat}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                {/* 1-Click Action Button */}
-                <button
-                  type="button"
-                  onClick={() => handleLaunch(demo)}
-                  className={`w-full py-3 px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
-                    isCurrent
-                      ? 'bg-[#173B67] text-white hover:bg-[#0F2A4A] shadow-xs'
-                      : 'bg-[#0F9D91] text-white hover:bg-[#0D877D] shadow-sm hover:shadow'
-                  }`}
-                >
-                  <span>{isCurrent ? `Open ${demo.name.split(' ')[0]}'s Portal` : `Experience as ${demo.name}`}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+        {/* Compact Bar (Always Visible) */}
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-white border border-[#173B67]/20 shadow-xs">
+          <div className="flex items-center gap-3 w-full lg:w-auto">
+            <div className="w-10 h-10 rounded-xl bg-[#E6F7F5] text-[#0F9D91] flex items-center justify-center shrink-0">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#0F9D91]">
+                  Reviewer & Tester Sandbox
+                </span>
+                <span className="text-[10px] font-bold text-[#173B67] bg-[#EBF1F8] px-2 py-0.5 rounded-full">
+                  1-Click Login
+                </span>
               </div>
-            );
-          })}
-        </div>
-
-        {/* Bottom Banner with Credentials Summary */}
-        <div className="mt-10 p-5 rounded-2xl bg-[#EBF1F8] border border-[#173B67]/20 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-          <div className="flex items-center gap-2.5 text-[#173B67]">
-            <Key className="w-4 h-4 text-[#0F9D91] flex-shrink-0" />
-            <span>
-              <strong>Manual Credentials Available:</strong> Passwords for all demo accounts are formatted as <code className="bg-white px-1.5 py-0.5 rounded font-mono text-[11px] border border-[#173B67]/10">[Role]Demo2026!</code> (e.g., <code className="bg-white px-1.5 py-0.5 rounded font-mono text-[11px] border border-[#173B67]/10">CustomerDemo2026!</code>).
-            </span>
+              <h3 className="text-sm sm:text-base font-bold text-[#173B67]">
+                Experience SkillConnect from Any Role
+              </h3>
+            </div>
           </div>
 
-          <Link
-            href="/login"
-            className="font-bold text-[#173B67] hover:text-[#0F9D91] transition-colors whitespace-nowrap flex items-center gap-1"
-          >
-            <span>Go to Standard Login</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
+          {/* Quick Action Pill Buttons */}
+          <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-start lg:justify-end">
+            <button
+              type="button"
+              onClick={() => handleLaunch(DEMO_CARDS[0])}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                activeRole === 'customer'
+                  ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                  : 'bg-blue-50 text-[#173B67] border-blue-200 hover:bg-blue-100'
+              }`}
+            >
+              <User className="w-3.5 h-3.5" />
+              <span>Customer (Sarah)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleLaunch(DEMO_CARDS[1])}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                activeRole === 'worker'
+                  ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                  : 'bg-emerald-50 text-[#0F9D91] border-emerald-200 hover:bg-emerald-100'
+              }`}
+            >
+              <Wrench className="w-3.5 h-3.5" />
+              <span>Pro Worker (Marcus)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleLaunch(DEMO_CARDS[2])}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                activeRole === 'admin'
+                  ? 'bg-purple-600 text-white border-purple-600 shadow-xs'
+                  : 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100'
+              }`}
+            >
+              <ShieldAlert className="w-3.5 h-3.5" />
+              <span>Admin Desk (Alex)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold text-[#667085] hover:text-[#173B67] bg-[#F7F8FA] hover:bg-[#E4E7EC] border border-[#E4E7EC] transition-all ml-auto lg:ml-2"
+            >
+              <span>{isExpanded ? 'Hide Details' : 'View Full Personas'}</span>
+              {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            </button>
+          </div>
         </div>
+
+        {/* Collapsible Expanded Details */}
+        {isExpanded && (
+          <div className="mt-6 pt-6 border-t border-[#E4E7EC]">
+            <div className="text-center max-w-xl mx-auto mb-8">
+              <p className="text-xs sm:text-sm text-[#667085]">
+                Switch instantly between customer booking, licensed pro operations, and admin trust audit queues without entering passwords.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {DEMO_CARDS.map((demo) => {
+                const isCurrent = activeRole === demo.role;
+
+                return (
+                  <div
+                    key={demo.role}
+                    className={`flex flex-col justify-between p-6 rounded-3xl border transition-all duration-200 ${
+                      isCurrent
+                        ? 'border-[#0F9D91] bg-white shadow-md ring-2 ring-[#0F9D91]/20'
+                        : 'border-[#E4E7EC] bg-white hover:border-[#173B67]/30 hover:shadow-xs'
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-start justify-between gap-3 mb-4">
+                        <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${demo.badgeClass}`}>
+                          {demo.badge}
+                        </span>
+                        {isCurrent && (
+                          <span className="text-[10px] font-bold text-[#15803D] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                            Currently Active
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-3.5 mb-4">
+                        <div className="relative w-12 h-12 rounded-2xl overflow-hidden border-2 border-white shadow-xs flex-shrink-0 bg-slate-100">
+                          <Image
+                            src={demo.avatarUrl}
+                            alt={demo.name}
+                            fill
+                            sizes="48px"
+                            className="object-cover"
+                          />
+                        </div>
+                        <div>
+                          <h4 className="text-base font-black text-[#173B67]">{demo.name}</h4>
+                          <p className="text-xs text-[#667085] mt-0.5">{demo.tagline}</p>
+                          <span className="font-mono text-[10px] text-[#0F9D91] font-semibold block mt-0.5">
+                            {demo.email}
+                          </span>
+                        </div>
+                      </div>
+
+                      <ul className="space-y-2 mb-6 border-t border-[#E4E7EC] pt-4">
+                        {demo.features.map((feat) => (
+                          <li key={feat} className="flex items-start gap-2 text-xs text-[#667085]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#0F9D91] shrink-0 mt-1.5" />
+                            <span>{feat}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleLaunch(demo)}
+                      className={`w-full py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                        isCurrent
+                          ? 'bg-[#0F9D91] text-white hover:bg-[#0c7f75]'
+                          : 'bg-[#173B67] text-white hover:bg-[#0f2a4a]'
+                      }`}
+                    >
+                      <Key className="w-3.5 h-3.5" />
+                      <span>{isCurrent ? 'Re-open Active Portal' : `Launch as ${demo.name.split(' ')[0]}`}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </Container>
     </section>
   );
