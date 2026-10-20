@@ -3,6 +3,7 @@ import { execSync } from 'node:child_process';
 const testSuites = [
   'tests/search.test.ts',
   'tests/estimator.test.ts',
+  'tests/price-intelligence.test.ts',
   'tests/dates.test.ts',
   'tests/state-transitions.test.ts',
   'tests/metrics.test.ts',
@@ -24,5 +25,5 @@ for (const suite of testSuites) {
 }
 
 console.log('====================================================');
-console.log('ALL 5 TEST SUITES PASSED CLEANLY (100% SUCCESS RATE)');
+console.log('ALL 6 TEST SUITES PASSED CLEANLY (100% SUCCESS RATE)');
 console.log('====================================================\n');

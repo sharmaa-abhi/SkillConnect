@@ -5,7 +5,6 @@ import {
   Sparkles,
   Calculator,
   CheckCircle2,
-  Info,
   AlertTriangle,
   HelpCircle,
 } from 'lucide-react';
@@ -37,11 +36,13 @@ const samplePrompts = [
 
 export function AICostEstimator({
   initialCategory,
+  initialZipCode = '94107',
   onEstimateGenerated,
   className = '',
 }: AICostEstimatorProps) {
   const [description, setDescription] = useState('');
   const [categorySlug, setCategorySlug] = useState(initialCategory || '');
+  const [zipCode, setZipCode] = useState(initialZipCode);
   const [urgency, setUrgency] = useState<'flexible' | 'same_day'>('flexible');
   const [hasParts, setHasParts] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -138,7 +139,7 @@ export function AICostEstimator({
         </div>
 
         {/* Options Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2">
           <div>
             <label className="block text-[11px] font-bold text-[#667085] uppercase tracking-wider mb-1">
               Trade Category
@@ -169,6 +170,20 @@ export function AICostEstimator({
               <option value="flexible">Flexible / Next Scheduled Slot</option>
               <option value="same_day">Urgent Same-Day Dispatch</option>
             </select>
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-bold text-[#667085] uppercase tracking-wider mb-1">
+              ZIP Code (Market Area)
+            </label>
+            <input
+              type="text"
+              value={zipCode}
+              onChange={(e) => setZipCode(e.target.value)}
+              placeholder="e.g. 94107"
+              maxLength={5}
+              className="w-full text-xs font-medium p-2.5 rounded-xl border border-[#E4E7EC] bg-[#F7F8FA] text-[#263445] focus:outline-none focus:ring-2 focus:ring-[#173B67]"
+            />
           </div>
 
           <div className="flex items-center pt-5 sm:pt-6">
@@ -362,6 +377,16 @@ export function AICostEstimator({
                   </ul>
                 </div>
               )}
+
+              {/* LIVE LOCAL PRICE INTELLIGENCE (TINYFISH FREE SEARCH & FETCH) */}
+              <MarketPriceIntelligence
+                problemDescription={description}
+                categorySlug={estimateResult.categorySlug}
+                categoryName={estimateResult.categoryName}
+                skillConnectEstimateMin={estimateResult.totalEstimateMin}
+                skillConnectEstimateMax={estimateResult.totalEstimateMax}
+                initialZipCode={zipCode || '94107'}
+              />
 
               {/* Recommended Pros */}
               {matchedPros.length > 0 && (
