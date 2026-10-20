@@ -2,6 +2,7 @@ export * from './service';
 export * from './professional';
 export * from './booking';
 export * from './auth';
+export * from './price-intelligence';
 
 export interface FilterState {
   query: string;

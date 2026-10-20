@@ -18,9 +18,11 @@ import { useProfessionalsList } from '@/lib/demo-storage';
 import { BookingFlowDialog } from '@/components/booking/booking-flow-dialog';
 import { ProfessionalProfile } from '@/types/professional';
 import { PrototypeDisclaimer } from '@/components/ui/prototype-disclaimer';
+import { MarketPriceIntelligence } from '@/components/pricing/market-price-intelligence';
 
 interface AICostEstimatorProps {
   initialCategory?: string;
+  initialZipCode?: string;
   onEstimateGenerated?: (res: AIEstimateResult) => void;
   className?: string;
 }
