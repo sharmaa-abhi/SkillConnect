@@ -25,7 +25,7 @@ export function extractPriceEvidenceFromText(
   // 1. Detect publication / update date
   let datePublished: string | undefined;
   const dateMatch = text.match(
-    /\b(?:updated|published|reviewed|current as of|last modified)[:\s]+([A-Za-z]+\s+\d{1,2},\s+202[0-9]|202[0-9]|January|February|March|April|May|June|July|August|September|October|November|December\s+202[0-9])/i
+    /\b(?:updated|published|reviewed|current as of|last modified)[:\s]+((?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember))\s+(?:\d{1,2},\s+)?202[0-9])|202[0-9])/i
   );
   if (dateMatch) {
     datePublished = dateMatch[1].trim();
@@ -112,10 +112,10 @@ export function extractPriceEvidenceFromText(
     }
   }
 
-  // Strategy C: Single average cost statement e.g. "average cost of $280"
+  // Strategy C: Single average cost statement e.g. "average cost of plumbing repair is $250"
   if (validRanges.length === 0) {
     const avgRegex =
-      /(?:average cost|typical cost|national average|homeowners pay an average of|most spend)\s*(?:is|of|about|around)?\s*\$([0-9]{2,4}(?:,[0-9]{3})*)/gi;
+      /(?:average cost|typical cost|national average|homeowners pay an average of|most spend)(?:[^$.\n]{0,50})?\$([0-9]{2,4}(?:,[0-9]{3})*)/gi;
     const avgMatch = avgRegex.exec(text);
     if (avgMatch) {
       const avg = parseInt(avgMatch[1].replace(/,/g, ''), 10);
@@ -227,7 +227,7 @@ export function assessPriceEvidence(
   const hasLocal = sourcesWithPrices.some((s) => s.geographicScope === 'local');
   const hasState = sourcesWithPrices.some((s) => s.geographicScope === 'state');
 
-  let status: EvidenceConfidence = 'sufficient';
+  const status: EvidenceConfidence = 'sufficient';
   let message = `Sufficient independent evidence: Verified across ${sourcesWithPrices.length} credible trade publications.`;
 
   if (!hasLocal && !hasState) {

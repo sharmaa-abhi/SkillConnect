@@ -18,7 +18,8 @@
 >
 > Key implemented modules include:
 > - **Verified Trade Directory & Smart Search (`/professionals`):** Trade category and location/ZIP resolution with PostGIS-ready coverage filtering, multi-word trade problem mapping (`"leaky sink"` &rarr; Plumbing), and non-trade intent guards.
-> - **AI-Assisted Cost Estimator (`/` & `/pricing`):** Transparent diagnostic, labor, parts, and tax calculations with clear out-of-scope domain guards.
+> - **AI-Assisted Cost Estimator (`/` & `/services`):** Transparent diagnostic, labor, parts, and tax calculations with clear out-of-scope domain guards.
+> - **Live Local Price Intelligence (TinyFish Free APIs):** Optional public market rate comparison embedded in the Cost Estimator. Fetches independent public trade guides for a specified ZIP code using TinyFish Free Search & Fetch APIs, with strict SSRF defense, PII scrubbing, 24-hour caching, and non-blocking fallback.
 > - **Multi-Portal Experience:** Synchronized state across Homeowner (`/customer/dashboard`), Service Professional (`/worker/dashboard`), and Administrator (`/admin`) portals with real-time `useSyncExternalStore` hydration.
 > - **Escrow Pre-Authorization Holds & Safety:** Automated hold placement, pro accept/decline flows, and guaranteed full customer refunds on decline.
 > - **Dynamic Calendar Math:** Zero-hardcoding date options and timezone-resilient weekday derivations.
@@ -41,8 +42,8 @@ SkillConnect is built with Node.js and Next.js App Router. Follow the commands b
 | `npm run dev` | Start local development server on `http://localhost:3000` | Fast HMR with Turbopack |
 | `npm run typecheck` | Run strict TypeScript compiler check (`tsc --noEmit`) | **0 Errors** across all application & test code |
 | `npm run lint` | Run ESLint static code analysis | **0 Errors**, Next.js core web vitals compliant |
-| `npm test` | Run the complete automated test suite (5 suites) | **100% Pass Rate** (`search`, `estimator`, `dates`, `state`, `metrics`) |
-| `npm run build` | Compile optimized Next.js production bundle | **0 Errors**, static prerendering across all 14 routes |
+| `npm test` | Run the complete automated test suite (6 suites) | **100% Pass Rate** (`search`, `estimator`, `price-intelligence`, `dates`, `state`, `metrics`) |
+| `npm run build` | Compile optimized Next.js production bundle | **0 Errors**, static & dynamic compilation across all 17 routes |
 | `npm start` | Run production HTTP server locally | Production listener at `localhost:3000` |
 
 ### Production Quality Gates (Stage 1 CI/CD Gate)
@@ -98,7 +99,62 @@ For technical details, see the [System Architecture](file:///docs/architecture/S
 
 ---
 
-## 6. Documentation System & Quick Links
+## 6. Live Local Price Intelligence (TinyFish Free-Tier Integration)
+
+SkillConnect features **Live Local Price Intelligence**, an optional market research feature integrated directly into the Cost Estimator (`/services` and Home Page). It allows customers to compare SkillConnect's transparent benchmark against external public trade guides for their exact ZIP code.
+
+### 6.1 Workflow & Example Scenario
+1. **Customer Problem:** Leaky sink under bathroom vanity.
+2. **Trade Category:** Plumbing (auto-detected or selected).
+3. **Location:** Customer enters their 5-digit ZIP code (e.g., `94107`).
+4. **Platform Benchmark:** SkillConnect's deterministic estimate remains primary, transparent, and completely unchanged (e.g., `$158 – $375` with 100% diagnostic fee credit and licensed specialist guarantee).
+5. **TinyFish Free Search:** Queries public trade cost guides for the specified locality using `GET https://api.search.tinyfish.ai?query=...`.
+6. **TinyFish Free Fetch:** Retrieves content from top credible URLs using `POST https://api.fetch.tinyfish.ai` with server-side SSRF validation.
+7. **Extraction & Evidence Synthesis:** Extracts numeric ranges, dates, geographic relevance, and checks for consensus vs. contradictory evidence without ever inventing averages.
+8. **Clear Market Context:** Third-party references are displayed side-by-side with clear notices explaining that external guides do not constitute quotes from SkillConnect providers.
+
+### 6.2 Strict Free-Tier Architecture & Guardrails
+The integration is strictly engineered around TinyFish's **free tier only**:
+- **Search Endpoint:** `GET https://api.search.tinyfish.ai?query=...`
+- **Fetch Endpoint:** `POST https://api.fetch.tinyfish.ai`
+- **Authentication:** Server-side `X-API-Key` header powered by `TINYFISH_API_KEY`.
+- **Zero Paid Endpoints:** Never invokes TinyFish Agent, Research, Browser, Monitor, browser automation, or any wallet-consuming services.
+- **Graceful Quota Handling:** If the free tier quota is exhausted (HTTP 402) or rate limited (HTTP 429), the estimator and booking flows remain 100% functional without blocking the user.
+
+### 6.3 Server-Side API Routes
+| Route | Method | Purpose & Guardrails |
+| :--- | :--- | :--- |
+| `/api/price-intelligence/search` | `GET` / `POST` | Sanitizes query, checks 24h cache, calls TinyFish Search, strips API keys |
+| `/api/price-intelligence/fetch` | `POST` | Validates URL against SSRF policy, fetches via TinyFish Fetch, extracts prices |
+| `/api/price-intelligence/compare` | `POST` | Full pipeline aggregation (search + concurrent fetch + synthesis + cache) |
+
+### 6.4 Security, Customer Privacy & SSRF Prevention
+- **Customer Privacy:** Zero customer PII (names, full street addresses, phone numbers, email addresses, credit cards, escrow details) is ever transmitted to external APIs. Only generic trade terms and 5-digit ZIP codes are used.
+- **SSRF Defense:** Only `https:` URLs targeting verified public domains with standard port 443 are allowed. Rejects `127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, cloud metadata `169.254.169.254`, IPv6 loopback/link-local, credentials in URLs, and non-standard ports.
+- **Content Sanitization:** External HTML/markdown is stripped of scripts, styles, iframes, and dangerous attributes. Text is truncated at 40,000 characters to prevent memory exhaustion / DoS.
+- **Sliding-Window Rate Limiting:** Enforces in-memory rate limits (25 requests/min per client IP).
+
+### 6.5 Configuration & Setup
+#### Local Development
+1. Copy the environment template:
+   ```bash
+   cp .env.example .env.local
+   ```
+2. Add your free TinyFish API key to `.env.local`:
+   ```env
+   TINYFISH_API_KEY=your_free_tinyfish_api_key_here
+   ```
+*(Note: If `TINYFISH_API_KEY` is not set, SkillConnect provides simulated high-fidelity responses in test/demo mode so you can experience the feature without an external key).*
+
+#### Vercel Deployment
+In your Vercel Project Dashboard:
+1. Navigate to **Settings &rarr; Environment Variables**.
+2. Add `TINYFISH_API_KEY` with your free key under **Production**, **Preview**, and **Development**.
+3. Redeploy the project.
+
+---
+
+## 7. Documentation System & Quick Links
 
 All product, design, architecture, security, legal, and operational specifications are organized into the `docs/` tree.
 

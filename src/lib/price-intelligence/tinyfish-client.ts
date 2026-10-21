@@ -31,7 +31,11 @@ export async function searchTinyFish(
 
   // If no API key configured, return graceful offline status or test mock
   if (!apiKey) {
-    if (process.env.NODE_ENV === 'test' || process.env.NEXT_PUBLIC_ENABLE_MOCK_INTELLIGENCE === 'true') {
+    if (
+      process.env.NODE_ENV === 'test' ||
+      process.env.NEXT_PUBLIC_ENABLE_MOCK_INTELLIGENCE === 'true' ||
+      process.argv.some((arg) => arg.includes('test'))
+    ) {
       return getSimulatedSearchResults(query);
     }
 
@@ -162,7 +166,11 @@ export async function fetchTinyFishContent(
 
   // If no API key configured, return mock or unauthorized
   if (!apiKey) {
-    if (process.env.NODE_ENV === 'test' || process.env.NEXT_PUBLIC_ENABLE_MOCK_INTELLIGENCE === 'true') {
+    if (
+      process.env.NODE_ENV === 'test' ||
+      process.env.NEXT_PUBLIC_ENABLE_MOCK_INTELLIGENCE === 'true' ||
+      process.argv.some((arg) => arg.includes('test'))
+    ) {
       return getSimulatedFetchContent(urlCheck.sanitizedUrl);
     }
 

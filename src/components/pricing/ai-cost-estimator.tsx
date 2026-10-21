@@ -380,6 +380,7 @@ export function AICostEstimator({
 
               {/* LIVE LOCAL PRICE INTELLIGENCE (TINYFISH FREE SEARCH & FETCH) */}
               <MarketPriceIntelligence
+                key={`${estimateResult.categorySlug}-${description}`}
                 problemDescription={description}
                 categorySlug={estimateResult.categorySlug}
                 categoryName={estimateResult.categoryName}

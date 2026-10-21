@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Globe,
   TrendingUp,
@@ -46,13 +46,6 @@ export function MarketPriceIntelligence({
   const [data, setData] = useState<PriceIntelligenceResult | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loadingStep, setLoadingStep] = useState<string>('');
-
-  // Reset if problem description changes drastically
-  useEffect(() => {
-    setStatus('idle');
-    setData(null);
-    setErrorMessage(null);
-  }, [problemDescription, categorySlug]);
 
   const handleFetchIntelligence = async () => {
     if (!problemDescription || problemDescription.trim().length < 5) return;

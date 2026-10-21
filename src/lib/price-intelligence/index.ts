@@ -264,9 +264,7 @@ export async function getLivePriceIntelligence(
   };
 
   // Cache valid non-empty results
-  if (status !== 'error') {
-    priceComparisonCache.set(cacheKey, result);
-  }
+  priceComparisonCache.set(cacheKey, result);
 
   return result;
 }
