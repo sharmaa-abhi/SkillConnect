@@ -19,6 +19,10 @@ export const metadata: Metadata = {
     'transparent diagnostic fee',
     'escrow protection',
   ],
+  icons: {
+    icon: '/icon',
+    apple: '/apple-icon.jpg',
+  },
 };
 
 export default function RootLayout({
