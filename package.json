@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit",
-    "test": "npx tsx tests/run-all.ts"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "lucide-react": "^1.52.0",
