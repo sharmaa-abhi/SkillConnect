@@ -1,41 +1,42 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-primary: #173B67;
-  --color-brand-primary-hover: #0F2A4A;
-  --color-brand-primary-light: #EBF1F8;
-  
-  --color-brand-secondary: #0F9D91;
-  --color-brand-secondary-hover: #0B7F75;
-  --color-brand-secondary-light: #E6F7F5;
-  
-  --color-canvas: #F7F8FA;
+  --color-brand-black: #0B0F0E;
+  --color-brand-primary: #16A34A;
+  --color-brand-primary-hover: #15803D;
+  --color-brand-primary-light: #F0FDF4;
+
+  --color-brand-blue: #2563EB;
+  --color-brand-blue-hover: #1D4ED8;
+  --color-brand-blue-light: #EFF6FF;
+
+  --color-canvas: #F8FAFC;
   --color-card: #FFFFFF;
-  --color-ink: #263445;
-  --color-muted: #667085;
-  --color-border-subtle: #E4E7EC;
-  --color-border-strong: #D0D5DD;
-  
-  --color-accent-amber: #E7A83E;
-  --color-accent-warm: #F79009;
-  --color-status-success: #15803D;
-  --color-status-error: #B42318;
-  --color-status-warning: #B54708;
+  --color-ink: #111827;
+  --color-muted: #4B5563;
+  --color-border-subtle: #E5E7EB;
+  --color-border-strong: #D1D5DB;
+
+  --color-accent-amber: #D97706;
+  --color-status-success: #16A34A;
+  --color-status-error: #DC2626;
+  --color-status-warning: #D97706;
 }
 
 :root {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  --color-primary: #173B67;
-  --color-secondary: #0F9D91;
-  --color-bg: #F7F8FA;
-  --color-card-bg: #FFFFFF;
-  --color-text: #263445;
-  --color-text-muted: #667085;
-  --color-border: #E4E7EC;
-  --color-rating: #E7A83E;
-  --color-success: #15803D;
-  --color-error: #B42318;
-  --color-warning: #B54708;
+  --color-black: #0B0F0E;
+  --color-white: #FFFFFF;
+  --color-primary-green: #16A34A;
+  --color-primary-blue: #2563EB;
+  --color-bg-light: #F8FAFC;
+  --color-border: #E5E7EB;
+  --color-text-primary: #111827;
+  --color-text-secondary: #4B5563;
+  --color-rating: #D97706;
+  --color-success: #16A34A;
+  --color-error: #DC2626;
+  --color-warning: #D97706;
 }
 
 html {
@@ -44,8 +45,8 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background-color: #F7F8FA;
-  color: #263445;
+  background-color: #F8FAFC;
+  color: #111827;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -57,19 +58,19 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #F7F8FA;
+  background: #F8FAFC;
 }
 ::-webkit-scrollbar-thumb {
-  background: #D0D5DD;
+  background: #D1D5DB;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #98A2B3;
+  background: #9CA3AF;
 }
 
 /* Focus styles for accessibility */
 :focus-visible {
-  outline: 2px solid #173B67;
+  outline: 2px solid #2563EB;
   outline-offset: 2px;
 }
 

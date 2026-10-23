@@ -31,7 +31,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     // Base styles: accessible focus ring, active scale, transition
     const baseClasses =
-      'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-150 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#173B67] focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 select-none';
+      'inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-150 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB] focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none disabled:active:scale-100 select-none cursor-pointer';
 
     // Sizes
     const sizeClasses = {
@@ -40,15 +40,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       lg: 'text-base px-6 py-3 gap-2.5 h-12',
     }[size];
 
-    // Variants according to SkillConnect Design System
-    // Primary #173B67, Secondary #0F9D91
+    // Variants according to SkillConnect Black, White, Green, and Blue Design System
+    // Green (#16A34A) for primary actions, Black (#0B0F0E) for secondary/dark surfaces, Blue (#2563EB) for info/focus
     const variantClasses = {
-      primary: 'bg-[#173B67] hover:bg-[#0F2A4A] text-white shadow-xs hover:shadow-sm',
-      secondary: 'bg-[#0F9D91] hover:bg-[#0B7F75] text-white shadow-xs hover:shadow-sm',
-      accent: 'bg-[#E6F7F5] hover:bg-[#D3EFEA] text-[#0F9D91] font-semibold',
-      outline: 'bg-transparent border border-[#E4E7EC] text-[#263445] hover:bg-[#F7F8FA] hover:border-[#D0D5DD]',
-      ghost: 'bg-transparent text-[#667085] hover:text-[#263445] hover:bg-black/[0.04]',
-      danger: 'bg-[#B42318] hover:bg-[#911C13] text-white shadow-xs',
+      primary: 'bg-[#16A34A] hover:bg-[#15803D] text-white shadow-xs hover:shadow-sm',
+      secondary: 'bg-[#0B0F0E] hover:bg-[#1F2937] text-white shadow-xs hover:shadow-sm',
+      accent: 'bg-[#EFF6FF] hover:bg-[#DBEAFE] text-[#2563EB] font-semibold border border-[#2563EB]/20',
+      outline: 'bg-white border border-[#E5E7EB] text-[#111827] hover:bg-[#F8FAFC] hover:border-[#D1D5DB]',
+      ghost: 'bg-transparent text-[#4B5563] hover:text-[#111827] hover:bg-black/[0.04]',
+      danger: 'bg-[#DC2626] hover:bg-[#B91C1C] text-white shadow-xs',
     }[variant];
 
     return (

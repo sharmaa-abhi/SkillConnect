@@ -562,6 +562,13 @@ export function updateJobRequestStatus(id: string, status: 'accepted' | 'decline
   if (typeof window === 'undefined') return;
   try {
     const current = getWorkerRequests();
+    const target = current.find((r) => r.id === id);
+    if (!target) return;
+    if (target.status !== 'pending') {
+      console.warn(`Job request ${id} is already in terminal state "${target.status}".`);
+      return;
+    }
+
     const updated = current.map((r) => (r.id === id ? { ...r, status } : r));
     const raw = JSON.stringify(updated);
     cachedRequestsRaw = raw;
@@ -569,7 +576,7 @@ export function updateJobRequestStatus(id: string, status: 'accepted' | 'decline
     localStorage.setItem(REQUESTS_STORAGE_KEY, raw);
 
     // Sync with booking if linked
-    const linked = current.find((r) => r.id === id);
+    const linked = target;
     if (linked?.associatedBookingId) {
       if (status === 'accepted') {
         updateDemoBookingStatus(
