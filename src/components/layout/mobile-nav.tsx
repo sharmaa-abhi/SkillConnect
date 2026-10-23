@@ -15,6 +15,8 @@ import {
   ShieldAlert,
   Wrench,
   HelpCircle,
+  Calendar,
+  Lock,
 } from 'lucide-react';
 import { useAuth } from '@/context/auth-context';
 
@@ -53,7 +55,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
       label: 'All Services',
       href: '/services',
       icon: Search,
-      isActive: pathname === '/services',
+      isActive: pathname === '/services' || pathname.startsWith('/services/'),
     },
     {
       label: 'Find Professionals',
@@ -74,13 +76,25 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
       isActive: pathname.startsWith('/customer'),
     },
     {
+      label: 'Booking History',
+      href: '/booking',
+      icon: Calendar,
+      isActive: pathname === '/booking',
+    },
+    {
+      label: 'Payments & Escrow',
+      href: '/payments',
+      icon: Lock,
+      isActive: pathname === '/payments' || pathname === '/checkout',
+    },
+    {
       label: 'Pro Portal',
       href: '/worker/dashboard',
       icon: Briefcase,
       isActive: pathname.startsWith('/worker'),
     },
     {
-      label: 'Admin Trust',
+      label: 'Admin Desk',
       href: '/admin',
       icon: ShieldAlert,
       isActive: pathname.startsWith('/admin'),
@@ -104,7 +118,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/50 backdrop-blur-xs"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs"
           />
 
           {/* Slide-out Drawer from Right */}
@@ -113,20 +127,20 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="fixed inset-y-0 right-0 w-[88vw] max-w-xs sm:max-w-sm bg-white shadow-2xl p-4 sm:p-6 flex flex-col justify-between overflow-y-auto border-l border-[#E4EAF1]"
+            className="fixed inset-y-0 right-0 w-[88vw] max-w-xs sm:max-w-sm bg-white shadow-2xl p-4 sm:p-6 flex flex-col justify-between overflow-y-auto border-l border-[#E5E7EB]"
           >
             <div>
               {/* Header */}
-              <div className="flex items-center justify-between pb-4 sm:pb-5 border-b border-[#E4EAF1]">
+              <div className="flex items-center justify-between pb-4 sm:pb-5 border-b border-[#E5E7EB]">
                 <Link href="/" onClick={onClose} className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-[#173B67] flex items-center justify-center text-white font-bold shrink-0">
-                    <Wrench className="w-4 h-4 text-[#0FA698]" />
+                  <div className="w-9 h-9 rounded-xl bg-[#0B0F0E] flex items-center justify-center text-white font-bold shrink-0">
+                    <Wrench className="w-4 h-4 text-[#16A34A]" />
                   </div>
                   <div className="flex flex-col text-left">
-                    <span className="font-black text-lg text-[#173B67] leading-none">
-                      Skill<span className="text-[#0FA698]">Connect</span>
+                    <span className="font-black text-lg text-[#0B0F0E] leading-none">
+                      Skill<span className="text-[#16A34A]">Connect</span>
                     </span>
-                    <span className="text-[10px] text-[#667085] font-medium leading-tight mt-0.5">
+                    <span className="text-[10px] text-[#4B5563] font-medium leading-tight mt-0.5">
                       Trusted Local Services
                     </span>
                   </div>
@@ -135,19 +149,19 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                   type="button"
                   onClick={onClose}
                   aria-label="Close navigation menu"
-                  className="p-2 -mr-1 rounded-full text-[#667085] hover:text-[#173B67] hover:bg-[#F7F9FC] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0FA698] min-w-[40px] min-h-[40px] flex items-center justify-center"
+                  className="p-2 -mr-1 rounded-full text-[#4B5563] hover:text-[#0B0F0E] hover:bg-[#F8FAFC] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB] min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               {/* Active User Quick Role Switcher */}
-              <div className="mt-3.5 sm:mt-4 p-3 sm:p-3.5 rounded-2xl bg-[#F7F9FC] border border-[#E4EAF1]">
+              <div className="mt-3.5 sm:mt-4 p-3 sm:p-3.5 rounded-2xl bg-[#F8FAFC] border border-[#E5E7EB]">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] sm:text-[11px] font-bold text-[#667085] uppercase tracking-wider truncate mr-1">
+                  <span className="text-[10px] sm:text-[11px] font-bold text-[#4B5563] uppercase tracking-wider truncate mr-1">
                     Demo: {user.name.split(' ')[0]}
                   </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E7F7F4] text-[#087F75] capitalize shrink-0">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F0FDF4] text-[#16A34A] capitalize shrink-0">
                     {role}
                   </span>
                 </div>
@@ -155,10 +169,10 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                   <button
                     type="button"
                     onClick={() => switchRole('customer')}
-                    className={`py-2 text-center rounded-xl text-xs font-bold transition-all min-h-[38px] ${
+                    className={`py-2 text-center rounded-xl text-xs font-bold transition-all min-h-[38px] cursor-pointer ${
                       role === 'customer'
-                        ? 'bg-[#173B67] text-white shadow-2xs'
-                        : 'bg-white text-[#173B67] border border-[#E4EAF1] hover:bg-slate-50'
+                        ? 'bg-[#0B0F0E] text-white shadow-2xs'
+                        : 'bg-white text-[#111827] border border-[#E5E7EB] hover:bg-[#F8FAFC]'
                     }`}
                   >
                     Customer
@@ -166,10 +180,10 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                   <button
                     type="button"
                     onClick={() => switchRole('worker')}
-                    className={`py-2 text-center rounded-xl text-xs font-bold transition-all min-h-[38px] ${
+                    className={`py-2 text-center rounded-xl text-xs font-bold transition-all min-h-[38px] cursor-pointer ${
                       role === 'worker'
-                        ? 'bg-[#0FA698] text-white shadow-2xs'
-                        : 'bg-white text-[#173B67] border border-[#E4EAF1] hover:bg-slate-50'
+                        ? 'bg-[#16A34A] text-white shadow-2xs'
+                        : 'bg-white text-[#111827] border border-[#E5E7EB] hover:bg-[#F8FAFC]'
                     }`}
                   >
                     Worker
@@ -177,10 +191,10 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                   <button
                     type="button"
                     onClick={() => switchRole('admin')}
-                    className={`py-2 text-center rounded-xl text-xs font-bold transition-all min-h-[38px] ${
+                    className={`py-2 text-center rounded-xl text-xs font-bold transition-all min-h-[38px] cursor-pointer ${
                       role === 'admin'
-                        ? 'bg-[#173B67] text-white shadow-2xs'
-                        : 'bg-white text-[#173B67] border border-[#E4EAF1] hover:bg-slate-50'
+                        ? 'bg-[#2563EB] text-white shadow-2xs'
+                        : 'bg-white text-[#111827] border border-[#E5E7EB] hover:bg-[#F8FAFC]'
                     }`}
                   >
                     Admin
@@ -200,11 +214,11 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                       aria-current={item.isActive ? 'page' : undefined}
                       className={`flex items-center gap-3 px-3.5 py-2.5 sm:py-3 rounded-xl text-sm font-semibold transition-all min-h-[44px] ${
                         item.isActive
-                          ? 'bg-[#E7F7F4] text-[#087F75] font-bold shadow-2xs'
-                          : 'text-[#173B67] hover:bg-[#F7F9FC] hover:text-[#0FA698]'
+                          ? 'bg-[#F0FDF4] text-[#16A34A] font-bold shadow-2xs'
+                          : 'text-[#111827] hover:bg-[#F8FAFC] hover:text-[#16A34A]'
                       }`}
                     >
-                      <Icon className={`w-4 h-4 ${item.isActive ? 'text-[#087F75]' : 'text-[#0FA698]'}`} />
+                      <Icon className={`w-4 h-4 ${item.isActive ? 'text-[#16A34A]' : 'text-[#4B5563]'}`} />
                       <span>{item.label}</span>
                     </Link>
                   );
@@ -212,7 +226,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
               </nav>
 
               {/* Primary Actions */}
-              <div className="mt-6 pt-5 border-t border-[#E4EAF1] flex flex-col gap-2.5">
+              <div className="mt-6 pt-5 border-t border-[#E5E7EB] flex flex-col gap-2.5">
                 <Link
                   href={
                     role === 'worker'
@@ -222,7 +236,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                       : '/register?role=worker'
                   }
                   onClick={onClose}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-[#0FA698] hover:bg-[#087F75] text-white font-bold text-sm py-3 px-4 rounded-full shadow-xs transition-all active:scale-[0.98]"
+                  className="w-full inline-flex items-center justify-center gap-2 bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-sm py-3 px-4 rounded-full shadow-xs transition-all active:scale-[0.98] cursor-pointer"
                 >
                   <span>
                     {role === 'worker'
@@ -240,7 +254,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                     logout();
                     onClose();
                   }}
-                  className="w-full py-2.5 text-xs font-semibold text-[#B42318] hover:bg-red-50 rounded-xl transition-colors text-center"
+                  className="w-full py-2.5 text-xs font-semibold text-[#DC2626] hover:bg-red-50 rounded-xl transition-colors text-center cursor-pointer"
                 >
                   Sign Out
                 </button>
@@ -248,9 +262,9 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
             </div>
 
             {/* Bottom Verification Footer */}
-            <div className="mt-6 pt-4 border-t border-[#E4EAF1]">
-              <div className="flex items-start gap-2 p-3 rounded-2xl bg-[#F7F9FC] border border-[#E4EAF1] text-[11px] text-[#667085] leading-relaxed">
-                <ShieldCheck className="w-4 h-4 text-[#0FA698] shrink-0 mt-0.5" />
+            <div className="mt-6 pt-4 border-t border-[#E5E7EB]">
+              <div className="flex items-start gap-2 p-3 rounded-2xl bg-[#F8FAFC] border border-[#E5E7EB] text-[11px] text-[#4B5563] leading-relaxed">
+                <ShieldCheck className="w-4 h-4 text-[#16A34A] shrink-0 mt-0.5" />
                 <span>Verified trade licenses, upfront diagnostic fees &amp; escrow milestone protection.</span>
               </div>
             </div>
