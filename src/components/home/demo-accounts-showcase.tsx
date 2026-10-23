@@ -38,7 +38,7 @@ const DEMO_CARDS: DemoCard[] = [
     avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=80',
     email: 'sarah.jenkins@example.com',
     badge: 'Customer Demo',
-    badgeClass: 'bg-blue-50 text-[#173B67] border-blue-200',
+    badgeClass: 'bg-[#EFF6FF] text-[#2563EB] border-[#2563EB]/20',
     targetPath: '/customer/dashboard',
     features: [
       'Pre-scheduled electrical service with Elena Rodriguez',
@@ -54,7 +54,7 @@ const DEMO_CARDS: DemoCard[] = [
     avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=256&q=80',
     email: 'marcus.vance@example.com',
     badge: 'Pro Worker Demo',
-    badgeClass: 'bg-emerald-50 text-[#0F9D91] border-emerald-200',
+    badgeClass: 'bg-[#F0FDF4] text-[#16A34A] border-[#16A34A]/30',
     targetPath: '/worker/dashboard',
     features: [
       'Live incoming job requests: accept or decline customer bookings',
@@ -70,7 +70,7 @@ const DEMO_CARDS: DemoCard[] = [
     avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=256&q=80',
     email: 'admin@skillconnect.local',
     badge: 'Admin Desk Demo',
-    badgeClass: 'bg-purple-50 text-purple-700 border-purple-200',
+    badgeClass: 'bg-[#0B0F0E] text-white border-[#0B0F0E]',
     targetPath: '/admin',
     features: [
       'Role-based security protecting administrative oversight',
@@ -126,10 +126,10 @@ export function DemoAccountsShowcase() {
             <button
               type="button"
               onClick={() => handleLaunch(DEMO_CARDS[0])}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
                 activeRole === 'customer'
-                  ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                  : 'bg-blue-50 text-[#173B67] border-blue-200 hover:bg-blue-100'
+                  ? 'bg-[#2563EB] text-white border-[#2563EB] shadow-xs'
+                  : 'bg-[#EFF6FF] text-[#2563EB] border-[#2563EB]/25 hover:bg-[#DBEAFE]'
               }`}
             >
               <User className="w-3.5 h-3.5" />
@@ -139,10 +139,10 @@ export function DemoAccountsShowcase() {
             <button
               type="button"
               onClick={() => handleLaunch(DEMO_CARDS[1])}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
                 activeRole === 'worker'
-                  ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
-                  : 'bg-emerald-50 text-[#0F9D91] border-emerald-200 hover:bg-emerald-100'
+                  ? 'bg-[#16A34A] text-white border-[#16A34A] shadow-xs'
+                  : 'bg-[#F0FDF4] text-[#16A34A] border-[#16A34A]/30 hover:bg-[#DCFCE7]'
               }`}
             >
               <Wrench className="w-3.5 h-3.5" />
@@ -152,10 +152,10 @@ export function DemoAccountsShowcase() {
             <button
               type="button"
               onClick={() => handleLaunch(DEMO_CARDS[2])}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
                 activeRole === 'admin'
-                  ? 'bg-purple-600 text-white border-purple-600 shadow-xs'
-                  : 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100'
+                  ? 'bg-[#0B0F0E] text-white border-[#0B0F0E] shadow-xs'
+                  : 'bg-[#F8FAFC] text-[#0B0F0E] border-[#E5E7EB] hover:bg-[#E5E7EB]'
               }`}
             >
               <ShieldAlert className="w-3.5 h-3.5" />
@@ -165,7 +165,7 @@ export function DemoAccountsShowcase() {
             <button
               type="button"
               onClick={() => setIsExpanded(!isExpanded)}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold text-[#667085] hover:text-[#173B67] bg-[#F7F8FA] hover:bg-[#E4E7EC] border border-[#E4E7EC] transition-all ml-auto lg:ml-2"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold text-[#4B5563] hover:text-[#0B0F0E] bg-[#F8FAFC] hover:bg-[#E5E7EB] border border-[#E5E7EB] transition-all ml-auto lg:ml-2 cursor-pointer"
             >
               <span>{isExpanded ? 'Hide Details' : 'View Full Personas'}</span>
               {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -175,9 +175,9 @@ export function DemoAccountsShowcase() {
 
         {/* Collapsible Expanded Details */}
         {isExpanded && (
-          <div className="mt-6 pt-6 border-t border-[#E4E7EC]">
+          <div className="mt-6 pt-6 border-t border-[#E5E7EB]">
             <div className="text-center max-w-xl mx-auto mb-8">
-              <p className="text-xs sm:text-sm text-[#667085]">
+              <p className="text-xs sm:text-sm text-[#4B5563]">
                 Switch instantly between customer booking, licensed pro operations, and admin trust audit queues without entering passwords.
               </p>
             </div>
@@ -191,8 +191,8 @@ export function DemoAccountsShowcase() {
                     key={demo.role}
                     className={`flex flex-col justify-between p-6 rounded-3xl border transition-all duration-200 ${
                       isCurrent
-                        ? 'border-[#0F9D91] bg-white shadow-md ring-2 ring-[#0F9D91]/20'
-                        : 'border-[#E4E7EC] bg-white hover:border-[#173B67]/30 hover:shadow-xs'
+                        ? 'border-[#16A34A] bg-white shadow-md ring-2 ring-[#16A34A]/20'
+                        : 'border-[#E5E7EB] bg-white hover:border-[#16A34A]/30 hover:shadow-xs'
                     }`}
                   >
                     <div>
@@ -201,14 +201,14 @@ export function DemoAccountsShowcase() {
                           {demo.badge}
                         </span>
                         {isCurrent && (
-                          <span className="text-[10px] font-bold text-[#15803D] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                          <span className="text-[10px] font-bold text-[#16A34A] bg-[#F0FDF4] px-2 py-0.5 rounded-full border border-[#16A34A]/30">
                             Currently Active
                           </span>
                         )}
                       </div>
 
                       <div className="flex items-center gap-3.5 mb-4">
-                        <div className="relative w-12 h-12 rounded-2xl overflow-hidden border-2 border-white shadow-xs flex-shrink-0 bg-slate-100">
+                        <div className="relative w-12 h-12 rounded-2xl overflow-hidden border-2 border-white shadow-xs shrink-0 bg-slate-100">
                           <Image
                             src={demo.avatarUrl}
                             alt={demo.name}
@@ -218,18 +218,18 @@ export function DemoAccountsShowcase() {
                           />
                         </div>
                         <div>
-                          <h4 className="text-base font-black text-[#173B67]">{demo.name}</h4>
-                          <p className="text-xs text-[#667085] mt-0.5">{demo.tagline}</p>
-                          <span className="font-mono text-[10px] text-[#0F9D91] font-semibold block mt-0.5">
+                          <h4 className="text-base font-black text-[#0B0F0E]">{demo.name}</h4>
+                          <p className="text-xs text-[#4B5563] mt-0.5">{demo.tagline}</p>
+                          <span className="font-mono text-[10px] text-[#2563EB] font-semibold block mt-0.5">
                             {demo.email}
                           </span>
                         </div>
                       </div>
 
-                      <ul className="space-y-2 mb-6 border-t border-[#E4E7EC] pt-4">
+                      <ul className="space-y-2 mb-6 border-t border-[#E5E7EB] pt-4">
                         {demo.features.map((feat) => (
-                          <li key={feat} className="flex items-start gap-2 text-xs text-[#667085]">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#0F9D91] shrink-0 mt-1.5" />
+                          <li key={feat} className="flex items-start gap-2 text-xs text-[#4B5563]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] shrink-0 mt-1.5" />
                             <span>{feat}</span>
                           </li>
                         ))}
@@ -241,8 +241,8 @@ export function DemoAccountsShowcase() {
                       onClick={() => handleLaunch(demo)}
                       className={`w-full py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer ${
                         isCurrent
-                          ? 'bg-[#0F9D91] text-white hover:bg-[#0c7f75]'
-                          : 'bg-[#173B67] text-white hover:bg-[#0f2a4a]'
+                          ? 'bg-[#16A34A] text-white hover:bg-[#15803D]'
+                          : 'bg-[#0B0F0E] text-white hover:bg-[#1F2937]'
                       }`}
                     >
                       <Key className="w-3.5 h-3.5" />

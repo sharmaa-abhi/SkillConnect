@@ -9,7 +9,7 @@ export function HowItWorks() {
     {
       num: '01',
       title: 'Search by Issue or ZIP',
-      subtitle: 'Instant AI matching & local diagnostics',
+      subtitle: 'Instant trade matching & local coverage',
       description:
         'Tell us what is broken (e.g. "leaky sink", "circuit breaker", "AC not cooling"). Our smart search finds verified trade specialists licensed in your neighborhood.',
       icon: Search,
@@ -36,16 +36,16 @@ export function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" className="py-16 sm:py-20 bg-[#F7F8FA] border-b border-[#E4E7EC]">
+    <section id="how-it-works" className="py-16 sm:py-20 bg-[#F8FAFC] border-b border-[#E5E7EB]">
       <Container>
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#0F9D91]">
-            Simple & Transparent Process
+          <span className="text-xs font-bold uppercase tracking-wider text-[#16A34A]">
+            Simple &amp; Transparent Process
           </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-[#173B67] mt-1 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black text-[#0B0F0E] mt-1 tracking-tight">
             How SkillConnect Works
           </h2>
-          <p className="text-sm text-[#667085] mt-2 leading-relaxed">
+          <p className="text-sm text-[#4B5563] mt-2 leading-relaxed">
             From emergency leaks to major installations, book trusted home repair specialists in three simple steps.
           </p>
         </div>
@@ -57,37 +57,40 @@ export function HowItWorks() {
             return (
               <div
                 key={step.num}
-                className="relative flex flex-col justify-between p-6 sm:p-7 rounded-3xl bg-white border border-[#E4E7EC] hover:border-[#0F9D91]/40 hover:shadow-md transition-all shadow-2xs group"
+                className="relative flex flex-col justify-between p-6 sm:p-7 rounded-3xl bg-white border border-[#E5E7EB] hover:border-[#16A34A]/40 hover:shadow-md transition-all shadow-2xs group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-5">
-                    <span className="font-mono text-xs font-bold px-3 py-1 rounded-full bg-[#EBF1F8] text-[#173B67] border border-[#173B67]/10">
+                    <span className="font-mono text-xs font-bold px-3 py-1 rounded-full bg-[#EFF6FF] text-[#2563EB] border border-[#2563EB]/15">
                       Step {step.num}
                     </span>
-                    <div className="w-11 h-11 rounded-2xl bg-[#E6F7F5] text-[#0F9D91] flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <div className="w-11 h-11 rounded-2xl bg-[#F0FDF4] text-[#16A34A] flex items-center justify-center group-hover:scale-105 transition-transform">
                       <Icon className="w-5 h-5" />
                     </div>
                   </div>
 
-                  <h3 className="text-lg font-bold text-[#173B67] mb-1">
+                  <h3 className="text-lg font-bold text-[#0B0F0E] mb-1">
                     {step.title}
                   </h3>
-                  <p className="text-xs font-semibold text-[#0F9D91] mb-2.5">
+                  <p className="text-xs font-semibold text-[#16A34A] mb-2.5">
                     {step.subtitle}
                   </p>
-                  <p className="text-xs sm:text-sm text-[#667085] leading-relaxed">
+                  <p className="text-xs sm:text-sm text-[#4B5563] leading-relaxed">
                     {step.description}
                   </p>
                 </div>
 
-                <div className="mt-5 pt-3.5 border-t border-[#E4E7EC] flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-[#15803D] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                <div className="mt-5 pt-3.5 border-t border-[#E5E7EB] flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-[#16A34A] bg-[#F0FDF4] px-2 py-0.5 rounded-full border border-[#16A34A]/30">
                     {step.highlight}
                   </span>
-                  <span className="text-xs font-bold text-[#173B67] group-hover:text-[#0F9D91] transition-colors flex items-center gap-1">
-                    <span>Learn more</span>
+                  <Link
+                    href="/checkout"
+                    className="text-xs font-bold text-[#0B0F0E] group-hover:text-[#16A34A] transition-colors flex items-center gap-1"
+                  >
+                    <span>Escrow details</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                  </span>
+                  </Link>
                 </div>
               </div>
             );
@@ -98,14 +101,12 @@ export function HowItWorks() {
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link href="/professionals">
             <Button variant="primary" size="lg" className="rounded-full px-7 font-bold shadow-xs">
-              <Search className="w-4 h-4 mr-2" />
-              Find Verified Local Pros
+              Find a Professional Now
             </Button>
           </Link>
-          <Link href="#estimator">
-            <Button variant="secondary" size="lg" className="rounded-full px-7 font-bold bg-white text-[#173B67] border border-[#D0D5DD]">
-              <Sparkles className="w-4 h-4 mr-2 text-[#0F9D91]" />
-              Try Instant AI Cost Estimator
+          <Link href="/trust">
+            <Button variant="outline" size="lg" className="rounded-full px-7 font-semibold">
+              Read Our Trust &amp; Safety Charter
             </Button>
           </Link>
         </div>

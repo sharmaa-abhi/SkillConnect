@@ -13,11 +13,11 @@ export function WorkerCTA() {
   ];
 
   return (
-    <section className="py-16 sm:py-20 bg-[#173B67] text-white">
+    <section className="py-16 sm:py-20 bg-[#0B0F0E] text-white">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-7 flex flex-col gap-5">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#0F9D91]">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#16A34A]">
               For Independent Trade Technicians
             </span>
 
@@ -32,7 +32,7 @@ export function WorkerCTA() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
               {benefits.map((b) => (
                 <div key={b} className="flex items-center gap-2 text-xs text-white/90">
-                  <CheckCircle2 className="w-4 h-4 text-[#0F9D91] flex-shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-[#16A34A] shrink-0" />
                   <span>{b}</span>
                 </div>
               ))}
@@ -41,7 +41,7 @@ export function WorkerCTA() {
             <div className="pt-4 flex flex-wrap items-center gap-4">
               <Link href="/register?role=worker">
                 <Button
-                  variant="secondary"
+                  variant="primary"
                   size="lg"
                   rightIcon={<ArrowRight className="w-4 h-4" />}
                   className="font-bold shadow-xs"
@@ -64,27 +64,27 @@ export function WorkerCTA() {
           <div className="lg:col-span-5">
             <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-white/20 text-white shadow-xl">
               <div className="flex items-center gap-3 pb-4 border-b border-white/15">
-                <div className="w-12 h-12 rounded-2xl bg-[#0F9D91] flex items-center justify-center font-bold text-lg text-white">
+                <div className="w-12 h-12 rounded-2xl bg-[#16A34A] flex items-center justify-center font-bold text-lg text-white">
                   ⚡
                 </div>
                 <div>
                   <h4 className="font-bold text-base">Marcus Vance (Master Plumber)</h4>
-                  <p className="text-xs text-white/70">Earned $4,280 this month on SkillConnect</p>
+                  <p className="text-xs text-white/70">Verified Professional on SkillConnect</p>
                 </div>
               </div>
 
               <div className="py-4 space-y-3 text-xs text-white/90">
                 <div className="flex justify-between items-center">
-                  <span>Weekly Booked Jobs</span>
+                  <span>Weekly Dispatch Slots</span>
                   <span className="font-bold text-white">8 Scheduled</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>Customer Rating</span>
-                  <span className="font-bold text-[#E7A83E]">4.95 ★ (142 reviews)</span>
+                  <span className="font-bold text-amber-400">4.95 ★ (142 reviews)</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span>Disputed Invoices</span>
-                  <span className="font-bold text-[#15803D]">0% (Full escrow release)</span>
+                  <span className="font-bold text-[#16A34A]">0% (Full escrow release)</span>
                 </div>
               </div>
 

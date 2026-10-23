@@ -28,16 +28,16 @@ export function TrustTransparency() {
   ];
 
   return (
-    <section className="py-16 sm:py-20 bg-[#F7F8FA] border-b border-[#E4E7EC]">
+    <section className="py-16 sm:py-20 bg-[#F8FAFC] border-b border-[#E5E7EB]">
       <Container>
         <div className="max-w-2xl mx-auto text-center mb-12">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#0F9D91]">
-            Trust & Security
+          <span className="text-xs font-bold uppercase tracking-wider text-[#16A34A]">
+            Trust &amp; Security
           </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-[#173B67] mt-1 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black text-[#0B0F0E] mt-1 tracking-tight">
             Built on Transparency, Not Surprise Fees
           </h2>
-          <p className="text-sm text-[#667085] mt-2 leading-relaxed">
+          <p className="text-sm text-[#4B5563] mt-2 leading-relaxed">
             We built SkillConnect to protect homeowners from bait-and-switch quotes and protect tradespeople from predatory lead generation fees.
           </p>
         </div>
@@ -48,16 +48,16 @@ export function TrustTransparency() {
             return (
               <div
                 key={pillar.title}
-                className="flex items-start gap-4 p-6 rounded-3xl bg-white border border-[#E4E7EC] shadow-2xs"
+                className="flex items-start gap-4 p-6 rounded-3xl bg-white border border-[#E5E7EB] shadow-2xs"
               >
-                <div className="w-12 h-12 rounded-2xl bg-[#E6F7F5] text-[#0F9D91] flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-6 h-6" />
+                <div className="w-12 h-12 rounded-2xl bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center shrink-0">
+                  <Icon className="w-6 h-6 text-[#2563EB]" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-[#173B67]">
+                  <h3 className="text-base font-bold text-[#0B0F0E]">
                     {pillar.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#667085] mt-1.5 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-[#4B5563] mt-1.5 leading-relaxed">
                     {pillar.description}
                   </p>
                 </div>
@@ -70,10 +70,10 @@ export function TrustTransparency() {
         <div className="mt-10 text-center">
           <Link
             href="/trust"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#173B67] text-white text-xs sm:text-sm font-bold shadow-xs hover:bg-[#0F2A4A] transition-all hover:scale-105"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#0B0F0E] text-white text-xs sm:text-sm font-bold shadow-xs hover:bg-[#1F2937] transition-all hover:scale-105"
           >
             <span>Read How SkillConnect Protects You &amp; Your Money</span>
-            <ArrowRight className="w-4 h-4 text-[#0F9D91]" />
+            <ArrowRight className="w-4 h-4 text-[#16A34A]" />
           </Link>
         </div>
       </Container>

@@ -36,16 +36,16 @@ export function FAQSection() {
   ];
 
   return (
-    <section className="py-16 sm:py-20 bg-white border-b border-[#E4E7EC]">
+    <section className="py-16 sm:py-20 bg-white border-b border-[#E5E7EB]">
       <Container size="narrow" className="max-w-3xl">
         <div className="text-center mb-12">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#0F9D91]">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#16A34A]">
             Got Questions?
           </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-[#173B67] mt-1 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black text-[#0B0F0E] mt-1 tracking-tight">
             Frequently Asked Questions
           </h2>
-          <p className="text-sm text-[#667085] mt-2">
+          <p className="text-sm text-[#4B5563] mt-2">
             Everything you need to know about our local marketplace standards.
           </p>
         </div>
@@ -56,26 +56,26 @@ export function FAQSection() {
             return (
               <div
                 key={faq.question}
-                className="rounded-2xl border border-[#E4E7EC] overflow-hidden transition-all"
+                className="rounded-2xl border border-[#E5E7EB] overflow-hidden transition-all"
               >
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : idx)}
                   aria-expanded={isOpen}
-                  className="w-full flex items-center justify-between p-5 text-left bg-white hover:bg-[#F7F8FA] transition-colors"
+                  className="w-full flex items-center justify-between p-5 text-left bg-white hover:bg-[#F8FAFC] transition-colors cursor-pointer"
                 >
-                  <span className="text-sm sm:text-base font-bold text-[#263445]">
+                  <span className="text-sm sm:text-base font-bold text-[#111827]">
                     {faq.question}
                   </span>
                   <ChevronDown
-                    className={`w-5 h-5 text-[#667085] transition-transform duration-200 flex-shrink-0 ${
-                      isOpen ? 'rotate-180 text-[#173B67]' : ''
+                    className={`w-5 h-5 text-[#4B5563] transition-transform duration-200 shrink-0 ${
+                      isOpen ? 'rotate-180 text-[#16A34A]' : ''
                     }`}
                   />
                 </button>
 
                 {isOpen && (
-                  <div className="p-5 pt-0 text-xs sm:text-sm text-[#667085] bg-white leading-relaxed border-t border-[#E4E7EC]/50">
+                  <div className="p-5 pt-0 text-xs sm:text-sm text-[#4B5563] bg-white leading-relaxed border-t border-[#E5E7EB]/50">
                     {faq.answer}
                   </div>
                 )}

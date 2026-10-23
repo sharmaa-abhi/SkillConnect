@@ -51,24 +51,24 @@ export function ValuePillars() {
         '$2,500 craftsmanship dispute guarantee',
       ],
       linkText: 'See how escrow protects you',
-      linkHref: '/trust',
+      linkHref: '/checkout',
     },
   ];
 
   return (
-    <section className="py-16 sm:py-20 bg-white border-b border-[#E4E7EC]">
+    <section className="py-16 sm:py-20 bg-white border-b border-[#E5E7EB]">
       <Container>
         {/* Section Heading */}
         <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EBF1F8] border border-[#173B67]/20 text-[#173B67] text-xs font-bold uppercase tracking-wider mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-[#0F9D91]" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EFF6FF] border border-[#2563EB]/20 text-[#2563EB] text-xs font-bold uppercase tracking-wider mb-3">
+            <Sparkles className="w-3.5 h-3.5 text-[#2563EB]" />
             <span>Why Homeowners Trust SkillConnect</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#173B67] tracking-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0B0F0E] tracking-tight">
             Everything You Need in a Home Pro. <br className="hidden sm:inline" />
-            <span className="text-[#0F9D91]">None of the Traditional Risks.</span>
+            <span className="text-[#16A34A]">None of the Traditional Risks.</span>
           </h2>
-          <p className="text-sm sm:text-base text-[#667085] mt-3 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-[#4B5563] mt-3 leading-relaxed max-w-2xl mx-auto">
             SkillConnect eliminates the three biggest headaches in home repair: unverified contractors, hidden surprise invoices, and contractor abandonment.
           </p>
         </div>
@@ -80,40 +80,40 @@ export function ValuePillars() {
             return (
               <div
                 key={pillar.title}
-                className="flex flex-col justify-between p-6 sm:p-8 rounded-3xl bg-[#F7F8FA] border border-[#E4E7EC] hover:border-[#173B67]/30 hover:shadow-lg transition-all duration-300 relative group"
+                className="flex flex-col justify-between p-6 sm:p-8 rounded-3xl bg-[#F8FAFC] border border-[#E5E7EB] hover:border-[#16A34A]/40 hover:shadow-lg transition-all duration-300 relative group"
               >
                 <div>
                   {/* Top Bar with Number & Badge */}
                   <div className="flex items-center justify-between gap-2 mb-6">
-                    <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-white border border-[#E4E7EC] text-[#173B67]">
+                    <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-white border border-[#E5E7EB] text-[#0B0F0E]">
                       Pillar {pillar.step}
                     </span>
-                    <span className="text-[11px] font-bold text-[#0F9D91] bg-[#E6F7F5] px-2.5 py-0.5 rounded-full border border-[#0F9D91]/20">
+                    <span className="text-[11px] font-bold text-[#16A34A] bg-[#F0FDF4] px-2.5 py-0.5 rounded-full border border-[#16A34A]/25">
                       {pillar.badge}
                     </span>
                   </div>
 
                   {/* Icon & Title */}
-                  <div className="w-12 h-12 rounded-2xl bg-[#173B67] text-white flex items-center justify-center mb-5 group-hover:bg-[#0F9D91] transition-colors shadow-sm">
-                    <Icon className="w-6 h-6" />
+                  <div className="w-12 h-12 rounded-2xl bg-[#0B0F0E] text-white flex items-center justify-center mb-5 group-hover:bg-[#16A34A] transition-colors shadow-xs">
+                    <Icon className="w-6 h-6 text-white" />
                   </div>
 
-                  <h3 className="text-xl font-bold text-[#173B67] tracking-tight">
+                  <h3 className="text-xl font-bold text-[#0B0F0E] tracking-tight">
                     {pillar.title}
                   </h3>
-                  <p className="text-xs font-semibold text-[#0F9D91] mt-1">
+                  <p className="text-xs font-semibold text-[#16A34A] mt-1">
                     {pillar.tagline}
                   </p>
 
-                  <p className="text-xs sm:text-sm text-[#667085] mt-3 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-[#4B5563] mt-3 leading-relaxed">
                     {pillar.description}
                   </p>
 
                   {/* Bullet Highlights */}
-                  <ul className="mt-5 space-y-2 border-t border-[#E4E7EC] pt-4">
+                  <ul className="mt-5 space-y-2 border-t border-[#E5E7EB] pt-4">
                     {pillar.features.map((feat) => (
-                      <li key={feat} className="flex items-start gap-2 text-xs text-[#263445]">
-                        <CheckCircle2 className="w-4 h-4 text-[#0F9D91] shrink-0 mt-0.5" />
+                      <li key={feat} className="flex items-start gap-2 text-xs text-[#111827]">
+                        <CheckCircle2 className="w-4 h-4 text-[#16A34A] shrink-0 mt-0.5" />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -121,10 +121,10 @@ export function ValuePillars() {
                 </div>
 
                 {/* Bottom CTA */}
-                <div className="mt-6 pt-4 border-t border-[#E4E7EC]">
+                <div className="mt-6 pt-4 border-t border-[#E5E7EB]">
                   <Link
                     href={pillar.linkHref}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#173B67] hover:text-[#0F9D91] transition-colors group-hover:translate-x-0.5"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0B0F0E] hover:text-[#16A34A] transition-colors group-hover:translate-x-0.5"
                   >
                     <span>{pillar.linkText}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
