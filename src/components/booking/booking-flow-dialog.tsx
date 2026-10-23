@@ -217,19 +217,19 @@ export function BookingFlowDialog({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: 10 }}
         transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-        className="relative w-full max-w-xl bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-[#E4E7EC] overflow-hidden flex flex-col max-h-[92dvh]"
+        className="relative w-full max-w-xl bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-[#E5E7EB] overflow-hidden flex flex-col max-h-[92dvh]"
       >
         {/* Header Bar */}
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-[#E4E7EC] bg-[#F7F8FA]">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-[#E5E7EB] bg-[#F8FAFC]">
           <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#173B67] text-white flex items-center justify-center font-bold text-sm shadow-2xs shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#0B0F0E] text-white flex items-center justify-center font-bold text-sm shadow-2xs shrink-0">
               {professional.name[0]}
             </div>
             <div className="min-w-0">
-              <h2 id="booking-modal-title" className="text-sm sm:text-base font-bold text-[#173B67] truncate">
+              <h2 id="booking-modal-title" className="text-sm sm:text-base font-bold text-[#0B0F0E] truncate">
                 Schedule Service Appointment
               </h2>
-              <p className="text-[11px] sm:text-xs text-[#667085] truncate">
+              <p className="text-[11px] sm:text-xs text-[#4B5563] truncate">
                 With {professional.name} • {professional.tradeTitle}
               </p>
             </div>
@@ -239,14 +239,14 @@ export function BookingFlowDialog({
             type="button"
             onClick={handleClose}
             aria-label="Close booking dialog"
-            className="p-1.5 rounded-xl text-[#667085] hover:text-[#263445] hover:bg-[#EBF1F8] transition-colors shrink-0 ml-2"
+            className="p-1.5 rounded-xl text-[#4B5563] hover:text-[#111827] hover:bg-[#F8FAFC] transition-colors shrink-0 ml-2 cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Step Progress Indicators */}
-        <div className="flex items-center justify-between px-3 sm:px-6 py-2.5 sm:py-3 bg-white border-b border-[#E4E7EC] text-xs">
+        <div className="flex items-center justify-between px-3 sm:px-6 py-2.5 sm:py-3 bg-white border-b border-[#E5E7EB] text-xs">
           {[
             { num: 1, label: 'Scope & Service' },
             { num: 2, label: 'Date & Time' },
@@ -257,17 +257,17 @@ export function BookingFlowDialog({
               <span
                 className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                   step === item.num
-                    ? 'bg-[#173B67] text-white'
+                    ? 'bg-[#16A34A] text-white'
                     : step > item.num
-                    ? 'bg-[#E6F7F5] text-[#0F9D91]'
-                    : 'bg-[#F7F8FA] text-[#667085] border border-[#E4E7EC]'
+                    ? 'bg-[#F0FDF4] text-[#16A34A]'
+                    : 'bg-[#F8FAFC] text-[#4B5563] border border-[#E5E7EB]'
                 }`}
               >
                 {step > item.num ? '✓' : item.num}
               </span>
               <span
                 className={`hidden sm:inline font-semibold ${
-                  step === item.num ? 'text-[#173B67]' : 'text-[#667085]'
+                  step === item.num ? 'text-[#0B0F0E]' : 'text-[#4B5563]'
                 }`}
               >
                 {item.label}

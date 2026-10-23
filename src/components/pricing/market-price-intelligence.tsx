@@ -243,31 +243,31 @@ export function MarketPriceIntelligence({
             {/* COMPARISON CARDS */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* SkillConnect Benchmark */}
-              <div className="p-4 rounded-xl border-2 border-[#0F9D91]/40 bg-[#E6F7F5]/30 flex flex-col justify-between">
+              <div className="p-4 rounded-xl border border-[#16A34A]/30 bg-[#F0FDF4] flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[11px] font-bold text-[#0F9D91] uppercase tracking-wider">
+                    <span className="text-[11px] font-bold text-[#16A34A] uppercase tracking-wider">
                       SkillConnect Guaranteed Estimate
                     </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#0F9D91] text-white">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#16A34A] text-white">
                       Verified
                     </span>
                   </div>
-                  <div className="text-2xl font-black text-[#173B67] mt-1">
+                  <div className="text-2xl font-black text-[#0B0F0E] mt-1">
                     {formatCurrency(skillConnectEstimateMin ?? 158)} –{' '}
                     {formatCurrency(skillConnectEstimateMax ?? 375)}
                   </div>
-                  <ul className="text-xs text-[#344054] mt-2.5 space-y-1">
+                  <ul className="text-xs text-[#4B5563] mt-2.5 space-y-1">
                     <li className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#0F9D91] shrink-0" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A] shrink-0" />
                       <span>100% Diagnostic fee credited directly toward labor</span>
                     </li>
                     <li className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#0F9D91] shrink-0" />
-                      <span>Verified, licensed & insured local specialists</span>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A] shrink-0" />
+                      <span>Verified, licensed &amp; insured local specialists</span>
                     </li>
                     <li className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#0F9D91] shrink-0" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A] shrink-0" />
                       <span>Escrow milestone hold with customer sign-off</span>
                     </li>
                   </ul>

@@ -22,12 +22,12 @@ export function RatingDisplay({
 
   return (
     <div className={`inline-flex items-center gap-1.5 ${className}`}>
-      <Star className={`${iconSize} fill-[#E7A83E] text-[#E7A83E] flex-shrink-0`} aria-hidden="true" />
-      <span className={`${textSize} text-[#263445]`}>
+      <Star className={`${iconSize} fill-amber-500 text-amber-500 shrink-0`} aria-hidden="true" />
+      <span className={`${textSize} text-[#111827]`}>
         {formatRating(rating)}
       </span>
       {showCount && reviewCount !== undefined && (
-        <span className="text-xs text-[#667085]">
+        <span className="text-xs text-[#4B5563]">
           ({formatReviewCount(reviewCount)})
         </span>
       )}
