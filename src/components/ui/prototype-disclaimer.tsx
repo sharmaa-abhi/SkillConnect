@@ -25,11 +25,11 @@ export function PrototypeDisclaimer({
       <aside
         aria-label="Prototype Notice"
         role="status"
-        className={`w-full bg-[#EBF1F8] border-b border-[#D0D5DD] py-2 px-4 sm:px-6 text-xs text-[#173B67] flex items-center justify-center gap-2 ${className}`}
+        className={`w-full bg-blue-50/80 border-b border-[#E5E7EB] py-2 px-4 sm:px-6 text-xs text-[#111827] flex items-center justify-center gap-2 ${className}`}
       >
-        <Info className="w-4 h-4 shrink-0 text-[#0F9D91]" />
+        <Info className="w-4 h-4 shrink-0 text-[#2563EB]" />
         <span className="font-bold shrink-0">{PROTOTYPE_DISCLAIMER_TITLE}:</span>
-        <span className="text-[#667085] truncate sm:whitespace-normal">{message}</span>
+        <span className="text-[#4B5563] truncate sm:whitespace-normal">{message}</span>
       </aside>
     );
   }
@@ -38,9 +38,9 @@ export function PrototypeDisclaimer({
     return (
       <div
         role="status"
-        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#EBF1F8] border border-[#D0D5DD] text-[11px] text-[#173B67] ${className}`}
+        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 border border-[#E5E7EB] text-[11px] text-[#2563EB] ${className}`}
       >
-        <Info className="w-3.5 h-3.5 text-[#0F9D91] shrink-0" />
+        <Info className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
         <span className="font-bold">{PROTOTYPE_DISCLAIMER_TITLE}</span>
       </div>
     );
@@ -49,16 +49,16 @@ export function PrototypeDisclaimer({
   return (
     <div
       role="status"
-      className={`rounded-2xl bg-[#F7F8FA] border border-[#E4E7EC] p-3.5 sm:p-4 text-xs text-[#263445] flex items-start gap-3 shadow-2xs ${className}`}
+      className={`rounded-2xl bg-[#F8FAFC] border border-[#E5E7EB] p-3.5 sm:p-4 text-xs text-[#111827] flex items-start gap-3 shadow-2xs ${className}`}
     >
-      <div className="w-7 h-7 rounded-xl bg-[#E6F7F5] text-[#0F9D91] flex items-center justify-center shrink-0 mt-0.5">
+      <div className="w-7 h-7 rounded-xl bg-blue-50 text-[#2563EB] flex items-center justify-center shrink-0 mt-0.5">
         <Info className="w-4 h-4" />
       </div>
       <div className="flex-1 min-w-0">
-        <h4 className="font-bold text-[#173B67] text-xs sm:text-sm flex items-center gap-1.5">
+        <h4 className="font-bold text-[#111827] text-xs sm:text-sm flex items-center gap-1.5">
           <span>{PROTOTYPE_DISCLAIMER_TITLE}</span>
         </h4>
-        <p className="text-[#667085] text-[11px] sm:text-xs mt-0.5 leading-relaxed">
+        <p className="text-[#4B5563] text-[11px] sm:text-xs mt-0.5 leading-relaxed">
           {message}
         </p>
       </div>

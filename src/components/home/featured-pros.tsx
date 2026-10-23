@@ -13,25 +13,25 @@ export function FeaturedPros() {
   const featured = pros.filter((p: Professional) => p.featured).slice(0, 4);
 
   return (
-    <section className="py-16 sm:py-20 bg-[#F7F8FA] border-b border-[#E4E7EC]">
+    <section className="py-16 sm:py-20 bg-[#F8FAFC] border-b border-[#E5E7EB]">
       <Container>
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#0F9D91]">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#16A34A]">
               Top-Rated Local Specialists
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-[#173B67] mt-1 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-black text-[#111827] mt-1 tracking-tight">
               Featured Verified Professionals
             </h2>
-            <p className="text-sm text-[#667085] mt-1 max-w-xl">
+            <p className="text-sm text-[#4B5563] mt-1 max-w-xl">
               Every professional is backed by verified trade credentials, active liability coverage, and real homeowner reviews.
             </p>
           </div>
 
           <Link
             href="/professionals"
-            className="inline-flex items-center gap-1.5 text-sm font-bold text-[#173B67] hover:text-[#0F9D91] group transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-bold text-[#2563EB] hover:text-[#16A34A] group transition-colors"
           >
             <span>Explore all {pros.length} professionals</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

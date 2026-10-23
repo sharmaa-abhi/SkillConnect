@@ -28,10 +28,10 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
           required={required}
           aria-describedby={error ? `${id}-error` : helperText ? `${id}-helper` : undefined}
           aria-invalid={Boolean(error)}
-          className={`w-full px-3.5 py-2.5 text-sm bg-white rounded-xl border transition-all focus:outline-none text-[#263445] ${
+          className={`w-full px-3.5 py-2.5 text-sm bg-white rounded-xl border transition-all focus:outline-none text-[#111827] ${
             error
-              ? 'border-[#B42318] focus:ring-2 focus:ring-[#B42318]'
-              : 'border-[#D0D5DD] focus:border-[#173B67] focus:ring-2 focus:ring-[#173B67]/15'
+              ? 'border-red-600 focus:ring-2 focus:ring-red-600/20'
+              : 'border-[#E5E7EB] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20'
           } ${className}`}
           {...props}
         >
