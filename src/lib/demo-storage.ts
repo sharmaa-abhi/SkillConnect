@@ -287,57 +287,110 @@ export function addDemoBooking(booking: DemoBooking): void {
   }
 }
 
+/**
+ * Authoritative booking state machine transition rules.
+ * Terminal states (declined, cancelled) cannot be transitioned out of.
+ */
+export const ALLOWED_BOOKING_TRANSITIONS: Record<DemoBooking['status'], DemoBooking['status'][]> = {
+  pending: ['confirmed', 'declined', 'cancelled'],
+  confirmed: ['in_progress', 'cancelled', 'disputed'],
+  in_progress: ['completed', 'disputed', 'cancelled'],
+  completed: ['disputed'],
+  declined: [], // terminal state
+  cancelled: [], // terminal state
+  disputed: ['completed', 'cancelled'],
+};
+
+/**
+ * Pure state reducer enforcing authoritative escrow and lifecycle transitions.
+ * Guarantees that funds are refunded to customer on decline/cancellation and prevents duplicate operations.
+ */
+export function applyBookingTransition(
+  booking: DemoBooking,
+  newStatus: DemoBooking['status'],
+  reason?: string
+): DemoBooking {
+  const allowed = ALLOWED_BOOKING_TRANSITIONS[booking.status] || [];
+  if (!allowed.includes(newStatus)) {
+    throw new Error(`Illegal state transition from ${booking.status} to ${newStatus}`);
+  }
+
+  // Idempotency check: prevent duplicate refund or release operations
+  if (
+    (newStatus === 'cancelled' || newStatus === 'declined') &&
+    booking.paymentStatus === 'refunded_to_customer'
+  ) {
+    throw new Error(`Duplicate refund prevented: booking ${booking.id} has already been refunded.`);
+  }
+
+  if (newStatus === 'completed' && booking.paymentStatus === 'released_to_worker') {
+    throw new Error(`Duplicate payout prevented: booking ${booking.id} funds have already been released.`);
+  }
+
+  let paymentStatus = booking.paymentStatus;
+  let timelineNote = '';
+
+  if (newStatus === 'declined') {
+    // CRITICAL ESCROW SAFETY: When pro declines, funds are REFUNDED TO CUSTOMER, never to worker
+    paymentStatus = 'refunded_to_customer';
+    timelineNote = `Request declined by service professional. ${reason ? `Reason: ${reason}. ` : ''}Escrow pre-authorization hold released and refunded in full to customer.`;
+  } else if (newStatus === 'cancelled') {
+    paymentStatus = 'refunded_to_customer';
+    timelineNote = `Booking cancelled. ${reason ? `Reason: ${reason}. ` : ''}Escrow pre-authorization hold released and refunded in full to customer.`;
+  } else if (newStatus === 'confirmed') {
+    paymentStatus = 'authorized_hold';
+    timelineNote = 'Appointment confirmed by service professional. Pre-authorized diagnostic fee held safely in escrow.';
+  } else if (newStatus === 'completed') {
+    paymentStatus = 'released_to_worker';
+    timelineNote = 'Service completed and customer sign-off recorded. Escrow released to technician.';
+  } else if (newStatus === 'disputed') {
+    paymentStatus = 'disputed_hold';
+    timelineNote = `Dispute raised: ${reason || 'Mediation requested'}. Escrow on administrative hold.`;
+  } else if (newStatus === 'in_progress') {
+    paymentStatus = 'authorized_hold';
+    timelineNote = 'Technician has arrived on site and commenced diagnostic inspection.';
+  }
+
+  const newEvent = {
+    status: newStatus,
+    timestamp: new Date().toISOString(),
+    note: timelineNote,
+  };
+
+  return {
+    ...booking,
+    status: newStatus,
+    paymentStatus,
+    cancellationReason: reason || booking.cancellationReason,
+    timeline: [...(booking.timeline || []), newEvent],
+  };
+}
+
 export function updateDemoBookingStatus(
   bookingId: string,
   status: DemoBooking['status'],
   cancellationReason?: string
-): void {
-  if (typeof window === 'undefined') return;
+): { success: boolean; error?: string } {
+  if (typeof window === 'undefined') return { success: false, error: 'Server environment' };
   try {
     const current = getDemoBookings();
-    const updated = current.map((b) => {
-      if (b.id !== bookingId) return b;
-      const timeline = b.timeline || [];
-      const newEvent = {
-        status,
-        timestamp: new Date().toISOString(),
-        note:
-          status === 'declined'
-            ? `Request declined by service professional. ${cancellationReason ? `Reason: ${cancellationReason}. ` : ''}Escrow pre-authorization hold released and refunded in full to customer.`
-            : status === 'cancelled'
-            ? `Booking cancelled. ${cancellationReason ? `Reason: ${cancellationReason}. ` : ''}Escrow pre-authorization hold released and refunded in full to customer.`
-            : status === 'completed'
-            ? 'Service completed and customer sign-off recorded. Escrow released to technician.'
-            : status === 'confirmed'
-            ? 'Appointment confirmed by service professional. Pre-authorized diagnostic fee held safely in escrow.'
-            : status === 'disputed'
-            ? `Dispute raised: ${cancellationReason || 'Mediation requested by customer'}. Escrow on administrative hold.`
-            : `Status changed to ${status}.`,
-      };
+    const target = current.find((b) => b.id === bookingId);
+    if (!target) {
+      return { success: false, error: `Booking ${bookingId} not found` };
+    }
 
-      const paymentStatus =
-        status === 'cancelled' || status === 'declined'
-          ? 'refunded_to_customer'
-          : status === 'completed'
-          ? 'released_to_worker'
-          : status === 'disputed'
-          ? 'disputed_hold'
-          : status === 'confirmed'
-          ? 'authorized_hold'
-          : b.paymentStatus;
+    const updatedBooking = applyBookingTransition(target, status, cancellationReason);
+    const updated = current.map((b) => (b.id === bookingId ? updatedBooking : b));
 
-      return {
-        ...b,
-        status,
-        paymentStatus,
-        cancellationReason: cancellationReason || b.cancellationReason,
-        timeline: [...timeline, newEvent],
-      };
-    });
-    localStorage.setItem(BOOKINGS_STORAGE_KEY, JSON.stringify(updated));
+    const raw = JSON.stringify(updated);
+    cachedBookingsRaw = raw;
+    cachedBookings = updated;
+    localStorage.setItem(BOOKINGS_STORAGE_KEY, raw);
     notifyStorageChange();
-  } catch (err) {
-    console.warn('LocalStorage update failed:', err);
+    return { success: true };
+  } catch (err: any) {
+    console.warn('Booking transition rejected:', err?.message || err);
+    return { success: false, error: err?.message || 'Transition rejected' };
   }
 }
 
