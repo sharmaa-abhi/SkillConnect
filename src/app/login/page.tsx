@@ -84,30 +84,30 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="py-12 sm:py-20 bg-[#F7F8FA]">
+    <div className="py-12 sm:py-20 bg-[#F8FAFC]">
       <Container size="narrow">
-        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E4E7EC] shadow-md">
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E5E7EB] shadow-md">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-12 h-12 rounded-2xl bg-[#173B67] text-white flex items-center justify-center mx-auto mb-3 shadow-xs">
-              <Wrench className="w-6 h-6 text-[#0F9D91]" />
+            <div className="w-12 h-12 rounded-2xl bg-[#0B0F0E] text-white flex items-center justify-center mx-auto mb-3 shadow-xs">
+              <Wrench className="w-6 h-6 text-[#16A34A]" />
             </div>
-            <h1 className="text-2xl font-black text-[#173B67]">
+            <h1 className="text-2xl font-black text-[#111827]">
               Sign in to SkillConnect
             </h1>
-            <p className="text-xs text-[#667085] mt-1">
+            <p className="text-xs text-[#4B5563] mt-1">
               Access your service appointments or professional dispatch portal
             </p>
           </div>
 
           {/* Quick 1-Click Demo Personas Bar */}
-          <div className="mb-6 p-4 rounded-2xl bg-[#EBF1F8] border border-[#173B67]/20 flex flex-col gap-3">
+          <div className="mb-6 p-4 rounded-2xl bg-blue-50/60 border border-blue-200 flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#173B67]">
-                <Sparkles className="w-4 h-4 text-[#0F9D91]" />
+              <div className="flex items-center gap-1.5 text-xs font-bold text-[#111827]">
+                <Sparkles className="w-4 h-4 text-[#16A34A]" />
                 <span>Instant 1-Click Demo Account Sign In:</span>
               </div>
-              <span className="text-[10px] text-[#667085] font-semibold">No password required</span>
+              <span className="text-[10px] text-[#4B5563] font-semibold">No password required</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -122,17 +122,17 @@ export default function LoginPage() {
                   });
                   router.push('/customer/dashboard');
                 }}
-                className="p-2.5 rounded-xl bg-white border border-[#E4E7EC] hover:border-[#173B67] hover:shadow-xs transition-all text-left group"
+                className="p-2.5 rounded-xl bg-white border border-[#E5E7EB] hover:border-[#2563EB] hover:shadow-xs transition-all text-left group"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#263445] group-hover:text-[#173B67]">
+                  <span className="text-xs font-bold text-[#111827] group-hover:text-[#2563EB]">
                     Sarah Jenkins
                   </span>
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-blue-50 text-[#173B67] border border-blue-200">
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-blue-50 text-[#2563EB] border border-blue-200">
                     Customer
                   </span>
                 </div>
-                <span className="text-[10px] text-[#667085] block mt-0.5">
+                <span className="text-[10px] text-[#4B5563] block mt-0.5">
                   1-Click Sign In →
                 </span>
               </button>
@@ -148,17 +148,17 @@ export default function LoginPage() {
                   });
                   router.push('/worker/dashboard');
                 }}
-                className="p-2.5 rounded-xl bg-white border border-[#E4E7EC] hover:border-[#0F9D91] hover:shadow-xs transition-all text-left group"
+                className="p-2.5 rounded-xl bg-white border border-[#E5E7EB] hover:border-[#16A34A] hover:shadow-xs transition-all text-left group"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#263445] group-hover:text-[#0F9D91]">
+                  <span className="text-xs font-bold text-[#111827] group-hover:text-[#16A34A]">
                     Marcus Vance
                   </span>
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-50 text-[#0F9D91] border border-emerald-200">
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-50 text-[#16A34A] border border-emerald-200">
                     Pro Worker
                   </span>
                 </div>
-                <span className="text-[10px] text-[#667085] block mt-0.5">
+                <span className="text-[10px] text-[#4B5563] block mt-0.5">
                   1-Click Sign In →
                 </span>
               </button>
@@ -174,29 +174,29 @@ export default function LoginPage() {
                   });
                   router.push('/admin');
                 }}
-                className="p-2.5 rounded-xl bg-white border border-[#E4E7EC] hover:border-purple-400 hover:shadow-xs transition-all text-left group"
+                className="p-2.5 rounded-xl bg-white border border-[#E5E7EB] hover:border-purple-400 hover:shadow-xs transition-all text-left group"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#263445] group-hover:text-purple-700">
+                  <span className="text-xs font-bold text-[#111827] group-hover:text-purple-700">
                     Alex Rivera
                   </span>
                   <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
                     Admin
                   </span>
                 </div>
-                <span className="text-[10px] text-[#667085] block mt-0.5">
+                <span className="text-[10px] text-[#4B5563] block mt-0.5">
                   1-Click Sign In →
                 </span>
               </button>
             </div>
 
-            <div className="pt-2 border-t border-[#173B67]/10 flex items-center justify-between text-[11px] text-[#667085]">
+            <div className="pt-2 border-t border-gray-200 flex items-center justify-between text-[11px] text-[#4B5563]">
               <span>Or fill form fields to test manual sign in:</span>
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => handleQuickFill('customer')}
-                  className="font-bold text-[#173B67] hover:underline"
+                  className="font-bold text-[#2563EB] hover:underline"
                 >
                   Fill Customer
                 </button>
@@ -204,7 +204,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => handleQuickFill('worker')}
-                  className="font-bold text-[#0F9D91] hover:underline"
+                  className="font-bold text-[#16A34A] hover:underline"
                 >
                   Fill Worker
                 </button>
@@ -250,9 +250,9 @@ export default function LoginPage() {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded text-[#0F9D91] focus:ring-[#0F9D91] border-[#D0D5DD]"
+                  className="rounded text-[#16A34A] focus:ring-[#16A34A] border-[#E5E7EB]"
                 />
-                <span className="text-[#667085]">Remember this browser</span>
+                <span className="text-[#4B5563]">Remember this browser</span>
               </label>
 
               <button
@@ -264,7 +264,7 @@ export default function LoginPage() {
                     message: 'Use the demo buttons above to sign in as Customer, Worker, or Administrator.',
                   })
                 }
-                className="text-[#0F9D91] hover:underline font-semibold"
+                className="text-[#2563EB] hover:underline font-semibold"
               >
                 Forgot password?
               </button>
@@ -282,9 +282,9 @@ export default function LoginPage() {
           </form>
 
           {/* Registration Link */}
-          <div className="mt-6 text-center text-xs text-[#667085]">
+          <div className="mt-6 text-center text-xs text-[#4B5563]">
             Don’t have an account yet?{' '}
-            <Link href="/register" className="font-bold text-[#0F9D91] hover:underline">
+            <Link href="/register" className="font-bold text-[#2563EB] hover:underline">
               Create an account
             </Link>
           </div>

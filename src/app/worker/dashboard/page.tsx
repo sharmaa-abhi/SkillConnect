@@ -236,10 +236,10 @@ export default function WorkerDashboardPage() {
         </div>
 
         {/* Worker Header Card */}
-        <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E4E7EC] p-4 sm:p-8 shadow-xs mb-6 sm:mb-8">
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E5E7EB] p-4 sm:p-8 shadow-xs mb-6 sm:mb-8">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
             <div className="flex items-start sm:items-center gap-3.5 sm:gap-5">
-              <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-[#173B67] text-white flex items-center justify-center font-bold text-xl sm:text-2xl flex-shrink-0 overflow-hidden shadow-xs">
+              <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-[#0B0F0E] text-white flex items-center justify-center font-bold text-xl sm:text-2xl flex-shrink-0 overflow-hidden shadow-xs">
                 <img
                   src={workerPro.avatarUrl}
                   alt={workerPro.name}
@@ -249,19 +249,19 @@ export default function WorkerDashboardPage() {
 
               <div>
                 <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#EBF1F8] text-[#173B67]">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-[#2563EB]">
                     Pro Worker Portal
                   </span>
-                  <span className="text-[11px] sm:text-xs text-[#15803D] font-bold flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-[#0F9D91]" />
+                  <span className="text-[11px] sm:text-xs text-[#16A34A] font-bold flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#16A34A]" />
                     {workerPro.licenseNumber} Verified Active
                   </span>
                 </div>
 
-                <h1 className="text-xl sm:text-3xl font-black text-[#173B67] tracking-tight">
+                <h1 className="text-xl sm:text-3xl font-black text-[#111827] tracking-tight">
                   {workerPro.name}
                 </h1>
-                <p className="text-xs sm:text-sm text-[#667085]">
+                <p className="text-xs sm:text-sm text-[#4B5563]">
                   {workerPro.tradeTitle} • {workerPro.serviceAreas.slice(0, 3).join(', ')}
                 </p>
               </div>
@@ -317,7 +317,7 @@ export default function WorkerDashboardPage() {
         </div>
 
         {/* Worker Navigation Tabs */}
-        <div className="flex border-b border-[#E4E7EC] mb-8 overflow-x-auto">
+        <div className="flex border-b border-[#E5E7EB] mb-8 overflow-x-auto">
           {[
             { id: 'requests', label: `Dispatch & Requests (${pendingCount})` },
             { id: 'services', label: 'Services & Pricing' },
@@ -332,8 +332,8 @@ export default function WorkerDashboardPage() {
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
               className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 -mb-px transition-all whitespace-nowrap ${
                 activeTab === tab.id
-                  ? 'border-[#173B67] text-[#173B67]'
-                  : 'border-transparent text-[#667085] hover:text-[#263445]'
+                  ? 'border-[#16A34A] text-[#16A34A]'
+                  : 'border-transparent text-[#4B5563] hover:text-[#111827]'
               }`}
             >
               {tab.label}

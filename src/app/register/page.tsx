@@ -76,18 +76,18 @@ function RegisterFormContent() {
   };
 
   return (
-    <div className="py-12 sm:py-20 bg-[#F7F8FA]">
+    <div className="py-12 sm:py-20 bg-[#F8FAFC]">
       <Container size="narrow">
-        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E4E7EC] shadow-md">
+        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E5E7EB] shadow-md">
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="w-12 h-12 rounded-2xl bg-[#173B67] text-white flex items-center justify-center mx-auto mb-3 shadow-xs">
-              <Wrench className="w-6 h-6 text-[#0F9D91]" />
+            <div className="w-12 h-12 rounded-2xl bg-[#0B0F0E] text-white flex items-center justify-center mx-auto mb-3 shadow-xs">
+              <Wrench className="w-6 h-6 text-[#16A34A]" />
             </div>
-            <h1 className="text-2xl font-black text-[#173B67]">
+            <h1 className="text-2xl font-black text-[#111827]">
               Join SkillConnect
             </h1>
-            <p className="text-xs text-[#667085] mt-1">
+            <p className="text-xs text-[#4B5563] mt-1">
               Select your role to get started with verified local services
             </p>
           </div>
@@ -95,13 +95,13 @@ function RegisterFormContent() {
           {/* Success State */}
           {isSuccess ? (
             <div className="text-center py-6">
-              <div className="w-16 h-16 rounded-full bg-[#E6F7F5] text-[#0F9D91] flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full bg-emerald-50 text-[#16A34A] flex items-center justify-center mx-auto mb-4">
                 <CheckCircle2 className="w-10 h-10" />
               </div>
-              <h2 className="text-xl font-bold text-[#173B67] mb-2">
+              <h2 className="text-xl font-bold text-[#111827] mb-2">
                 Registration Complete
               </h2>
-              <p className="text-xs text-[#667085] mb-6 leading-relaxed">
+              <p className="text-xs text-[#4B5563] mb-6 leading-relaxed">
                 Your profile has been created and you are signed in. Explore your personalized dashboard to manage appointments or service dispatch.
               </p>
               <div className="flex flex-col gap-3">
@@ -120,14 +120,14 @@ function RegisterFormContent() {
           ) : (
             <>
               {/* Role Switcher Tabs */}
-              <div className="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-[#F7F8FA] border border-[#E4E7EC] mb-6">
+              <div className="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-[#F8FAFC] border border-[#E5E7EB] mb-6">
                 <button
                   type="button"
                   onClick={() => setRole('customer')}
                   className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
                     role === 'customer'
-                      ? 'bg-white text-[#173B67] shadow-xs'
-                      : 'text-[#667085] hover:text-[#263445]'
+                      ? 'bg-white text-[#111827] shadow-xs'
+                      : 'text-[#4B5563] hover:text-[#111827]'
                   }`}
                 >
                   <User className="w-3.5 h-3.5" />
@@ -139,8 +139,8 @@ function RegisterFormContent() {
                   onClick={() => setRole('worker')}
                   className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
                     role === 'worker'
-                      ? 'bg-[#173B67] text-white shadow-xs'
-                      : 'text-[#667085] hover:text-[#263445]'
+                      ? 'bg-[#0B0F0E] text-white shadow-xs'
+                      : 'text-[#4B5563] hover:text-[#111827]'
                   }`}
                 >
                   <Briefcase className="w-3.5 h-3.5" />
@@ -232,22 +232,22 @@ function RegisterFormContent() {
               </form>
 
               {/* Sign In Link & Demo Prompt */}
-              <div className="mt-6 text-center text-xs text-[#667085] space-y-3">
+              <div className="mt-6 text-center text-xs text-[#4B5563] space-y-3">
                 <div>
                   Already have an account?{' '}
-                  <Link href="/login" className="font-bold text-[#0F9D91] hover:underline">
+                  <Link href="/login" className="font-bold text-[#2563EB] hover:underline">
                     Sign in
                   </Link>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#EBF1F8] border border-[#173B67]/15 text-[#173B67] flex items-center justify-between text-left">
+                <div className="p-3 rounded-xl bg-blue-50/60 border border-blue-200 text-[#111827] flex items-center justify-between text-left">
                   <div>
                     <span className="font-bold block">Evaluating the platform?</span>
-                    <span className="text-[11px] text-[#667085]">Skip signup and use pre-configured demo personas.</span>
+                    <span className="text-[11px] text-[#4B5563]">Skip signup and use pre-configured demo personas.</span>
                   </div>
                   <Link
                     href="/login"
-                    className="px-2.5 py-1.5 rounded-lg bg-[#173B67] text-white font-bold text-[11px] hover:bg-[#0F2A4A] whitespace-nowrap"
+                    className="px-2.5 py-1.5 rounded-lg bg-[#0B0F0E] text-white font-bold text-[11px] hover:bg-[#1f2937] whitespace-nowrap"
                   >
                     Demo Logins →
                   </Link>

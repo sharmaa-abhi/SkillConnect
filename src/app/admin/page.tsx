@@ -51,15 +51,15 @@ export default function AdminDashboardPage() {
   // If user is not admin, show guard with quick authorization button
   if (role !== 'admin') {
     return (
-      <div className="py-20 bg-[#F7F8FA]">
+      <div className="py-20 bg-[#F8FAFC]">
         <Container size="narrow" className="text-center">
-          <div className="w-16 h-16 rounded-3xl bg-[#EBF1F8] text-[#173B67] flex items-center justify-center mx-auto mb-4 border border-[#E4E7EC]">
+          <div className="w-16 h-16 rounded-3xl bg-blue-50 text-[#2563EB] flex items-center justify-center mx-auto mb-4 border border-[#E5E7EB]">
             <Lock className="w-8 h-8" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#173B67]">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827]">
             Administrator Access Required
           </h1>
-          <p className="text-sm text-[#667085] mt-2 mb-6 max-w-md mx-auto">
+          <p className="text-sm text-[#4B5563] mt-2 mb-6 max-w-md mx-auto">
             The verification desk and platform escrow oversight require administrator permissions. You are currently viewing as &ldquo;{role}&rdquo;.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -144,7 +144,7 @@ export default function AdminDashboardPage() {
   };
 
   return (
-    <div className="py-8 sm:py-12 bg-[#F7F8FA]">
+    <div className="py-8 sm:py-12 bg-[#F8FAFC]">
       <Container>
         {/* Prototype Simulated Data Disclaimer */}
         <div className="mb-6">
@@ -152,22 +152,22 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Admin Header */}
-        <div className="bg-white rounded-3xl border border-[#E4E7EC] p-6 sm:p-8 shadow-xs mb-8">
+        <div className="bg-white rounded-3xl border border-[#E5E7EB] p-6 sm:p-8 shadow-xs mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#EBF1F8] text-[#173B67]">
+                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-[#2563EB]">
                   Platform Operations Desk
                 </span>
-                <span className="text-xs text-[#15803D] font-bold flex items-center gap-1">
+                <span className="text-xs text-[#16A34A] font-bold flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   Privileged RBAC Active
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-[#173B67] tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight">
                 SkillConnect Trust & Verification Oversight
               </h1>
-              <p className="text-xs sm:text-sm text-[#667085] mt-0.5">
+              <p className="text-xs sm:text-sm text-[#4B5563] mt-0.5">
                 Review state trade licenses, commercial liability policies, dispute mediation, and category benchmarks.
               </p>
             </div>
@@ -185,34 +185,34 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Platform Metrics Strip */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-[#E4E7EC]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-[#E5E7EB]">
             <div>
-              <span className="text-xs font-semibold text-[#667085]">Active Professionals</span>
-              <p className="text-2xl font-black text-[#173B67] mt-0.5">
+              <span className="text-xs font-semibold text-[#4B5563]">Active Professionals</span>
+              <p className="text-2xl font-black text-[#111827] mt-0.5">
                 {adminMetrics.totalProsCount}
               </p>
-              <span className="text-[11px] text-[#15803D] font-semibold">{adminMetrics.verifiedProsCount} verified active</span>
+              <span className="text-[11px] text-[#16A34A] font-semibold">{adminMetrics.verifiedProsCount} verified active</span>
             </div>
             <div>
-              <span className="text-xs font-semibold text-[#667085]">Pending Audits</span>
-              <p className="text-2xl font-black text-[#B54708] mt-0.5">
+              <span className="text-xs font-semibold text-[#4B5563]">Pending Audits</span>
+              <p className="text-2xl font-black text-amber-600 mt-0.5">
                 {adminMetrics.pendingAuditsCount}
               </p>
-              <span className="text-[11px] text-[#B54708]">Action required</span>
+              <span className="text-[11px] text-amber-600">Action required</span>
             </div>
             <div>
-              <span className="text-xs font-semibold text-[#667085]">Escrow Funds Protected</span>
-              <p className="text-2xl font-black text-[#0F9D91] mt-0.5">
+              <span className="text-xs font-semibold text-[#4B5563]">Escrow Funds Protected</span>
+              <p className="text-2xl font-black text-[#16A34A] mt-0.5">
                 {formatCurrency(adminMetrics.activeEscrowTotal)}
               </p>
-              <span className="text-[11px] text-[#0F9D91] font-semibold">Across {bookings.length} platform bookings</span>
+              <span className="text-[11px] text-[#16A34A] font-semibold">Across {bookings.length} platform bookings</span>
             </div>
             <div>
-              <span className="text-xs font-semibold text-[#667085]">Disputes Desk</span>
-              <p className={`text-2xl font-black mt-0.5 ${adminMetrics.activeDisputesCount > 0 ? 'text-[#B42318]' : 'text-[#15803D]'}`}>
+              <span className="text-xs font-semibold text-[#4B5563]">Disputes Desk</span>
+              <p className={`text-2xl font-black mt-0.5 ${adminMetrics.activeDisputesCount > 0 ? 'text-red-600' : 'text-[#16A34A]'}`}>
                 {adminMetrics.activeDisputesCount} Active
               </p>
-              <span className="text-[11px] text-[#667085]">
+              <span className="text-[11px] text-[#4B5563]">
                 {adminMetrics.activeDisputesCount > 0 ? 'Mediation required' : 'Zero unresolved disputes'}
               </span>
             </div>
@@ -220,14 +220,14 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Admin Navigation Tabs */}
-        <div className="flex border-b border-[#E4E7EC] mb-8 overflow-x-auto">
+        <div className="flex border-b border-[#E5E7EB] mb-8 overflow-x-auto">
           <button
             type="button"
             onClick={() => setActiveTab('verifications')}
             className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 -mb-px transition-all whitespace-nowrap ${
               activeTab === 'verifications'
-                ? 'border-[#173B67] text-[#173B67]'
-                : 'border-transparent text-[#667085] hover:text-[#263445]'
+                ? 'border-[#16A34A] text-[#16A34A]'
+                : 'border-transparent text-[#4B5563] hover:text-[#111827]'
             }`}
           >
             Verification Audit Queue ({pendingRecords.length})
@@ -238,8 +238,8 @@ export default function AdminDashboardPage() {
             onClick={() => setActiveTab('bookings')}
             className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 -mb-px transition-all whitespace-nowrap ${
               activeTab === 'bookings'
-                ? 'border-[#173B67] text-[#173B67]'
-                : 'border-transparent text-[#667085] hover:text-[#263445]'
+                ? 'border-[#16A34A] text-[#16A34A]'
+                : 'border-transparent text-[#4B5563] hover:text-[#111827]'
             }`}
           >
             Escrow & Booking Oversight ({bookings.length})
@@ -250,14 +250,14 @@ export default function AdminDashboardPage() {
             onClick={() => setActiveTab('disputes')}
             className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 -mb-px transition-all whitespace-nowrap flex items-center gap-1.5 ${
               activeTab === 'disputes'
-                ? 'border-[#B42318] text-[#B42318]'
-                : 'border-transparent text-[#667085] hover:text-[#263445]'
+                ? 'border-red-600 text-red-600'
+                : 'border-transparent text-[#4B5563] hover:text-[#111827]'
             }`}
           >
             <Scale className="w-3.5 h-3.5" />
             <span>Disputes & Mediation</span>
             {disputedBookings.length > 0 && (
-              <span className="w-5 h-5 rounded-full bg-[#B42318] text-white text-[10px] font-black flex items-center justify-center">
+              <span className="w-5 h-5 rounded-full bg-red-600 text-white text-[10px] font-black flex items-center justify-center">
                 {disputedBookings.length}
               </span>
             )}
@@ -268,8 +268,8 @@ export default function AdminDashboardPage() {
             onClick={() => setActiveTab('categories')}
             className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 -mb-px transition-all whitespace-nowrap ${
               activeTab === 'categories'
-                ? 'border-[#173B67] text-[#173B67]'
-                : 'border-transparent text-[#667085] hover:text-[#263445]'
+                ? 'border-[#16A34A] text-[#16A34A]'
+                : 'border-transparent text-[#4B5563] hover:text-[#111827]'
             }`}
           >
             Service Categories ({serviceCategories.length})

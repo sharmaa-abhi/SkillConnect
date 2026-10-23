@@ -92,7 +92,7 @@ export default function CustomerDashboardPage() {
   const favoritedPros = allPros.filter((p) => favoriteIds.includes(p.id));
 
   return (
-    <div className="py-6 sm:py-12 bg-[#F7F8FA]">
+    <div className="py-6 sm:py-12 bg-[#F8FAFC]">
       <Container>
         {/* Prototype Simulated Data Disclaimer */}
         <div className="mb-6">
@@ -100,10 +100,10 @@ export default function CustomerDashboardPage() {
         </div>
 
         {/* Welcome Banner */}
-        <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E4E7EC] p-4 sm:p-8 shadow-xs mb-8">
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E5E7EB] p-4 sm:p-8 shadow-xs mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-start sm:items-center gap-3.5 sm:gap-4">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#173B67] text-white flex items-center justify-center font-bold text-xl sm:text-2xl overflow-hidden shadow-xs flex-shrink-0">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#0B0F0E] text-white flex items-center justify-center font-bold text-xl sm:text-2xl overflow-hidden shadow-xs flex-shrink-0">
                 {user.avatarUrl ? (
                   <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
                 ) : (
@@ -112,15 +112,15 @@ export default function CustomerDashboardPage() {
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#EBF1F8] text-[#173B67]">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-[#2563EB]">
                     Customer Account
                   </span>
-                  <span className="text-[11px] text-[#667085]">ID: {user.id}</span>
+                  <span className="text-[11px] text-[#4B5563]">ID: {user.id}</span>
                 </div>
-                <h1 className="text-xl sm:text-3xl font-black text-[#173B67] tracking-tight">
+                <h1 className="text-xl sm:text-3xl font-black text-[#111827] tracking-tight">
                   Welcome back, {user.name}
                 </h1>
-                <p className="text-xs sm:text-sm text-[#667085] mt-0.5 leading-relaxed">
+                <p className="text-xs sm:text-sm text-[#4B5563] mt-0.5 leading-relaxed">
                   Manage your service appointments, track pre-authorized escrow holds, and update your home address.
                 </p>
               </div>
@@ -139,28 +139,28 @@ export default function CustomerDashboardPage() {
           </div>
 
           {/* Quick Metrics */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-6 pt-6 border-t border-[#E4E7EC]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-6 pt-6 border-t border-[#E5E7EB]">
             <div>
-              <span className="text-[11px] sm:text-xs font-semibold text-[#667085]">Active Appointments</span>
-              <p className="text-xl sm:text-2xl font-extrabold text-[#173B67] mt-0.5">
+              <span className="text-[11px] sm:text-xs font-semibold text-[#4B5563]">Active Appointments</span>
+              <p className="text-xl sm:text-2xl font-extrabold text-[#111827] mt-0.5">
                 {metrics.activeAppointmentsCount}
               </p>
             </div>
             <div>
-              <span className="text-[11px] sm:text-xs font-semibold text-[#667085]">Saved Professionals</span>
-              <p className="text-xl sm:text-2xl font-extrabold text-[#263445] mt-0.5">
+              <span className="text-[11px] sm:text-xs font-semibold text-[#4B5563]">Saved Professionals</span>
+              <p className="text-xl sm:text-2xl font-extrabold text-[#111827] mt-0.5">
                 {metrics.savedProsCount}
               </p>
             </div>
             <div>
-              <span className="text-[11px] sm:text-xs font-semibold text-[#667085]">Completed Services</span>
-              <p className="text-xl sm:text-2xl font-extrabold text-[#15803D] mt-0.5">
+              <span className="text-[11px] sm:text-xs font-semibold text-[#4B5563]">Completed Services</span>
+              <p className="text-xl sm:text-2xl font-extrabold text-[#16A34A] mt-0.5">
                 {metrics.completedBookingsCount}
               </p>
             </div>
             <div>
-              <span className="text-[11px] sm:text-xs font-semibold text-[#667085]">Escrow Protection</span>
-              <p className="text-xl sm:text-2xl font-extrabold text-[#0F9D91] mt-0.5">
+              <span className="text-[11px] sm:text-xs font-semibold text-[#4B5563]">Escrow Protection</span>
+              <p className="text-xl sm:text-2xl font-extrabold text-[#16A34A] mt-0.5">
                 {metrics.activeEscrowTotal > 0 ? formatCurrency(metrics.activeEscrowTotal) : '$2,500 Guarantee'}
               </p>
             </div>
@@ -168,14 +168,14 @@ export default function CustomerDashboardPage() {
         </div>
 
         {/* Dashboard Tabs */}
-        <div className="flex border-b border-[#E4E7EC] mb-6 overflow-x-auto scrollbar-none">
+        <div className="flex border-b border-[#E5E7EB] mb-6 overflow-x-auto scrollbar-none">
           <button
             type="button"
             onClick={() => setActiveTab('upcoming')}
             className={`py-2.5 sm:py-3 px-3.5 sm:px-5 text-xs sm:text-sm font-bold border-b-2 -mb-px transition-all whitespace-nowrap min-h-[44px] ${
               activeTab === 'upcoming'
-                ? 'border-[#173B67] text-[#173B67]'
-                : 'border-transparent text-[#667085] hover:text-[#263445]'
+                ? 'border-[#16A34A] text-[#16A34A]'
+                : 'border-transparent text-[#4B5563] hover:text-[#111827]'
             }`}
           >
             Upcoming Appointments ({upcomingBookings.length})
@@ -186,8 +186,8 @@ export default function CustomerDashboardPage() {
             onClick={() => setActiveTab('past')}
             className={`py-2.5 sm:py-3 px-3.5 sm:px-5 text-xs sm:text-sm font-bold border-b-2 -mb-px transition-all whitespace-nowrap min-h-[44px] ${
               activeTab === 'past'
-                ? 'border-[#173B67] text-[#173B67]'
-                : 'border-transparent text-[#667085] hover:text-[#263445]'
+                ? 'border-[#16A34A] text-[#16A34A]'
+                : 'border-transparent text-[#4B5563] hover:text-[#111827]'
             }`}
           >
             Past & Completed ({pastBookings.length})
@@ -198,8 +198,8 @@ export default function CustomerDashboardPage() {
             onClick={() => setActiveTab('favorites')}
             className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 -mb-px transition-all whitespace-nowrap ${
               activeTab === 'favorites'
-                ? 'border-[#173B67] text-[#173B67]'
-                : 'border-transparent text-[#667085] hover:text-[#263445]'
+                ? 'border-[#16A34A] text-[#16A34A]'
+                : 'border-transparent text-[#4B5563] hover:text-[#111827]'
             }`}
           >
             Saved Pros ({favoritedPros.length})
@@ -210,8 +210,8 @@ export default function CustomerDashboardPage() {
             onClick={() => setActiveTab('profile')}
             className={`py-3 px-5 text-xs sm:text-sm font-bold border-b-2 -mb-px transition-all whitespace-nowrap ${
               activeTab === 'profile'
-                ? 'border-[#173B67] text-[#173B67]'
-                : 'border-transparent text-[#667085] hover:text-[#263445]'
+                ? 'border-[#16A34A] text-[#16A34A]'
+                : 'border-transparent text-[#4B5563] hover:text-[#111827]'
             }`}
           >
             Profile & Address
