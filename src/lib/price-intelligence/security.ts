@@ -164,8 +164,8 @@ export function sanitizeSearchQuery(
   // 3. Remove Credit Card / Account numbers (13-19 digits)
   text = text.replace(/\b(?:\d[ -]*?){13,19}\b/g, ' ');
 
-  // 4. Remove Specific Street Addresses (e.g. "428 Castro Street", "123 Elm Ave Apt 4")
-  text = text.replace(/\b\d{1,5}\s+[A-Za-z0-9\s]{2,20}(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way)\b/gi, ' ');
+  // 4. Remove Specific Street Addresses (e.g. "428 Castro Street", "123 Elm Ave Apt 4", "742 Evergreen Terrace")
+  text = text.replace(/\b\d{1,5}\s+[A-Za-z0-9\s]{2,20}(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Court|Ct|Lane|Ln|Way|Terrace|Ter|Place|Pl|Circle|Cir|Parkway|Pkwy)\b/gi, ' ');
   text = text.replace(/\b(?:Apt|Apartment|Suite|Unit|Ste|Floor|Fl)\s*[#]?[A-Za-z0-9-]+\b/gi, ' ');
 
   // 5. Clean punctuation and collapse whitespace

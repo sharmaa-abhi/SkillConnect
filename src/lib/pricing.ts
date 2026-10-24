@@ -34,16 +34,16 @@ export interface FeeCalculationResult {
  * Calculates a verified, deterministic fee breakdown with consistent rounding.
  */
 export function calculateFees(input: FeeCalculationInput): FeeCalculationResult {
-  const diagnosticFee = Math.max(0, Math.round(input.diagnosticFee));
-  const hourlyRate = Math.max(0, Math.round(input.hourlyRate));
-  const hoursMin = input.estimatedHoursMin ?? 1.0;
-  const hoursMax = input.estimatedHoursMax ?? Math.max(hoursMin, 2.0);
-  const partsMin = Math.max(0, Math.round(input.partsMin ?? 0));
-  const partsMax = Math.max(partsMin, Math.round(input.partsMax ?? 0));
-  const taxRate = input.taxRate ?? DEFAULT_TAX_RATE;
+  const diagnosticFee = Math.max(0, Math.round(input.diagnosticFee)) || 0;
+  const hourlyRate = Math.max(0, Math.round(input.hourlyRate)) || 0;
+  const hoursMin = Math.max(0, input.estimatedHoursMin ?? 1.0);
+  const hoursMax = Math.max(hoursMin, input.estimatedHoursMax ?? Math.max(hoursMin, 2.0));
+  const partsMin = Math.max(0, Math.round(input.partsMin ?? 0)) || 0;
+  const partsMax = Math.max(partsMin, Math.round(input.partsMax ?? 0)) || 0;
+  const taxRate = Math.max(0, input.taxRate ?? DEFAULT_TAX_RATE);
 
-  const laborMin = Math.round(hoursMin * hourlyRate);
-  const laborMax = Math.round(hoursMax * hourlyRate);
+  const laborMin = Math.round(hoursMin * hourlyRate) || 0;
+  const laborMax = Math.round(hoursMax * hourlyRate) || 0;
 
   // Diagnostic fee is credited toward repair labor
   const diagnosticCredit = diagnosticFee;

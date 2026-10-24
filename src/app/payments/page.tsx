@@ -27,8 +27,10 @@ import { formatCurrency } from '@/lib/formatters';
 import { DemoBooking } from '@/types/booking';
 import { PrototypeDisclaimer } from '@/components/ui/prototype-disclaimer';
 
+type PaymentStatusKey = NonNullable<DemoBooking['paymentStatus']>;
+
 const paymentStatusConfig: Record<
-  DemoBooking['paymentStatus'],
+  PaymentStatusKey,
   { label: string; variant: 'success' | 'warning' | 'error' | 'pending' | 'neutral'; description: string }
 > = {
   authorized_hold: {
@@ -272,9 +274,9 @@ export default function PaymentsPage() {
                 </thead>
                 <tbody className="divide-y divide-[#E5E7EB]">
                   {filteredBookings.map((b) => {
-                    const statusInfo = paymentStatusConfig[b.paymentStatus] || {
-                      label: b.paymentStatus,
-                      variant: 'neutral',
+                    const statusInfo = (b.paymentStatus && paymentStatusConfig[b.paymentStatus]) || {
+                      label: b.paymentStatus || 'Pending',
+                      variant: 'neutral' as const,
                       description: 'Status update pending.',
                     };
 
